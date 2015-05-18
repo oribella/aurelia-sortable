@@ -1,9 +1,8 @@
 import {customAttribute, inject, bindable} from "aurelia-framework";
-import {oribella} from "oribella";
 import {matchesSelector} from "oribella-framework";
 
 @customAttribute("sortable")
-@inject(Element)
+@inject(Element, "oribella")
 @bindable({
   name: "scroll"
 })
@@ -28,8 +27,9 @@ import {matchesSelector} from "oribella-framework";
   defaultValue: function() {}
 })
 export class Sortable {
-  constructor(element) {
+  constructor(element, oribella) {
     this.element = element;
+    this.oribella = oribella;
     this.selector = "[sortable-item]";
     this.fromIx = -1;
     this.toIx = -1;
@@ -39,7 +39,7 @@ export class Sortable {
     this.isAutoScrollingY = false;
   }
   bind() {
-    this.remove = oribella(this.element).swipe(this);
+    this.remove = this.oribella(this.element).swipe(this);
     if( !this.scroll ) {
       this.scroll = this.element;
     }
@@ -222,7 +222,7 @@ export class Sortable {
   }
   move(fromIx, toIx) {
     if( fromIx !== -1 && toIx !== -1 && fromIx !== toIx ) {
-      this.items.splice(toIx, 0, this.items.splice(fromIx, 1)[0]); 
+      this.items.splice(toIx, 0, this.items.splice(fromIx, 1)[0]);
     }
   }
   tryMove(x, y) {
@@ -233,7 +233,7 @@ export class Sortable {
     var valid = false;
     while (!valid && element !== this.element &&
       element !== document) {
-      valid = matchesSelector(element, this.selector)
+      valid = matchesSelector(element, this.selector);
       if (valid) {
         break;
       }
@@ -276,14 +276,14 @@ export class Sortable {
     this.moveTo(element, dx, dy);
     var display = this.hide(element);
     this.tryMove(x, y);
-    this.show(element, display); 
+    this.show(element, display);
 
     this.autoScroll(x, y);
   }
   end(e, data, element) {
     this.stop(e, data, element);
   }
-  cancel(e, data, element) {
+  cancel(/*e, data, element*/) {
     this.dragEnd();
     this.removePlaceholder();
   }
@@ -295,7 +295,7 @@ export class Sortable {
       this.stopAutoScrollY();
     }
   }
-  stop(e, data, element) {
+  stop(/*e, data, element*/) {
     this.stopAutoScroll();
     this.toIx = this.items.indexOf(this.placeholder);
     if (this.toIx < 0) {

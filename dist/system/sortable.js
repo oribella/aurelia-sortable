@@ -1,13 +1,11 @@
-System.register(["aurelia-framework", "oribella", "oribella-framework"], function (_export) {
-  var customAttribute, inject, bindable, oribella, matchesSelector, _classCallCheck, _createClass, Sortable, SortableItem;
+System.register(["aurelia-framework", "oribella-framework"], function (_export) {
+  var customAttribute, inject, bindable, matchesSelector, _classCallCheck, _createClass, Sortable, SortableItem;
 
   return {
     setters: [function (_aureliaFramework) {
       customAttribute = _aureliaFramework.customAttribute;
       inject = _aureliaFramework.inject;
       bindable = _aureliaFramework.bindable;
-    }, function (_oribella) {
-      oribella = _oribella.oribella;
     }, function (_oribellaFramework) {
       matchesSelector = _oribellaFramework.matchesSelector;
     }],
@@ -19,10 +17,11 @@ System.register(["aurelia-framework", "oribella", "oribella-framework"], functio
       _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
       Sortable = (function () {
-        function Sortable(element) {
+        function Sortable(element, oribella) {
           _classCallCheck(this, _Sortable);
 
           this.element = element;
+          this.oribella = oribella;
           this.selector = "[sortable-item]";
           this.fromIx = -1;
           this.toIx = -1;
@@ -35,7 +34,7 @@ System.register(["aurelia-framework", "oribella", "oribella-framework"], functio
         _createClass(Sortable, [{
           key: "bind",
           value: function bind() {
-            this.remove = oribella(this.element).swipe(this);
+            this.remove = this.oribella(this.element).swipe(this);
             if (!this.scroll) {
               this.scroll = this.element;
             }
@@ -325,7 +324,7 @@ System.register(["aurelia-framework", "oribella", "oribella-framework"], functio
           }
         }, {
           key: "cancel",
-          value: function cancel(e, data, element) {
+          value: function cancel() {
             this.dragEnd();
             this.removePlaceholder();
           }
@@ -341,7 +340,7 @@ System.register(["aurelia-framework", "oribella", "oribella-framework"], functio
           }
         }, {
           key: "stop",
-          value: function stop(e, data, element) {
+          value: function stop() {
             this.stopAutoScroll();
             this.toIx = this.items.indexOf(this.placeholder);
             if (this.toIx < 0) {
@@ -362,7 +361,7 @@ System.register(["aurelia-framework", "oribella", "oribella-framework"], functio
 
         var _Sortable = Sortable;
         Sortable = customAttribute("sortable")(Sortable) || Sortable;
-        Sortable = inject(Element)(Sortable) || Sortable;
+        Sortable = inject(Element, "oribella")(Sortable) || Sortable;
         Sortable = bindable({
           name: "scroll"
         })(Sortable) || Sortable;
@@ -412,3 +411,4 @@ System.register(["aurelia-framework", "oribella", "oribella-framework"], functio
     }
   };
 });
+/*e, data, element*/ /*e, data, element*/
