@@ -275,7 +275,7 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
               element = element.parentNode;
             }
             if (valid) {
-              console.log(element, element.sortableItem.ctx.$index);
+              //console.log(element, element.sortableItem.ctx.$index);
               var ix = element.sortableItem.ctx.$index;
               this.movePlaceholder(ix);
             }
