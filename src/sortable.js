@@ -39,7 +39,7 @@ export class Sortable {
     this.isAutoScrollingY = false;
   }
   bind() {
-    this.remove = this.oribella(this.element).swipe(this);
+    this.remove = this.oribella.on(this.element, "swipe", this);
     if( !this.scroll ) {
       this.scroll = this.element;
     }
@@ -239,8 +239,8 @@ export class Sortable {
       }
       element = element.parentNode;
     }
-
     if (valid) {
+      console.log(element, element.sortableItem.ctx.$index);
       var ix = element.sortableItem.ctx.$index;
       this.movePlaceholder(ix);
     }
@@ -318,5 +318,9 @@ export class Sortable {
 export class SortableItem {
   bind(ctx) {
     this.ctx = ctx; //Need a reference to the item's $index
+    //console.log("bind sortable item", this.ctx.$index);
+  }
+  unbind(){
+    //console.log("unbind sortable item", this.ctx.$index);
   }
 }

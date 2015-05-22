@@ -1,4 +1,6 @@
 System.register([], function (_export) {
+  "use strict";
+
   _export("configure", configure);
 
   function configure(aurelia) {
@@ -7,8 +9,6 @@ System.register([], function (_export) {
 
   return {
     setters: [],
-    execute: function () {
-      "use strict";
-    }
+    execute: function () {}
   };
 });

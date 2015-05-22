@@ -1,24 +1,23 @@
 "use strict";
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _customAttribute$inject$bindable = require("aurelia-framework");
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _oribella = require("oribella");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _matchesSelector = require("oribella-framework");
+var _aureliaFramework = require("aurelia-framework");
+
+var _oribellaFramework = require("oribella-framework");
 
 var Sortable = (function () {
-  function Sortable(element) {
+  function Sortable(element, oribella) {
     _classCallCheck(this, _Sortable);
 
     this.element = element;
+    this.oribella = oribella;
     this.selector = "[sortable-item]";
     this.fromIx = -1;
     this.toIx = -1;
@@ -28,10 +27,12 @@ var Sortable = (function () {
     this.isAutoScrollingY = false;
   }
 
-  _createClass(Sortable, [{
+  var _Sortable = Sortable;
+
+  _createClass(_Sortable, [{
     key: "bind",
     value: function bind() {
-      this.remove = _oribella.oribella(this.element).swipe(this);
+      this.remove = this.oribella.on(this.element, "swipe", this);
       if (!this.scroll) {
         this.scroll = this.element;
       }
@@ -263,14 +264,14 @@ var Sortable = (function () {
       }
       var valid = false;
       while (!valid && element !== this.element && element !== document) {
-        valid = _matchesSelector.matchesSelector(element, this.selector);
+        valid = (0, _oribellaFramework.matchesSelector)(element, this.selector);
         if (valid) {
           break;
         }
         element = element.parentNode;
       }
-
       if (valid) {
+        console.log(element, element.sortableItem.ctx.$index);
         var ix = element.sortableItem.ctx.$index;
         this.movePlaceholder(ix);
       }
@@ -321,7 +322,7 @@ var Sortable = (function () {
     }
   }, {
     key: "cancel",
-    value: function cancel(e, data, element) {
+    value: function cancel() {
       this.dragEnd();
       this.removePlaceholder();
     }
@@ -337,7 +338,7 @@ var Sortable = (function () {
     }
   }, {
     key: "stop",
-    value: function stop(e, data, element) {
+    value: function stop() {
       this.stopAutoScroll();
       this.toIx = this.items.indexOf(this.placeholder);
       if (this.toIx < 0) {
@@ -356,32 +357,31 @@ var Sortable = (function () {
     }
   }]);
 
-  var _Sortable = Sortable;
-  Sortable = _customAttribute$inject$bindable.customAttribute("sortable")(Sortable) || Sortable;
-  Sortable = _customAttribute$inject$bindable.inject(Element)(Sortable) || Sortable;
-  Sortable = _customAttribute$inject$bindable.bindable({
-    name: "scroll"
+  Sortable = (0, _aureliaFramework.bindable)({
+    name: "moved",
+    defaultValue: function defaultValue() {}
   })(Sortable) || Sortable;
-  Sortable = _customAttribute$inject$bindable.bindable({
-    name: "scrollSpeed",
-    defaultValue: 10
-  })(Sortable) || Sortable;
-  Sortable = _customAttribute$inject$bindable.bindable({
-    name: "scrollSensitivity",
-    defaultValue: 10
-  })(Sortable) || Sortable;
-  Sortable = _customAttribute$inject$bindable.bindable("items")(Sortable) || Sortable;
-  Sortable = _customAttribute$inject$bindable.bindable({
+  Sortable = (0, _aureliaFramework.bindable)("axis")(Sortable) || Sortable;
+  Sortable = (0, _aureliaFramework.bindable)({
     name: "placeholder",
     defaultValue: {
       placeholderClass: "placeholder"
     }
   })(Sortable) || Sortable;
-  Sortable = _customAttribute$inject$bindable.bindable("axis")(Sortable) || Sortable;
-  Sortable = _customAttribute$inject$bindable.bindable({
-    name: "moved",
-    defaultValue: function defaultValue() {}
+  Sortable = (0, _aureliaFramework.bindable)("items")(Sortable) || Sortable;
+  Sortable = (0, _aureliaFramework.bindable)({
+    name: "scrollSensitivity",
+    defaultValue: 10
   })(Sortable) || Sortable;
+  Sortable = (0, _aureliaFramework.bindable)({
+    name: "scrollSpeed",
+    defaultValue: 10
+  })(Sortable) || Sortable;
+  Sortable = (0, _aureliaFramework.bindable)({
+    name: "scroll"
+  })(Sortable) || Sortable;
+  Sortable = (0, _aureliaFramework.inject)(Element, "oribella")(Sortable) || Sortable;
+  Sortable = (0, _aureliaFramework.customAttribute)("sortable")(Sortable) || Sortable;
   return Sortable;
 })();
 
@@ -392,16 +392,23 @@ var SortableItem = (function () {
     _classCallCheck(this, _SortableItem);
   }
 
-  _createClass(SortableItem, [{
+  var _SortableItem = SortableItem;
+
+  _createClass(_SortableItem, [{
     key: "bind",
     value: function bind(ctx) {
       this.ctx = ctx; //Need a reference to the item's $index
+      //console.log("bind sortable item", this.ctx.$index);
     }
+  }, {
+    key: "unbind",
+    value: function unbind() {}
   }]);
 
-  var _SortableItem = SortableItem;
-  SortableItem = _customAttribute$inject$bindable.customAttribute("sortable-item")(SortableItem) || SortableItem;
+  SortableItem = (0, _aureliaFramework.customAttribute)("sortable-item")(SortableItem) || SortableItem;
   return SortableItem;
 })();
 
 exports.SortableItem = SortableItem;
+/*e, data, element*/ /*e, data, element*/
+//console.log("unbind sortable item", this.ctx.$index);
