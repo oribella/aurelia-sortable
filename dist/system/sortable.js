@@ -59,7 +59,8 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
             this.dragX = this.dragRect.left - this.offsetParentRect.left;
             this.dragY = this.dragRect.top - this.offsetParentRect.top;
 
-            if (this.scroll === element.offsetParent || this.scroll.contains(element.offsetParent)) {
+            this.updateDragWhenScrolling = this.scroll.contains(element.offsetParent);
+            if (this.updateDragWhenScrolling) {
               this.dragX += this.scroll.scrollLeft;
               this.dragY += this.scroll.scrollTop;
             }
@@ -128,6 +129,9 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
             }
             var autoScroll = (function loop() {
               this.scroll.scrollLeft += dx * this.scrollSpeed;
+              if (this.updateDragWhenScrolling) {
+                this.moveTo(this.dragElement, dx * this.scrollSpeed, 0);
+              }
               this.tryMove(x, y);
               --ticks;
               if (ticks <= 0) {
@@ -161,6 +165,9 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
             }
             var autoScroll = (function loop() {
               this.scroll.scrollTop += dy * this.scrollSpeed;
+              if (this.updateDragWhenScrolling) {
+                this.moveTo(this.dragElement, 0, dy * this.scrollSpeed);
+              }
               this.tryMove(x, y);
               --ticks;
               if (ticks <= 0) {
@@ -402,11 +409,7 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
           key: "bind",
           value: function bind(ctx) {
             this.ctx = ctx; //Need a reference to the item's $index
-            //console.log("bind sortable item", this.ctx.$index);
           }
-        }, {
-          key: "unbind",
-          value: function unbind() {}
         }]);
 
         SortableItem = customAttribute("sortable-item")(SortableItem) || SortableItem;
@@ -418,4 +421,3 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
   };
 });
 /*e, data, element*/ /*e, data, element*/
-//console.log("unbind sortable item", this.ctx.$index);

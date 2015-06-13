@@ -58,8 +58,8 @@ export class Sortable {
     this.dragX = this.dragRect.left - this.offsetParentRect.left;
     this.dragY = this.dragRect.top - this.offsetParentRect.top;
 
-    if (this.scroll === element.offsetParent ||
-      this.scroll.contains(element.offsetParent)) {
+    this.updateDragWhenScrolling = this.scroll.contains(element.offsetParent);
+    if (this.updateDragWhenScrolling) {
       this.dragX += this.scroll.scrollLeft;
       this.dragY += this.scroll.scrollTop;
     }
@@ -114,6 +114,9 @@ export class Sortable {
     }
     var autoScroll = function loop() {
       this.scroll.scrollLeft += dx * this.scrollSpeed;
+      if(this.updateDragWhenScrolling) {
+        this.moveTo(this.dragElement, dx * this.scrollSpeed, 0);
+      }
       this.tryMove(x, y);
       --ticks;
       if (ticks <= 0) {
@@ -143,6 +146,9 @@ export class Sortable {
     }
     var autoScroll = function loop() {
       this.scroll.scrollTop += dy * this.scrollSpeed;
+      if(this.updateDragWhenScrolling) {
+        this.moveTo(this.dragElement, 0, dy * this.scrollSpeed);
+      }
       this.tryMove(x, y);
       --ticks;
       if (ticks <= 0) {
@@ -318,9 +324,5 @@ export class Sortable {
 export class SortableItem {
   bind(ctx) {
     this.ctx = ctx; //Need a reference to the item's $index
-    //console.log("bind sortable item", this.ctx.$index);
-  }
-  unbind(){
-    //console.log("unbind sortable item", this.ctx.$index);
   }
 }
