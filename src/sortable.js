@@ -18,7 +18,8 @@ import {matchesSelector} from "oribella-framework";
 @bindable({
   name: "placeholder",
   defaultValue: {
-    placeholderClass: "placeholder"
+    placeholderClass: "placeholder",
+    style: {}
   }
 })
 @bindable("axis")
@@ -69,6 +70,12 @@ export class Sortable {
     element.style.height = this.dragRect.height + "px";
     element.style.pointerEvents = "none";
     element.style.zIndex = 1;
+
+    if(!this.placeholder.style) {
+      this.placeholder.style = {};
+    }
+    this.placeholder.style.width = this.dragRect.width + "px";
+    this.placeholder.style.height = this.dragRect.height + "px";
 
     this.moveTo(element, 0, 0);
   }
@@ -246,7 +253,6 @@ export class Sortable {
       element = element.parentNode;
     }
     if (valid) {
-      //console.log(element, element.sortableItem.ctx.$index);
       var ix = element.sortableItem.ctx.$index;
       this.movePlaceholder(ix);
     }

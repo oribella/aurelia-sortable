@@ -71,6 +71,12 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
             element.style.pointerEvents = "none";
             element.style.zIndex = 1;
 
+            if (!this.placeholder.style) {
+              this.placeholder.style = {};
+            }
+            this.placeholder.style.width = this.dragRect.width + "px";
+            this.placeholder.style.height = this.dragRect.height + "px";
+
             this.moveTo(element, 0, 0);
           }
         }, {
@@ -282,7 +288,6 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
               element = element.parentNode;
             }
             if (valid) {
-              //console.log(element, element.sortableItem.ctx.$index);
               var ix = element.sortableItem.ctx.$index;
               this.movePlaceholder(ix);
             }
@@ -376,7 +381,8 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
         Sortable = bindable({
           name: "placeholder",
           defaultValue: {
-            placeholderClass: "placeholder"
+            placeholderClass: "placeholder",
+            style: {}
           }
         })(Sortable) || Sortable;
         Sortable = bindable("items")(Sortable) || Sortable;
