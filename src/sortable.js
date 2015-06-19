@@ -3,31 +3,18 @@ import {matchesSelector} from "oribella-framework";
 
 @customAttribute("sortable")
 @inject(Element, "oribella")
-@bindable({
-  name: "scroll"
-})
-@bindable({
-  name: "scrollSpeed",
-  defaultValue: 10
-})
-@bindable({
-  name: "scrollSensitivity",
-  defaultValue: 10
-})
-@bindable("items")
-@bindable({
-  name: "placeholder",
-  defaultValue: {
-    placeholderClass: "placeholder",
-    style: {}
-  }
-})
-@bindable("axis")
-@bindable({
-  name: "moved",
-  defaultValue: function() {}
-})
 export class Sortable {
+
+  @bindable scroll = null;
+  @bindable scrollSpeed = 10;
+  @bindable scrollSensitivity = 10;
+  @bindable items = [];
+  @bindable placeholder = { placeholderClass: "placeholder", style: {} };
+  @bindable axis = "";
+  @bindable moved = function() {};
+  @bindable allowDrag = function() { return true; };
+  @bindable allowMove = function() { return true; };
+
   constructor(element, oribella) {
     this.element = element;
     this.oribella = oribella;
@@ -49,6 +36,9 @@ export class Sortable {
     this.remove();
   }
   dragStart(element) {
+    if(!this.allowDrag(element.sortableItem)) {
+      return false;
+    }
     this.dragElement = element;
     this.scrollRect = this.scroll.getBoundingClientRect();
     this.scrollWidth = this.scroll.scrollWidth;
@@ -82,7 +72,7 @@ export class Sortable {
   dragEnd() {
     if (this.dragElement) {
       this.dragElement.removeAttribute("style");
-      this.dragElement = undefined;
+      this.dragElement = null;
     }
   }
   getScrollDX(x) {
@@ -253,12 +243,17 @@ export class Sortable {
       element = element.parentNode;
     }
     if (valid) {
+      if(!this.allowMove(element.sortableItem)) {
+        return;
+      }
       var ix = element.sortableItem.ctx.$index;
       this.movePlaceholder(ix);
     }
   }
   start(e, data, element) {
-    this.dragStart(element);
+    if(this.dragStart(element) === false) {
+      return;
+    }
     var item = element.sortableItem;
     this.fromIx = item.ctx.$index;
     this.toIx = -1;
