@@ -26,6 +26,12 @@ export class Sortable {
     this.isAutoScrollingX = false;
     this.isAutoScrollingY = false;
   }
+  bindScroll(scroll, fn) {
+    scroll.addEventListener("scroll", fn, false);
+    return () => {
+      scroll.removeEventListener("scroll", fn, false)
+    }
+  }
   bind() {
     this.remove = this.oribella.on(this.element, "swipe", this);
     if( !this.scroll ) {
@@ -39,6 +45,7 @@ export class Sortable {
     if(!this.allowDrag(element.sortableItem)) {
       return false;
     }
+    this.removeScroll = this.bindScroll(this.scroll, this.onScroll.bind(this));
     this.dragElement = element;
     this.scrollRect = this.scroll.getBoundingClientRect();
     this.scrollWidth = this.scroll.scrollWidth;
@@ -74,6 +81,14 @@ export class Sortable {
       this.dragElement.removeAttribute("style");
       this.dragElement = null;
     }
+    if(typeof this.removeScroll === "function") {
+      this.removeScroll();
+    }
+  }
+  onScroll(e) {
+    var display = this.hide(this.dragElement);
+    this.tryMove(this.x, this.y);
+    this.show(this.dragElement, display);
   }
   getScrollDX(x) {
     if (x >= this.scrollRect.right - this.scrollSensitivity) {
@@ -224,7 +239,7 @@ export class Sortable {
     this.move(fromIx, toIx);
   }
   move(fromIx, toIx) {
-    if( fromIx !== -1 && toIx !== -1 && fromIx !== toIx ) {
+    if(fromIx !== -1 && toIx !== -1 && fromIx !== toIx) {
       this.items.splice(toIx, 0, this.items.splice(fromIx, 1)[0]);
     }
   }
@@ -254,6 +269,8 @@ export class Sortable {
     if(this.dragStart(element) === false) {
       return;
     }
+    this.x = data.pagePoints[0].x;
+    this.y = data.pagePoints[0].y;
     var item = element.sortableItem;
     this.fromIx = item.ctx.$index;
     this.toIx = -1;
@@ -266,6 +283,9 @@ export class Sortable {
     var delta = data.swipe.getDelta();
     var dx = delta[0];
     var dy = delta[1];
+
+    this.x = p.x;
+    this.y = p.y;
 
     switch (this.axis) {
     case "x":

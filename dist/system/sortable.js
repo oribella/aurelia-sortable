@@ -125,6 +125,14 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
           },
           enumerable: true
         }, {
+          key: "bindScroll",
+          value: function bindScroll(scroll, fn) {
+            scroll.addEventListener("scroll", fn, false);
+            return function () {
+              scroll.removeEventListener("scroll", fn, false);
+            };
+          }
+        }, {
           key: "bind",
           value: function bind() {
             this.remove = this.oribella.on(this.element, "swipe", this);
@@ -143,6 +151,7 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
             if (!this.allowDrag(element.sortableItem)) {
               return false;
             }
+            this.removeScroll = this.bindScroll(this.scroll, this.onScroll.bind(this));
             this.dragElement = element;
             this.scrollRect = this.scroll.getBoundingClientRect();
             this.scrollWidth = this.scroll.scrollWidth;
@@ -180,6 +189,16 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
               this.dragElement.removeAttribute("style");
               this.dragElement = null;
             }
+            if (typeof this.removeScroll === "function") {
+              this.removeScroll();
+            }
+          }
+        }, {
+          key: "onScroll",
+          value: function onScroll(e) {
+            var display = this.hide(this.dragElement);
+            this.tryMove(this.x, this.y);
+            this.show(this.dragElement, display);
           }
         }, {
           key: "getScrollDX",
@@ -395,6 +414,8 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
             if (this.dragStart(element) === false) {
               return;
             }
+            this.x = data.pagePoints[0].x;
+            this.y = data.pagePoints[0].y;
             var item = element.sortableItem;
             this.fromIx = item.ctx.$index;
             this.toIx = -1;
@@ -409,6 +430,9 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
             var delta = data.swipe.getDelta();
             var dx = delta[0];
             var dy = delta[1];
+
+            this.x = p.x;
+            this.y = p.y;
 
             switch (this.axis) {
               case "x":
