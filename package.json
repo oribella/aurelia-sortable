@@ -1,13 +1,13 @@
 {
-  "name": "oribella-swipe",
+  "name": "aurelia-sortable",
   "version": "0.1.0",
-  "description": "Swipe gesture",
+  "description": "",
   "license": "MIT",
   "author": "Christoffer Åström",
   "main": "dist/commonjs/index.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/oribella/swipe"
+    "url": "http://github.com/oribella/aurelia-sortable"
   },
   "scripts": {
     "build": "npm run build:commonjs && npm run build:system",
@@ -15,8 +15,8 @@
     "build:watch:commonjs": "babel src --stage 2 --optional es7.decorators,es7.classProperties  --out-dir dist/commonjs -w",
     "build:system": "babel src --modules system --stage 2 --optional es7.decorators,es7.classProperties  --out-dir dist/system",
     "build:watch:system": "babel src --modules system --stage 2 --optional es7.decorators,es7.classProperties  --out-dir dist/system -w",
-    "test": "mocha test --require ./test/global.js --compilers js:babel/register",
-    "test:watch": "mocha test --require ./test/global.js --compilers js:babel/register -w",
+    "test": "mocha ./test --require ./test/global.js --compilers js:babel/register",
+    "test:watch": "mocha ./test --require ./test/global.js --compilers js:babel/register -w",
     "lint": "eslint src"
   },
   "jspm": {
@@ -24,9 +24,6 @@
     "format": "register",
     "directories": {
       "lib": "dist/system"
-    },
-    "dependencies": {
-      "oribella-framework": "github:oribella/framework@master"
     }
   },
   "devDependencies": {

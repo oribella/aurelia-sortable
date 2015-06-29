@@ -195,7 +195,7 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
           }
         }, {
           key: "onScroll",
-          value: function onScroll(e) {
+          value: function onScroll() {
             var display = this.hide(this.dragElement);
             this.tryMove(this.x, this.y);
             this.show(this.dragElement, display);

@@ -29,8 +29,8 @@ export class Sortable {
   bindScroll(scroll, fn) {
     scroll.addEventListener("scroll", fn, false);
     return () => {
-      scroll.removeEventListener("scroll", fn, false)
-    }
+      scroll.removeEventListener("scroll", fn, false);
+    };
   }
   bind() {
     this.remove = this.oribella.on(this.element, "swipe", this);
@@ -85,7 +85,7 @@ export class Sortable {
       this.removeScroll();
     }
   }
-  onScroll(e) {
+  onScroll() {
     var display = this.hide(this.dragElement);
     this.tryMove(this.x, this.y);
     this.show(this.dragElement, display);
