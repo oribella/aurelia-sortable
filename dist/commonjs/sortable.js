@@ -12,14 +12,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _defineDecoratedPropertyDescriptor(target, key, descriptors) { var _descriptor = descriptors[key]; if (!_descriptor) return; var descriptor = {}; for (var _key in _descriptor) descriptor[_key] = _descriptor[_key]; descriptor.value = descriptor.initializer.call(target); Object.defineProperty(target, key, descriptor); }
 
-var _aureliaFramework = require("aurelia-framework");
+var _aureliaTemplating = require("aurelia-templating");
 
-var _oribellaFramework = require("oribella-framework");
+var _aureliaDependencyInjection = require("aurelia-dependency-injection");
+
+var _oribellaDefaultGestures = require("oribella/default-gestures");
 
 var Sortable = (function () {
   var _instanceInitializers = {};
 
-  function Sortable(element, oribella) {
+  function Sortable(element) {
     _classCallCheck(this, _Sortable);
 
     _defineDecoratedPropertyDescriptor(this, "scroll", _instanceInitializers);
@@ -41,7 +43,6 @@ var Sortable = (function () {
     _defineDecoratedPropertyDescriptor(this, "allowMove", _instanceInitializers);
 
     this.element = element;
-    this.oribella = oribella;
     this.selector = "[sortable-item]";
     this.fromIx = -1;
     this.toIx = -1;
@@ -54,73 +55,6 @@ var Sortable = (function () {
   var _Sortable = Sortable;
 
   _createDecoratedClass(_Sortable, [{
-    key: "scroll",
-    decorators: [_aureliaFramework.bindable],
-    initializer: function () {
-      return null;
-    },
-    enumerable: true
-  }, {
-    key: "scrollSpeed",
-    decorators: [_aureliaFramework.bindable],
-    initializer: function () {
-      return 10;
-    },
-    enumerable: true
-  }, {
-    key: "scrollSensitivity",
-    decorators: [_aureliaFramework.bindable],
-    initializer: function () {
-      return 10;
-    },
-    enumerable: true
-  }, {
-    key: "items",
-    decorators: [_aureliaFramework.bindable],
-    initializer: function () {
-      return [];
-    },
-    enumerable: true
-  }, {
-    key: "placeholder",
-    decorators: [_aureliaFramework.bindable],
-    initializer: function () {
-      return { placeholderClass: "placeholder", style: {} };
-    },
-    enumerable: true
-  }, {
-    key: "axis",
-    decorators: [_aureliaFramework.bindable],
-    initializer: function () {
-      return "";
-    },
-    enumerable: true
-  }, {
-    key: "moved",
-    decorators: [_aureliaFramework.bindable],
-    initializer: function () {
-      return function () {};
-    },
-    enumerable: true
-  }, {
-    key: "allowDrag",
-    decorators: [_aureliaFramework.bindable],
-    initializer: function () {
-      return function () {
-        return true;
-      };
-    },
-    enumerable: true
-  }, {
-    key: "allowMove",
-    decorators: [_aureliaFramework.bindable],
-    initializer: function () {
-      return function () {
-        return true;
-      };
-    },
-    enumerable: true
-  }, {
     key: "bindScroll",
     value: function bindScroll(scroll, fn) {
       scroll.addEventListener("scroll", fn, false);
@@ -131,7 +65,7 @@ var Sortable = (function () {
   }, {
     key: "bind",
     value: function bind() {
-      this.remove = this.oribella.on(this.element, "swipe", this);
+      this.remove = _oribellaDefaultGestures.oribella.on(this.element, "swipe", this);
       if (!this.scroll) {
         this.scroll = this.element;
       }
@@ -390,7 +324,7 @@ var Sortable = (function () {
       }
       var valid = false;
       while (!valid && element !== this.element && element !== document) {
-        valid = (0, _oribellaFramework.matchesSelector)(element, this.selector);
+        valid = (0, _oribellaDefaultGestures.matchesSelector)(element, this.selector);
         if (valid) {
           break;
         }
@@ -432,11 +366,11 @@ var Sortable = (function () {
 
       switch (this.axis) {
         case "x":
-          y = this.dragY + this.dragRect.height / 2;
+          y = this.dragRect.top + this.dragRect.height / 2;
           dy = 0;
           break;
         case "y":
-          x = this.dragX + this.dragRect.width / 2;
+          x = this.dragRect.left + this.dragRect.width / 2;
           dx = 0;
           break;
         default:
@@ -490,10 +424,77 @@ var Sortable = (function () {
         this.moved({ fromIx: this.fromIx, toIx: this.toIx });
       }
     }
+  }, {
+    key: "scroll",
+    decorators: [_aureliaTemplating.bindable],
+    initializer: function initializer() {
+      return null;
+    },
+    enumerable: true
+  }, {
+    key: "scrollSpeed",
+    decorators: [_aureliaTemplating.bindable],
+    initializer: function initializer() {
+      return 10;
+    },
+    enumerable: true
+  }, {
+    key: "scrollSensitivity",
+    decorators: [_aureliaTemplating.bindable],
+    initializer: function initializer() {
+      return 10;
+    },
+    enumerable: true
+  }, {
+    key: "items",
+    decorators: [_aureliaTemplating.bindable],
+    initializer: function initializer() {
+      return [];
+    },
+    enumerable: true
+  }, {
+    key: "placeholder",
+    decorators: [_aureliaTemplating.bindable],
+    initializer: function initializer() {
+      return { placeholderClass: "placeholder", style: {} };
+    },
+    enumerable: true
+  }, {
+    key: "axis",
+    decorators: [_aureliaTemplating.bindable],
+    initializer: function initializer() {
+      return "";
+    },
+    enumerable: true
+  }, {
+    key: "moved",
+    decorators: [_aureliaTemplating.bindable],
+    initializer: function initializer() {
+      return function () {};
+    },
+    enumerable: true
+  }, {
+    key: "allowDrag",
+    decorators: [_aureliaTemplating.bindable],
+    initializer: function initializer() {
+      return function () {
+        return true;
+      };
+    },
+    enumerable: true
+  }, {
+    key: "allowMove",
+    decorators: [_aureliaTemplating.bindable],
+    initializer: function initializer() {
+      return function () {
+        return true;
+      };
+    },
+    enumerable: true
   }], null, _instanceInitializers);
 
-  Sortable = (0, _aureliaFramework.inject)(Element, "oribella")(Sortable) || Sortable;
-  Sortable = (0, _aureliaFramework.customAttribute)("sortable")(Sortable) || Sortable;
+  Sortable = (0, _aureliaDependencyInjection.inject)(Element)(Sortable) || Sortable;
+  Sortable = (0, _aureliaTemplating.customAttribute)("sortable")(Sortable) || Sortable;
   return Sortable;
 })();
 
@@ -513,7 +514,7 @@ var SortableItem = (function () {
     }
   }]);
 
-  SortableItem = (0, _aureliaFramework.customAttribute)("sortable-item")(SortableItem) || SortableItem;
+  SortableItem = (0, _aureliaTemplating.customAttribute)("sortable-item")(SortableItem) || SortableItem;
   return SortableItem;
 })();
 

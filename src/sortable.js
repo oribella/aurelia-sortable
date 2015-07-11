@@ -1,8 +1,9 @@
-import {customAttribute, inject, bindable} from "aurelia-framework";
-import {matchesSelector} from "oribella-framework";
+import {customAttribute, bindable} from "aurelia-templating";
+import {inject} from "aurelia-dependency-injection";
+import {oribella, matchesSelector} from "oribella/default-gestures";
 
 @customAttribute("sortable")
-@inject(Element, "oribella")
+@inject(Element)
 export class Sortable {
 
   @bindable scroll = null;
@@ -15,9 +16,8 @@ export class Sortable {
   @bindable allowDrag = function() { return true; };
   @bindable allowMove = function() { return true; };
 
-  constructor(element, oribella) {
+  constructor(element) {
     this.element = element;
-    this.oribella = oribella;
     this.selector = "[sortable-item]";
     this.fromIx = -1;
     this.toIx = -1;
@@ -33,7 +33,7 @@ export class Sortable {
     };
   }
   bind() {
-    this.remove = this.oribella.on(this.element, "swipe", this);
+    this.remove = oribella.on(this.element, "swipe", this);
     if( !this.scroll ) {
       this.scroll = this.element;
     }
@@ -289,11 +289,11 @@ export class Sortable {
 
     switch (this.axis) {
     case "x":
-      y = this.dragY + this.dragRect.height / 2;
+      y = this.dragRect.top + this.dragRect.height / 2;
       dy = 0;
       break;
     case "y":
-      x = this.dragX + this.dragRect.width / 2;
+      x = this.dragRect.left + this.dragRect.width / 2;
       dx = 0;
       break;
     default:

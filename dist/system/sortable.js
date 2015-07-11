@@ -1,7 +1,7 @@
-System.register(["aurelia-framework", "oribella-framework"], function (_export) {
+System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella/default-gestures"], function (_export) {
   "use strict";
 
-  var customAttribute, inject, bindable, matchesSelector, Sortable, SortableItem;
+  var customAttribute, bindable, inject, oribella, matchesSelector, Sortable, SortableItem;
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -12,18 +12,20 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
   function _defineDecoratedPropertyDescriptor(target, key, descriptors) { var _descriptor = descriptors[key]; if (!_descriptor) return; var descriptor = {}; for (var _key in _descriptor) descriptor[_key] = _descriptor[_key]; descriptor.value = descriptor.initializer.call(target); Object.defineProperty(target, key, descriptor); }
 
   return {
-    setters: [function (_aureliaFramework) {
-      customAttribute = _aureliaFramework.customAttribute;
-      inject = _aureliaFramework.inject;
-      bindable = _aureliaFramework.bindable;
-    }, function (_oribellaFramework) {
-      matchesSelector = _oribellaFramework.matchesSelector;
+    setters: [function (_aureliaTemplating) {
+      customAttribute = _aureliaTemplating.customAttribute;
+      bindable = _aureliaTemplating.bindable;
+    }, function (_aureliaDependencyInjection) {
+      inject = _aureliaDependencyInjection.inject;
+    }, function (_oribellaDefaultGestures) {
+      oribella = _oribellaDefaultGestures.oribella;
+      matchesSelector = _oribellaDefaultGestures.matchesSelector;
     }],
     execute: function () {
       Sortable = (function () {
         var _instanceInitializers = {};
 
-        function Sortable(element, oribella) {
+        function Sortable(element) {
           _classCallCheck(this, _Sortable);
 
           _defineDecoratedPropertyDescriptor(this, "scroll", _instanceInitializers);
@@ -45,7 +47,6 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
           _defineDecoratedPropertyDescriptor(this, "allowMove", _instanceInitializers);
 
           this.element = element;
-          this.oribella = oribella;
           this.selector = "[sortable-item]";
           this.fromIx = -1;
           this.toIx = -1;
@@ -58,73 +59,6 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
         var _Sortable = Sortable;
 
         _createDecoratedClass(_Sortable, [{
-          key: "scroll",
-          decorators: [bindable],
-          initializer: function () {
-            return null;
-          },
-          enumerable: true
-        }, {
-          key: "scrollSpeed",
-          decorators: [bindable],
-          initializer: function () {
-            return 10;
-          },
-          enumerable: true
-        }, {
-          key: "scrollSensitivity",
-          decorators: [bindable],
-          initializer: function () {
-            return 10;
-          },
-          enumerable: true
-        }, {
-          key: "items",
-          decorators: [bindable],
-          initializer: function () {
-            return [];
-          },
-          enumerable: true
-        }, {
-          key: "placeholder",
-          decorators: [bindable],
-          initializer: function () {
-            return { placeholderClass: "placeholder", style: {} };
-          },
-          enumerable: true
-        }, {
-          key: "axis",
-          decorators: [bindable],
-          initializer: function () {
-            return "";
-          },
-          enumerable: true
-        }, {
-          key: "moved",
-          decorators: [bindable],
-          initializer: function () {
-            return function () {};
-          },
-          enumerable: true
-        }, {
-          key: "allowDrag",
-          decorators: [bindable],
-          initializer: function () {
-            return function () {
-              return true;
-            };
-          },
-          enumerable: true
-        }, {
-          key: "allowMove",
-          decorators: [bindable],
-          initializer: function () {
-            return function () {
-              return true;
-            };
-          },
-          enumerable: true
-        }, {
           key: "bindScroll",
           value: function bindScroll(scroll, fn) {
             scroll.addEventListener("scroll", fn, false);
@@ -135,7 +69,7 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
         }, {
           key: "bind",
           value: function bind() {
-            this.remove = this.oribella.on(this.element, "swipe", this);
+            this.remove = oribella.on(this.element, "swipe", this);
             if (!this.scroll) {
               this.scroll = this.element;
             }
@@ -436,11 +370,11 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
 
             switch (this.axis) {
               case "x":
-                y = this.dragY + this.dragRect.height / 2;
+                y = this.dragRect.top + this.dragRect.height / 2;
                 dy = 0;
                 break;
               case "y":
-                x = this.dragX + this.dragRect.width / 2;
+                x = this.dragRect.left + this.dragRect.width / 2;
                 dx = 0;
                 break;
               default:
@@ -494,9 +428,76 @@ System.register(["aurelia-framework", "oribella-framework"], function (_export) 
               this.moved({ fromIx: this.fromIx, toIx: this.toIx });
             }
           }
+        }, {
+          key: "scroll",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return null;
+          },
+          enumerable: true
+        }, {
+          key: "scrollSpeed",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return 10;
+          },
+          enumerable: true
+        }, {
+          key: "scrollSensitivity",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return 10;
+          },
+          enumerable: true
+        }, {
+          key: "items",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return [];
+          },
+          enumerable: true
+        }, {
+          key: "placeholder",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return { placeholderClass: "placeholder", style: {} };
+          },
+          enumerable: true
+        }, {
+          key: "axis",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return "";
+          },
+          enumerable: true
+        }, {
+          key: "moved",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return function () {};
+          },
+          enumerable: true
+        }, {
+          key: "allowDrag",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return function () {
+              return true;
+            };
+          },
+          enumerable: true
+        }, {
+          key: "allowMove",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return function () {
+              return true;
+            };
+          },
+          enumerable: true
         }], null, _instanceInitializers);
 
-        Sortable = inject(Element, "oribella")(Sortable) || Sortable;
+        Sortable = inject(Element)(Sortable) || Sortable;
         Sortable = customAttribute("sortable")(Sortable) || Sortable;
         return Sortable;
       })();

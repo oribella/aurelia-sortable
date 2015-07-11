@@ -2,4 +2,4 @@
 
 [Demo](http://oribella.github.io/aurelia-sortable)
 
-Sortable plugin for *Aurelia* powered by *Oribella*
+Sortable plugin for *Aurelia* powered by *oribella*
