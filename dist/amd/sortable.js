@@ -73,9 +73,6 @@ define(["exports", "aurelia-templating", "aurelia-dependency-injection", "oribel
     }, {
       key: "dragStart",
       value: function dragStart(element) {
-        if (!this.allowDrag(element.sortableItem)) {
-          return false;
-        }
         this.removeScroll = this.bindScroll(this.scroll, this.onScroll.bind(this));
         this.dragElement = element;
         this.scrollRect = this.scroll.getBoundingClientRect();
@@ -334,11 +331,18 @@ define(["exports", "aurelia-templating", "aurelia-dependency-injection", "oribel
         }
       }
     }, {
+      key: "down",
+      value: function down(e, data, element) {
+        if (this.allowDrag(element)) {
+          e.preventDefault();
+          return undefined;
+        }
+        return false;
+      }
+    }, {
       key: "start",
       value: function start(e, data, element) {
-        if (this.dragStart(element) === false) {
-          return;
-        }
+        this.dragStart(element);
         this.x = data.pagePoints[0].x;
         this.y = data.pagePoints[0].y;
         var item = element.sortableItem;

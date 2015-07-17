@@ -42,9 +42,6 @@ export class Sortable {
     this.remove();
   }
   dragStart(element) {
-    if(!this.allowDrag(element.sortableItem)) {
-      return false;
-    }
     this.removeScroll = this.bindScroll(this.scroll, this.onScroll.bind(this));
     this.dragElement = element;
     this.scrollRect = this.scroll.getBoundingClientRect();
@@ -265,10 +262,15 @@ export class Sortable {
       this.movePlaceholder(ix);
     }
   }
-  start(e, data, element) {
-    if(this.dragStart(element) === false) {
-      return;
+  down(e, data, element) {
+    if(this.allowDrag(element)) {
+      e.preventDefault();
+      return undefined;
     }
+    return false;
+  }
+  start(e, data, element) {
+    this.dragStart(element);
     this.x = data.pagePoints[0].x;
     this.y = data.pagePoints[0].y;
     var item = element.sortableItem;
