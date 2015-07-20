@@ -32,14 +32,25 @@ export class Sortable {
       scroll.removeEventListener("scroll", fn, false);
     };
   }
-  bind() {
-    this.remove = oribella.on(this.element, "swipe", this);
-    if( !this.scroll ) {
+  activate() {
+    this.removeListener = oribella.on(this.element, "swipe", this);
+    if(typeof this.scroll === "string") {
+      this.scroll = this.closest(this.element, this.scroll, document);
+    }
+    if(!(this.scroll instanceof Element)) {
       this.scroll = this.element;
     }
   }
-  unbind() {
-    this.remove();
+  deactivate() {
+    this.removeListener();
+  }
+  attached() {
+    this.activate();
+  }
+  detached() {
+    if(typeof this.removeListener === "function") {
+      this.removeListener();
+    }
   }
   dragStart(element) {
     this.removeScroll = this.bindScroll(this.scroll, this.onScroll.bind(this));
@@ -119,7 +130,7 @@ export class Sortable {
     } else if (dx < 0) { //up
       ticks = this.scroll.scrollLeft / this.scrollSpeed;
     } else {
-      return;
+      return null;
     }
     var autoScroll = function loop() {
       this.scroll.scrollLeft += dx * this.scrollSpeed;
@@ -130,7 +141,7 @@ export class Sortable {
       --ticks;
       if (ticks <= 0) {
         this.isAutoScrollingX = false;
-        return;
+        return null;
       }
       requestAnimationFrame(autoScroll);
     }.bind(this);
@@ -151,7 +162,7 @@ export class Sortable {
     } else if (dy < 0) { //up
       ticks = this.scroll.scrollTop / this.scrollSpeed;
     } else {
-      return;
+      return null;
     }
     var autoScroll = function loop() {
       this.scroll.scrollTop += dy * this.scrollSpeed;
@@ -162,7 +173,7 @@ export class Sortable {
       --ticks;
       if (ticks <= 0) {
         this.isAutoScrollingY = false;
-        return;
+        return null;
       }
       requestAnimationFrame(autoScroll);
     }.bind(this);
@@ -240,21 +251,25 @@ export class Sortable {
       this.items.splice(toIx, 0, this.items.splice(fromIx, 1)[0]);
     }
   }
-  tryMove(x, y) {
-    var element = document.elementFromPoint(x, y);
-    if (!element) {
-      return;
-    }
+  closest(element, selector, rootElement = this.element) {
     var valid = false;
-    while (!valid && element !== this.element &&
+    while (!valid && element !== rootElement &&
       element !== document) {
-      valid = matchesSelector(element, this.selector);
+      valid = matchesSelector(element, selector);
       if (valid) {
         break;
       }
       element = element.parentNode;
     }
-    if (valid) {
+    return valid ? element : null;
+  }
+  tryMove(x, y) {
+    var element = document.elementFromPoint(x, y);
+    if (!element) {
+      return;
+    }
+    element = this.closest(element, this.selector);
+    if (element) {
       if(!this.allowMove(element.sortableItem)) {
         return;
       }
