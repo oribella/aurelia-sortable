@@ -64,8 +64,8 @@ export class Sortable {
     this.dragX = this.dragRect.left - this.offsetParentRect.left;
     this.dragY = this.dragRect.top - this.offsetParentRect.top;
 
-    this.updateDragWhenScrolling = element.offsetParent === this.scroll;
-    if (this.updateDragWhenScrolling) {
+    this.updateDragWhenScrolling = this.scroll.contains(element.offsetParent);
+    if (element.offsetParent === this.scroll) {
       this.dragX += this.scroll.scrollLeft;
       this.dragY += this.scroll.scrollTop;
     }
