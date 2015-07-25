@@ -1,4 +1,4 @@
-define(["exports", "aurelia-templating", "aurelia-dependency-injection", "oribella/default-gestures"], function (exports, _aureliaTemplating, _aureliaDependencyInjection, _oribellaDefaultGestures) {
+define(["exports", "aurelia-templating", "aurelia-dependency-injection", "oribella-default-gestures"], function (exports, _aureliaTemplating, _aureliaDependencyInjection, _oribellaDefaultGestures) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {
@@ -481,7 +481,7 @@ define(["exports", "aurelia-templating", "aurelia-dependency-injection", "oribel
       }
     }, {
       key: "cancel",
-      value: function cancel() {
+      value: function cancel() /*e, data, element*/{
         this.dragEnd();
         this.removePlaceholder();
       }
@@ -497,7 +497,7 @@ define(["exports", "aurelia-templating", "aurelia-dependency-injection", "oribel
       }
     }, {
       key: "stop",
-      value: function stop() {
+      value: function stop() /*e, data, element*/{
         this.stopAutoScroll();
         this.toIx = this.items.indexOf(this.placeholder);
         if (this.toIx < 0) {
@@ -543,4 +543,3 @@ define(["exports", "aurelia-templating", "aurelia-dependency-injection", "oribel
 
   exports.SortableItem = SortableItem;
 });
-/*e, data, element*/ /*e, data, element*/

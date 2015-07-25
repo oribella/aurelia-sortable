@@ -4,10 +4,7 @@ import {Sortable} from "../src/sortable";
 
 describe("Sortable", () => {
   beforeEach(() => {
-    var container = new Container().makeGlobal();
-    container.registerInstance("oribella", {
-      on() {}
-    });
+    new Container().makeGlobal();
   });
 
   it("should set default values", () => {

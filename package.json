@@ -22,7 +22,7 @@
     "lint": "eslint src"
   },
   "devDependencies": {
-    "oribella-framework": "git+ssh://github.com/oribella/framework",
+    "oribella-default-gestures": "git+ssh://github.com/oribella/default-gestures",
     "aurelia-binding": "git+ssh://github.com/aurelia/binding.git",
     "aurelia-dependency-injection": "git+ssh://github.com/aurelia/dependency-injection.git",
     "aurelia-loader": "git+ssh://github.com/aurelia/loader.git",
@@ -49,7 +49,7 @@
     "dependencies": {
       "aurelia-dependency-injection": "github:aurelia/dependency-injection@^0.9.0",
       "aurelia-templating": "github:aurelia/templating@^0.13.2",
-      "oribella/default-gestures": "github:oribella/default-gestures@master"
+      "oribella-default-gestures": "github:oribella/default-gestures@master"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.1.13",

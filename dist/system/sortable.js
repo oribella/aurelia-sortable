@@ -1,4 +1,4 @@
-System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella/default-gestures"], function (_export) {
+System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella-default-gestures"], function (_export) {
   "use strict";
 
   var customAttribute, bindable, inject, oribella, matchesSelector, Sortable, SortableItem;
@@ -490,7 +490,7 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
           }
         }, {
           key: "cancel",
-          value: function cancel() {
+          value: function cancel() /*e, data, element*/{
             this.dragEnd();
             this.removePlaceholder();
           }
@@ -506,7 +506,7 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
           }
         }, {
           key: "stop",
-          value: function stop() {
+          value: function stop() /*e, data, element*/{
             this.stopAutoScroll();
             this.toIx = this.items.indexOf(this.placeholder);
             if (this.toIx < 0) {
@@ -554,4 +554,3 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
     }
   };
 });
-/*e, data, element*/ /*e, data, element*/

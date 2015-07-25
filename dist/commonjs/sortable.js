@@ -16,7 +16,7 @@ var _aureliaTemplating = require("aurelia-templating");
 
 var _aureliaDependencyInjection = require("aurelia-dependency-injection");
 
-var _oribellaDefaultGestures = require("oribella/default-gestures");
+var _oribellaDefaultGestures = require("oribella-default-gestures");
 
 var Sortable = (function () {
   var _instanceInitializers = {};
@@ -486,7 +486,7 @@ var Sortable = (function () {
     }
   }, {
     key: "cancel",
-    value: function cancel() {
+    value: function cancel() /*e, data, element*/{
       this.dragEnd();
       this.removePlaceholder();
     }
@@ -502,7 +502,7 @@ var Sortable = (function () {
     }
   }, {
     key: "stop",
-    value: function stop() {
+    value: function stop() /*e, data, element*/{
       this.stopAutoScroll();
       this.toIx = this.items.indexOf(this.placeholder);
       if (this.toIx < 0) {
@@ -547,4 +547,3 @@ var SortableItem = (function () {
 })();
 
 exports.SortableItem = SortableItem;
-/*e, data, element*/ /*e, data, element*/

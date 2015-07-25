@@ -1,6 +1,6 @@
 import {customAttribute, bindable} from "aurelia-templating";
 import {inject} from "aurelia-dependency-injection";
-import {oribella, matchesSelector} from "oribella/default-gestures";
+import {oribella, matchesSelector} from "oribella-default-gestures";
 
 @customAttribute("sortable")
 @inject(Element)
