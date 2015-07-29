@@ -195,6 +195,7 @@ var Sortable = (function () {
   }, {
     key: "dragEnd",
     value: function dragEnd() {
+      this.stopAutoScroll();
       if (this.dragElement) {
         this.dragElement.removeAttribute("style");
         this.dragElement = null;
@@ -257,16 +258,24 @@ var Sortable = (function () {
         return null;
       }
       var autoScroll = (function loop() {
+        if (ticks <= 0) {
+          this.isAutoScrollingX = false;
+          return;
+        }
+
         this.scroll.scrollLeft += dx * this.scrollSpeed;
         if (this.updateDragWhenScrolling) {
           this.moveTo(this.dragElement, dx * this.scrollSpeed, 0);
         }
+
         this.tryMove(x, y);
+
         --ticks;
         if (ticks <= 0) {
           this.isAutoScrollingX = false;
-          return null;
+          return;
         }
+
         requestAnimationFrame(autoScroll);
       }).bind(this);
 
@@ -274,6 +283,7 @@ var Sortable = (function () {
         this.isAutoScrollingX = true;
         autoScroll();
       }
+
       return function () {
         ticks = 0;
       };
@@ -293,16 +303,24 @@ var Sortable = (function () {
         return null;
       }
       var autoScroll = (function loop() {
+        if (ticks <= 0) {
+          this.isAutoScrollingY = false;
+          return;
+        }
+
         this.scroll.scrollTop += dy * this.scrollSpeed;
         if (this.updateDragWhenScrolling) {
           this.moveTo(this.dragElement, 0, dy * this.scrollSpeed);
         }
+
         this.tryMove(x, y);
+
         --ticks;
         if (ticks <= 0) {
           this.isAutoScrollingY = false;
-          return null;
+          return;
         }
+
         requestAnimationFrame(autoScroll);
       }).bind(this);
 
@@ -310,6 +328,7 @@ var Sortable = (function () {
         this.isAutoScrollingY = true;
         autoScroll();
       }
+
       return function () {
         ticks = 0;
       };
@@ -503,7 +522,6 @@ var Sortable = (function () {
   }, {
     key: "stop",
     value: function stop() /*e, data, element*/{
-      this.stopAutoScroll();
       this.toIx = this.items.indexOf(this.placeholder);
       if (this.toIx < 0) {
         return; //cancelled
