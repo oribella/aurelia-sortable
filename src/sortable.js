@@ -299,7 +299,7 @@ export class Sortable {
     }
   }
   down(e, data, element) {
-    if(this.allowDrag(element)) {
+    if(this.allowDrag(e, element)) {
       e.preventDefault();
       return undefined;
     }
