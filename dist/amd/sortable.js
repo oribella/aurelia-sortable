@@ -415,7 +415,7 @@ define(["exports", "aurelia-templating", "aurelia-dependency-injection", "oribel
         var rootElement = arguments.length <= 2 || arguments[2] === undefined ? this.element : arguments[2];
 
         var valid = false;
-        while (!valid && element !== rootElement && element !== document) {
+        while (!valid && element !== null && element !== rootElement && element !== document) {
           valid = (0, _oribellaDefaultGestures.matchesSelector)(element, selector);
           if (valid) {
             break;

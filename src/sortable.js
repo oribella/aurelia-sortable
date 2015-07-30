@@ -274,7 +274,7 @@ export class Sortable {
   }
   closest(element, selector, rootElement = this.element) {
     var valid = false;
-    while (!valid && element !== rootElement &&
+    while (!valid && element !== null && element !== rootElement &&
       element !== document) {
       valid = matchesSelector(element, selector);
       if (valid) {

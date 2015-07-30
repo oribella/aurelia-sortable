@@ -424,7 +424,7 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
             var rootElement = arguments.length <= 2 || arguments[2] === undefined ? this.element : arguments[2];
 
             var valid = false;
-            while (!valid && element !== rootElement && element !== document) {
+            while (!valid && element !== null && element !== rootElement && element !== document) {
               valid = matchesSelector(element, selector);
               if (valid) {
                 break;
