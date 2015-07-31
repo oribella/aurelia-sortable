@@ -13,7 +13,15 @@ export class Sortable {
   @bindable placeholder = { placeholderClass: "placeholder", style: {} };
   @bindable axis = "";
   @bindable moved = function() {};
-  @bindable allowDrag = function() { return true; };
+  @bindable disallowedDragTagNames = ["INPUT", "SELECT", "TEXTAREA"];
+  @bindable allowDrag = function(args) {
+    if(this.disallowedDragTagNames.indexOf(args.event.target.tagName) !== -1) {
+      return false;
+    }
+    if(args.event.target.isContentEditable) {
+      return false;
+    }
+    return true; };
   @bindable allowMove = function() { return true; };
 
   constructor(element) {
@@ -291,7 +299,7 @@ export class Sortable {
     }
     element = this.closest(element, this.selector);
     if (element) {
-      if(!this.allowMove(element.sortableItem)) {
+      if(!this.allowMove({ item: element.sortableItem.item })) {
         return;
       }
       var ix = element.sortableItem.ctx.$index;
@@ -299,7 +307,7 @@ export class Sortable {
     }
   }
   down(e, data, element) {
-    if(this.allowDrag(e, element)) {
+    if(this.allowDrag({ event: e, item: element.sortableItem.item })) {
       e.preventDefault();
       return undefined;
     }
@@ -380,6 +388,9 @@ export class Sortable {
 
 @customAttribute("sortable-item")
 export class SortableItem {
+
+  @bindable item = null;
+
   bind(ctx) {
     this.ctx = ctx; //Need a reference to the item's $index
   }

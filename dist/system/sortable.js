@@ -3,8 +3,6 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
 
   var customAttribute, bindable, inject, oribella, matchesSelector, Sortable, SortableItem;
 
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
   var _createDecoratedClass = (function () { function defineProperties(target, descriptors, initializers) { for (var i = 0; i < descriptors.length; i++) { var descriptor = descriptors[i]; var decorators = descriptor.decorators; var key = descriptor.key; delete descriptor.key; delete descriptor.decorators; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor || descriptor.initializer) descriptor.writable = true; if (decorators) { for (var f = 0; f < decorators.length; f++) { var decorator = decorators[f]; if (typeof decorator === "function") { descriptor = decorator(target, key, descriptor) || descriptor; } else { throw new TypeError("The decorator for method " + descriptor.key + " is of the invalid type " + typeof decorator); } } if (descriptor.initializer !== undefined) { initializers[key] = descriptor; continue; } } Object.defineProperty(target, key, descriptor); } } return function (Constructor, protoProps, staticProps, protoInitializers, staticInitializers) { if (protoProps) defineProperties(Constructor.prototype, protoProps, protoInitializers); if (staticProps) defineProperties(Constructor, staticProps, staticInitializers); return Constructor; }; })();
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -76,10 +74,23 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
           },
           enumerable: true
         }, {
+          key: "disallowedDragTagNames",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return ["INPUT", "SELECT", "TEXTAREA"];
+          },
+          enumerable: true
+        }, {
           key: "allowDrag",
           decorators: [bindable],
           initializer: function initializer() {
-            return function () {
+            return function (args) {
+              if (this.disallowedDragTagNames.indexOf(args.event.target.tagName) !== -1) {
+                return false;
+              }
+              if (args.event.target.isContentEditable) {
+                return false;
+              }
               return true;
             };
           },
@@ -111,6 +122,8 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
           _defineDecoratedPropertyDescriptor(this, "axis", _instanceInitializers);
 
           _defineDecoratedPropertyDescriptor(this, "moved", _instanceInitializers);
+
+          _defineDecoratedPropertyDescriptor(this, "disallowedDragTagNames", _instanceInitializers);
 
           _defineDecoratedPropertyDescriptor(this, "allowDrag", _instanceInitializers);
 
@@ -442,7 +455,7 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
             }
             element = this.closest(element, this.selector);
             if (element) {
-              if (!this.allowMove(element.sortableItem)) {
+              if (!this.allowMove({ item: element.sortableItem.item })) {
                 return;
               }
               var ix = element.sortableItem.ctx.$index;
@@ -452,7 +465,7 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
         }, {
           key: "down",
           value: function down(e, data, element) {
-            if (this.allowDrag(e, element)) {
+            if (this.allowDrag({ event: e, item: element.sortableItem.item })) {
               e.preventDefault();
               return undefined;
             }
@@ -552,16 +565,27 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
       _export("Sortable", Sortable);
 
       SortableItem = (function () {
+        var _instanceInitializers2 = {};
+
         function SortableItem() {
           _classCallCheck(this, _SortableItem);
+
+          _defineDecoratedPropertyDescriptor(this, "item", _instanceInitializers2);
         }
 
-        _createClass(SortableItem, [{
+        _createDecoratedClass(SortableItem, [{
           key: "bind",
           value: function bind(ctx) {
             this.ctx = ctx; //Need a reference to the item's $index
           }
-        }]);
+        }, {
+          key: "item",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return null;
+          },
+          enumerable: true
+        }], null, _instanceInitializers2);
 
         var _SortableItem = SortableItem;
         SortableItem = customAttribute("sortable-item")(SortableItem) || SortableItem;
