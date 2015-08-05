@@ -13,6 +13,7 @@ export class Sortable {
   @bindable placeholder = { placeholderClass: "placeholder", style: {} };
   @bindable axis = "";
   @bindable moved = function() {};
+  @bindable dragZIndex = 1;
   @bindable disallowedDragTagNames = ["INPUT", "SELECT", "TEXTAREA"];
   @bindable allowDrag = function(args) {
     if(this.disallowedDragTagNames.indexOf(args.event.target.tagName) !== -1) {
@@ -21,7 +22,8 @@ export class Sortable {
     if(args.event.target.isContentEditable) {
       return false;
     }
-    return true; };
+    return true;
+  };
   @bindable allowMove = function() { return true; };
 
   constructor(element) {
@@ -82,7 +84,7 @@ export class Sortable {
     element.style.width = this.dragRect.width + "px";
     element.style.height = this.dragRect.height + "px";
     element.style.pointerEvents = "none";
-    element.style.zIndex = 1;
+    element.style.zIndex = this.dragZIndex;
 
     if(!this.placeholder.style) {
       this.placeholder.style = {};

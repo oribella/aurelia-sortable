@@ -70,6 +70,13 @@ var Sortable = (function () {
     },
     enumerable: true
   }, {
+    key: "dragZIndex",
+    decorators: [_aureliaTemplating.bindable],
+    initializer: function initializer() {
+      return 1;
+    },
+    enumerable: true
+  }, {
     key: "disallowedDragTagNames",
     decorators: [_aureliaTemplating.bindable],
     initializer: function initializer() {
@@ -118,6 +125,8 @@ var Sortable = (function () {
     _defineDecoratedPropertyDescriptor(this, "axis", _instanceInitializers);
 
     _defineDecoratedPropertyDescriptor(this, "moved", _instanceInitializers);
+
+    _defineDecoratedPropertyDescriptor(this, "dragZIndex", _instanceInitializers);
 
     _defineDecoratedPropertyDescriptor(this, "disallowedDragTagNames", _instanceInitializers);
 
@@ -195,7 +204,7 @@ var Sortable = (function () {
       element.style.width = this.dragRect.width + "px";
       element.style.height = this.dragRect.height + "px";
       element.style.pointerEvents = "none";
-      element.style.zIndex = 1;
+      element.style.zIndex = this.dragZIndex;
 
       if (!this.placeholder.style) {
         this.placeholder.style = {};

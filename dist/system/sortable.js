@@ -74,6 +74,13 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
           },
           enumerable: true
         }, {
+          key: "dragZIndex",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return 1;
+          },
+          enumerable: true
+        }, {
           key: "disallowedDragTagNames",
           decorators: [bindable],
           initializer: function initializer() {
@@ -122,6 +129,8 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
           _defineDecoratedPropertyDescriptor(this, "axis", _instanceInitializers);
 
           _defineDecoratedPropertyDescriptor(this, "moved", _instanceInitializers);
+
+          _defineDecoratedPropertyDescriptor(this, "dragZIndex", _instanceInitializers);
 
           _defineDecoratedPropertyDescriptor(this, "disallowedDragTagNames", _instanceInitializers);
 
@@ -199,7 +208,7 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
             element.style.width = this.dragRect.width + "px";
             element.style.height = this.dragRect.height + "px";
             element.style.pointerEvents = "none";
-            element.style.zIndex = 1;
+            element.style.zIndex = this.dragZIndex;
 
             if (!this.placeholder.style) {
               this.placeholder.style = {};
