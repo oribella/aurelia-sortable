@@ -1,7 +1,7 @@
 System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella-default-gestures"], function (_export) {
   "use strict";
 
-  var customAttribute, bindable, inject, oribella, matchesSelector, Sortable, SortableItem;
+  var customAttribute, bindable, inject, transient, oribella, matchesSelector, Sortable, SortableItem;
 
   var _createDecoratedClass = (function () { function defineProperties(target, descriptors, initializers) { for (var i = 0; i < descriptors.length; i++) { var descriptor = descriptors[i]; var decorators = descriptor.decorators; var key = descriptor.key; delete descriptor.key; delete descriptor.decorators; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor || descriptor.initializer) descriptor.writable = true; if (decorators) { for (var f = 0; f < decorators.length; f++) { var decorator = decorators[f]; if (typeof decorator === "function") { descriptor = decorator(target, key, descriptor) || descriptor; } else { throw new TypeError("The decorator for method " + descriptor.key + " is of the invalid type " + typeof decorator); } } if (descriptor.initializer !== undefined) { initializers[key] = descriptor; continue; } } Object.defineProperty(target, key, descriptor); } } return function (Constructor, protoProps, staticProps, protoInitializers, staticInitializers) { if (protoProps) defineProperties(Constructor.prototype, protoProps, protoInitializers); if (staticProps) defineProperties(Constructor, staticProps, staticInitializers); return Constructor; }; })();
 
@@ -15,6 +15,7 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
       bindable = _aureliaTemplating.bindable;
     }, function (_aureliaDependencyInjection) {
       inject = _aureliaDependencyInjection.inject;
+      transient = _aureliaDependencyInjection.transient;
     }, function (_oribellaDefaultGestures) {
       oribella = _oribellaDefaultGestures.oribella;
       matchesSelector = _oribellaDefaultGestures.matchesSelector;
@@ -91,8 +92,10 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
           key: "allowDrag",
           decorators: [bindable],
           initializer: function initializer() {
+            var _this = this;
+
             return function (args) {
-              if (this.disallowedDragTagNames.indexOf(args.event.target.tagName) !== -1) {
+              if (_this.disallowedDragTagNames.indexOf(args.event.target.tagName) !== -1) {
                 return false;
               }
               if (args.event.target.isContentEditable) {
@@ -185,6 +188,32 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
             }
           }
         }, {
+          key: "dragStyle",
+          value: function dragStyle() {
+            var _this2 = this;
+
+            var style = {};
+            style.position = this.dragElement.style.position;
+            style.width = this.dragElement.style.width;
+            style.height = this.dragElement.style.height;
+            style.pointerEvents = this.dragElement.style.pointerEvents;
+            style.zIndex = this.dragElement.style.zIndex;
+
+            this.dragElement.style.position = "absolute";
+            this.dragElement.style.width = this.dragRect.width + "px";
+            this.dragElement.style.height = this.dragRect.height + "px";
+            this.dragElement.style.pointerEvents = "none";
+            this.dragElement.style.zIndex = this.dragZIndex;
+
+            return function () {
+              _this2.dragElement.style.position = style.position;
+              _this2.dragElement.style.width = style.width;
+              _this2.dragElement.style.height = style.height;
+              _this2.dragElement.style.pointerEvents = style.pointerEvents;
+              _this2.dragElement.style.zIndex = style.zIndex;
+            };
+          }
+        }, {
           key: "dragStart",
           value: function dragStart(element) {
             this.removeScroll = this.bindScroll(this.scroll, this.onScroll.bind(this));
@@ -204,11 +233,7 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
               this.dragY += this.scroll.scrollTop;
             }
 
-            element.style.position = "absolute";
-            element.style.width = this.dragRect.width + "px";
-            element.style.height = this.dragRect.height + "px";
-            element.style.pointerEvents = "none";
-            element.style.zIndex = this.dragZIndex;
+            this.removeDragStyle = this.dragStyle();
 
             if (!this.placeholder.style) {
               this.placeholder.style = {};
@@ -223,7 +248,9 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
           value: function dragEnd() {
             this.stopAutoScroll();
             if (this.dragElement) {
-              this.dragElement.removeAttribute("style");
+              if (typeof this.removeDragStyle === "function") {
+                this.removeDragStyle();
+              }
               this.dragElement = null;
             }
             if (typeof this.removeScroll === "function") {
@@ -566,6 +593,7 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
         }], null, _instanceInitializers);
 
         var _Sortable = Sortable;
+        Sortable = transient()(Sortable) || Sortable;
         Sortable = inject(Element)(Sortable) || Sortable;
         Sortable = customAttribute("sortable")(Sortable) || Sortable;
         return Sortable;

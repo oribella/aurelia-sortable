@@ -1,9 +1,10 @@
 import {customAttribute, bindable} from "aurelia-templating";
-import {inject} from "aurelia-dependency-injection";
+import {inject, transient} from "aurelia-dependency-injection";
 import {oribella, matchesSelector} from "oribella-default-gestures";
 
 @customAttribute("sortable")
 @inject(Element)
+@transient()
 export class Sortable {
 
   @bindable scroll = null;
@@ -12,10 +13,10 @@ export class Sortable {
   @bindable items = [];
   @bindable placeholder = { placeholderClass: "placeholder", style: {} };
   @bindable axis = "";
-  @bindable moved = function() {};
+  @bindable moved = () => {};
   @bindable dragZIndex = 1;
   @bindable disallowedDragTagNames = ["INPUT", "SELECT", "TEXTAREA"];
-  @bindable allowDrag = function(args) {
+  @bindable allowDrag = args => {
     if(this.disallowedDragTagNames.indexOf(args.event.target.tagName) !== -1) {
       return false;
     }
@@ -24,7 +25,7 @@ export class Sortable {
     }
     return true;
   };
-  @bindable allowMove = function() { return true; };
+  @bindable allowMove = () => { return true; };
 
   constructor(element) {
     this.element = element;
@@ -62,6 +63,28 @@ export class Sortable {
       this.removeListener();
     }
   }
+  dragStyle() {
+    var style = {};
+    style.position = this.dragElement.style.position;
+    style.width = this.dragElement.style.width;
+    style.height = this.dragElement.style.height;
+    style.pointerEvents = this.dragElement.style.pointerEvents;
+    style.zIndex = this.dragElement.style.zIndex;
+
+    this.dragElement.style.position = "absolute";
+    this.dragElement.style.width = this.dragRect.width + "px";
+    this.dragElement.style.height = this.dragRect.height + "px";
+    this.dragElement.style.pointerEvents = "none";
+    this.dragElement.style.zIndex = this.dragZIndex;
+
+    return () => {
+      this.dragElement.style.position = style.position;
+      this.dragElement.style.width = style.width;
+      this.dragElement.style.height = style.height;
+      this.dragElement.style.pointerEvents = style.pointerEvents;
+      this.dragElement.style.zIndex = style.zIndex;
+    };
+  }
   dragStart(element) {
     this.removeScroll = this.bindScroll(this.scroll, this.onScroll.bind(this));
     this.dragElement = element;
@@ -80,11 +103,7 @@ export class Sortable {
       this.dragY += this.scroll.scrollTop;
     }
 
-    element.style.position = "absolute";
-    element.style.width = this.dragRect.width + "px";
-    element.style.height = this.dragRect.height + "px";
-    element.style.pointerEvents = "none";
-    element.style.zIndex = this.dragZIndex;
+    this.removeDragStyle = this.dragStyle();
 
     if(!this.placeholder.style) {
       this.placeholder.style = {};
@@ -97,7 +116,9 @@ export class Sortable {
   dragEnd() {
     this.stopAutoScroll();
     if (this.dragElement) {
-      this.dragElement.removeAttribute("style");
+      if(typeof this.removeDragStyle === "function") {
+        this.removeDragStyle();
+      }
       this.dragElement = null;
     }
     if(typeof this.removeScroll === "function") {

@@ -87,8 +87,10 @@ var Sortable = (function () {
     key: "allowDrag",
     decorators: [_aureliaTemplating.bindable],
     initializer: function initializer() {
+      var _this = this;
+
       return function (args) {
-        if (this.disallowedDragTagNames.indexOf(args.event.target.tagName) !== -1) {
+        if (_this.disallowedDragTagNames.indexOf(args.event.target.tagName) !== -1) {
           return false;
         }
         if (args.event.target.isContentEditable) {
@@ -181,6 +183,32 @@ var Sortable = (function () {
       }
     }
   }, {
+    key: "dragStyle",
+    value: function dragStyle() {
+      var _this2 = this;
+
+      var style = {};
+      style.position = this.dragElement.style.position;
+      style.width = this.dragElement.style.width;
+      style.height = this.dragElement.style.height;
+      style.pointerEvents = this.dragElement.style.pointerEvents;
+      style.zIndex = this.dragElement.style.zIndex;
+
+      this.dragElement.style.position = "absolute";
+      this.dragElement.style.width = this.dragRect.width + "px";
+      this.dragElement.style.height = this.dragRect.height + "px";
+      this.dragElement.style.pointerEvents = "none";
+      this.dragElement.style.zIndex = this.dragZIndex;
+
+      return function () {
+        _this2.dragElement.style.position = style.position;
+        _this2.dragElement.style.width = style.width;
+        _this2.dragElement.style.height = style.height;
+        _this2.dragElement.style.pointerEvents = style.pointerEvents;
+        _this2.dragElement.style.zIndex = style.zIndex;
+      };
+    }
+  }, {
     key: "dragStart",
     value: function dragStart(element) {
       this.removeScroll = this.bindScroll(this.scroll, this.onScroll.bind(this));
@@ -200,11 +228,7 @@ var Sortable = (function () {
         this.dragY += this.scroll.scrollTop;
       }
 
-      element.style.position = "absolute";
-      element.style.width = this.dragRect.width + "px";
-      element.style.height = this.dragRect.height + "px";
-      element.style.pointerEvents = "none";
-      element.style.zIndex = this.dragZIndex;
+      this.removeDragStyle = this.dragStyle();
 
       if (!this.placeholder.style) {
         this.placeholder.style = {};
@@ -219,7 +243,9 @@ var Sortable = (function () {
     value: function dragEnd() {
       this.stopAutoScroll();
       if (this.dragElement) {
-        this.dragElement.removeAttribute("style");
+        if (typeof this.removeDragStyle === "function") {
+          this.removeDragStyle();
+        }
         this.dragElement = null;
       }
       if (typeof this.removeScroll === "function") {
@@ -562,6 +588,7 @@ var Sortable = (function () {
   }], null, _instanceInitializers);
 
   var _Sortable = Sortable;
+  Sortable = (0, _aureliaDependencyInjection.transient)()(Sortable) || Sortable;
   Sortable = (0, _aureliaDependencyInjection.inject)(Element)(Sortable) || Sortable;
   Sortable = (0, _aureliaTemplating.customAttribute)("sortable")(Sortable) || Sortable;
   return Sortable;
