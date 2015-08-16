@@ -10,6 +10,8 @@
     "url": "http://github.com/oribella/aurelia-sortable"
   },
   "scripts": {
+    "version": "npm run changelog && git add CHANGELOG.md",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -w -r 0",
     "build": "npm run build:commonjs && npm run build:system && npm run build:amd",
     "build:commonjs": "babel src --out-dir dist/commonjs",
     "build:watch:commonjs": "babel src --out-dir dist/commonjs -w",
@@ -47,9 +49,9 @@
       "lib": "dist/amd"
     },
     "dependencies": {
-      "aurelia-dependency-injection": "github:aurelia/dependency-injection@^0.9.0",
-      "aurelia-templating": "github:aurelia/templating@^0.13.2",
-      "oribella-default-gestures": "github:oribella/default-gestures@master"
+      "aurelia-dependency-injection": "github:aurelia/dependency-injection@^0.9.1",
+      "aurelia-templating": "github:aurelia/templating@^0.13.12",
+      "oribella-default-gestures": "github:oribella/default-gestures@^0.2.0"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.1.13",
