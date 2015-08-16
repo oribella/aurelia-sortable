@@ -1,3 +1,3 @@
-export function configure(aurelia) {
-  aurelia.globalizeResources("./sortable");
+export function configure(config) {
+  config.globalResources("./sortable");
 }
