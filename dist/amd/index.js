@@ -6,7 +6,7 @@ define(["exports"], function (exports) {
   });
   exports.configure = configure;
 
-  function configure(aurelia) {
-    aurelia.globalizeResources("./sortable");
+  function configure(config) {
+    config.globalResources("./sortable");
   }
 });

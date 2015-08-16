@@ -1,6 +1,6 @@
 {
   "name": "aurelia-sortable",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "license": "MIT",
   "author": "Christoffer Åström",
@@ -50,7 +50,7 @@
     },
     "dependencies": {
       "aurelia-dependency-injection": "github:aurelia/dependency-injection@^0.9.1",
-      "aurelia-templating": "github:aurelia/templating@^0.13.12",
+      "aurelia-templating": "github:aurelia/templating@^0.14.1",
       "oribella-default-gestures": "github:oribella/default-gestures@^0.2.0"
     },
     "devDependencies": {
