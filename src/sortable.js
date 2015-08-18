@@ -66,6 +66,8 @@ export class Sortable {
   dragStyle() {
     var style = {};
     style.position = this.dragElement.style.position;
+    style.left = this.dragElement.style.left;
+    style.top = this.dragElement.style.top;
     style.width = this.dragElement.style.width;
     style.height = this.dragElement.style.height;
     style.pointerEvents = this.dragElement.style.pointerEvents;
@@ -78,11 +80,9 @@ export class Sortable {
     this.dragElement.style.zIndex = this.dragZIndex;
 
     return () => {
-      this.dragElement.style.position = style.position;
-      this.dragElement.style.width = style.width;
-      this.dragElement.style.height = style.height;
-      this.dragElement.style.pointerEvents = style.pointerEvents;
-      this.dragElement.style.zIndex = style.zIndex;
+      Object.keys( style ).forEach( key => {
+        this.dragElement.style[key] = style[key];
+      } );
     };
   }
   dragStart(element) {

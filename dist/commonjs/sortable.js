@@ -189,6 +189,8 @@ var Sortable = (function () {
 
       var style = {};
       style.position = this.dragElement.style.position;
+      style.left = this.dragElement.style.left;
+      style.top = this.dragElement.style.top;
       style.width = this.dragElement.style.width;
       style.height = this.dragElement.style.height;
       style.pointerEvents = this.dragElement.style.pointerEvents;
@@ -201,11 +203,9 @@ var Sortable = (function () {
       this.dragElement.style.zIndex = this.dragZIndex;
 
       return function () {
-        _this2.dragElement.style.position = style.position;
-        _this2.dragElement.style.width = style.width;
-        _this2.dragElement.style.height = style.height;
-        _this2.dragElement.style.pointerEvents = style.pointerEvents;
-        _this2.dragElement.style.zIndex = style.zIndex;
+        Object.keys(style).forEach(function (key) {
+          _this2.dragElement.style[key] = style[key];
+        });
       };
     }
   }, {
