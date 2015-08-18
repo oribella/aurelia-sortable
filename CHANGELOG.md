@@ -1,3 +1,13 @@
+<a name="0.2.1"></a>
+## [0.2.1](https://github.com/oribella/aurelia-sortable/compare/v0.2.0...v0.2.1) (2015-08-18)
+
+
+### Bug Fixes
+
+* **sortable:** reset drag elements style left and top ([c4a0a29](https://github.com/oribella/aurelia-sortable/commit/c4a0a29)), closes [#3](https://github.com/oribella/aurelia-sortable/issues/3)
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/oribella/aurelia-sortable/compare/0.1.0...v0.2.0) (2015-08-16)
 
