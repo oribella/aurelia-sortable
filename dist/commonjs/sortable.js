@@ -138,6 +138,9 @@ var Sortable = (function () {
 
     this.element = element;
     this.selector = "[sortable-item]";
+    this.options = {
+      strategy: _oribellaDefaultGestures.STRATEGY_FLAG.REMOVE_IF_POINTERS_GT
+    };
     this.fromIx = -1;
     this.toIx = -1;
     this.dragX = 0;
