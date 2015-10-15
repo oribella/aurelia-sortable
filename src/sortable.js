@@ -1,6 +1,6 @@
 import {customAttribute, bindable} from "aurelia-templating";
 import {inject, transient} from "aurelia-dependency-injection";
-import {oribella, matchesSelector, STRATEGY_FLAG} from "oribella-default-gestures";
+import {oribella, matchesSelector/*, STRATEGY_FLAG*/} from "oribella-default-gestures";
 
 @customAttribute("sortable")
 @inject(Element)
@@ -30,9 +30,9 @@ export class Sortable {
   constructor(element) {
     this.element = element;
     this.selector = "[sortable-item]";
-    this.options = {
+    /*this.options = {
       strategy: STRATEGY_FLAG.REMOVE_IF_POINTERS_GT
-    };
+    };*/
     this.fromIx = -1;
     this.toIx = -1;
     this.dragX = 0;
@@ -318,22 +318,26 @@ export class Sortable {
     }
     return valid ? element : null;
   }
+  getItemModel(element) {
+    return element.au["sortable-item"].model;
+  }
   tryMove(x, y) {
-    var element = document.elementFromPoint(x, y);
+    let element = document.elementFromPoint(x, y);
     if (!element) {
       return;
     }
     element = this.closest(element, this.selector);
     if (element) {
-      if(!this.allowMove({ item: element.sortableItem.item })) {
+      let model = this.getItemModel(element);
+      if(!this.allowMove({ item: model.item })) {
         return;
       }
-      var ix = element.sortableItem.ctx.$index;
+      var ix = model.ctx.$index;
       this.movePlaceholder(ix);
     }
   }
   down(e, data, element) {
-    if(this.allowDrag({ event: e, item: element.sortableItem.item })) {
+    if(this.allowDrag({ event: e, item: this.getItemModel(element).item })) {
       e.preventDefault();
       return undefined;
     }
@@ -343,8 +347,8 @@ export class Sortable {
     this.dragStart(element);
     this.x = data.pagePoints[0].x;
     this.y = data.pagePoints[0].y;
-    var item = element.sortableItem;
-    this.fromIx = item.ctx.$index;
+    let model = this.getItemModel(element);
+    this.fromIx = model.ctx.$index;
     this.toIx = -1;
     this.addPlaceholder(this.fromIx);
   }

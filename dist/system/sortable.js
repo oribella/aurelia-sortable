@@ -1,7 +1,7 @@
 System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella-default-gestures"], function (_export) {
   "use strict";
 
-  var customAttribute, bindable, inject, transient, oribella, matchesSelector, STRATEGY_FLAG, Sortable, SortableItem;
+  var customAttribute, bindable, inject, transient, oribella, matchesSelector, Sortable, SortableItem;
 
   var _createDecoratedClass = (function () { function defineProperties(target, descriptors, initializers) { for (var i = 0; i < descriptors.length; i++) { var descriptor = descriptors[i]; var decorators = descriptor.decorators; var key = descriptor.key; delete descriptor.key; delete descriptor.decorators; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor || descriptor.initializer) descriptor.writable = true; if (decorators) { for (var f = 0; f < decorators.length; f++) { var decorator = decorators[f]; if (typeof decorator === "function") { descriptor = decorator(target, key, descriptor) || descriptor; } else { throw new TypeError("The decorator for method " + descriptor.key + " is of the invalid type " + typeof decorator); } } if (descriptor.initializer !== undefined) { initializers[key] = descriptor; continue; } } Object.defineProperty(target, key, descriptor); } } return function (Constructor, protoProps, staticProps, protoInitializers, staticInitializers) { if (protoProps) defineProperties(Constructor.prototype, protoProps, protoInitializers); if (staticProps) defineProperties(Constructor, staticProps, staticInitializers); return Constructor; }; })();
 
@@ -19,7 +19,6 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
     }, function (_oribellaDefaultGestures) {
       oribella = _oribellaDefaultGestures.oribella;
       matchesSelector = _oribellaDefaultGestures.matchesSelector;
-      STRATEGY_FLAG = _oribellaDefaultGestures.STRATEGY_FLAG;
     }],
     execute: function () {
       Sortable = (function () {
@@ -144,9 +143,9 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
 
           this.element = element;
           this.selector = "[sortable-item]";
-          this.options = {
+          /*this.options = {
             strategy: STRATEGY_FLAG.REMOVE_IF_POINTERS_GT
-          };
+          };*/
           this.fromIx = -1;
           this.toIx = -1;
           this.dragX = 0;
@@ -487,6 +486,11 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
             return valid ? element : null;
           }
         }, {
+          key: "getItemModel",
+          value: function getItemModel(element) {
+            return element.au["sortable-item"].model;
+          }
+        }, {
           key: "tryMove",
           value: function tryMove(x, y) {
             var element = document.elementFromPoint(x, y);
@@ -495,17 +499,18 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
             }
             element = this.closest(element, this.selector);
             if (element) {
-              if (!this.allowMove({ item: element.sortableItem.item })) {
+              var model = this.getItemModel(element);
+              if (!this.allowMove({ item: model.item })) {
                 return;
               }
-              var ix = element.sortableItem.ctx.$index;
+              var ix = model.ctx.$index;
               this.movePlaceholder(ix);
             }
           }
         }, {
           key: "down",
           value: function down(e, data, element) {
-            if (this.allowDrag({ event: e, item: element.sortableItem.item })) {
+            if (this.allowDrag({ event: e, item: this.getItemModel(element).item })) {
               e.preventDefault();
               return undefined;
             }
@@ -517,8 +522,8 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
             this.dragStart(element);
             this.x = data.pagePoints[0].x;
             this.y = data.pagePoints[0].y;
-            var item = element.sortableItem;
-            this.fromIx = item.ctx.$index;
+            var model = this.getItemModel(element);
+            this.fromIx = model.ctx.$index;
             this.toIx = -1;
             this.addPlaceholder(this.fromIx);
           }
@@ -637,3 +642,4 @@ System.register(["aurelia-templating", "aurelia-dependency-injection", "oribella
     }
   };
 });
+/*, STRATEGY_FLAG*/

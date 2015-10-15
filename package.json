@@ -49,8 +49,8 @@
       "lib": "dist/amd"
     },
     "dependencies": {
-      "aurelia-dependency-injection": "github:aurelia/dependency-injection@^0.9.1",
-      "aurelia-templating": "github:aurelia/templating@^0.14.1",
+      "aurelia-dependency-injection": "github:aurelia/dependency-injection@^0.11.0",
+      "aurelia-templating": "github:aurelia/templating@^0.16.0",
       "oribella-default-gestures": "github:oribella/default-gestures@^0.2.0"
     },
     "devDependencies": {

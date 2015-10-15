@@ -14,7 +14,7 @@ var _aureliaTemplating = require("aurelia-templating");
 
 var _aureliaDependencyInjection = require("aurelia-dependency-injection");
 
-var _oribellaDefaultGestures = require("oribella-default-gestures");
+var _oribellaDefaultGestures = require( /*, STRATEGY_FLAG*/"oribella-default-gestures");
 
 var Sortable = (function () {
   var _instanceInitializers = {};
@@ -138,9 +138,9 @@ var Sortable = (function () {
 
     this.element = element;
     this.selector = "[sortable-item]";
-    this.options = {
-      strategy: _oribellaDefaultGestures.STRATEGY_FLAG.REMOVE_IF_POINTERS_GT
-    };
+    /*this.options = {
+      strategy: STRATEGY_FLAG.REMOVE_IF_POINTERS_GT
+    };*/
     this.fromIx = -1;
     this.toIx = -1;
     this.dragX = 0;
@@ -481,6 +481,11 @@ var Sortable = (function () {
       return valid ? element : null;
     }
   }, {
+    key: "getItemModel",
+    value: function getItemModel(element) {
+      return element.au["sortable-item"].model;
+    }
+  }, {
     key: "tryMove",
     value: function tryMove(x, y) {
       var element = document.elementFromPoint(x, y);
@@ -489,17 +494,18 @@ var Sortable = (function () {
       }
       element = this.closest(element, this.selector);
       if (element) {
-        if (!this.allowMove({ item: element.sortableItem.item })) {
+        var model = this.getItemModel(element);
+        if (!this.allowMove({ item: model.item })) {
           return;
         }
-        var ix = element.sortableItem.ctx.$index;
+        var ix = model.ctx.$index;
         this.movePlaceholder(ix);
       }
     }
   }, {
     key: "down",
     value: function down(e, data, element) {
-      if (this.allowDrag({ event: e, item: element.sortableItem.item })) {
+      if (this.allowDrag({ event: e, item: this.getItemModel(element).item })) {
         e.preventDefault();
         return undefined;
       }
@@ -511,8 +517,8 @@ var Sortable = (function () {
       this.dragStart(element);
       this.x = data.pagePoints[0].x;
       this.y = data.pagePoints[0].y;
-      var item = element.sortableItem;
-      this.fromIx = item.ctx.$index;
+      var model = this.getItemModel(element);
+      this.fromIx = model.ctx.$index;
       this.toIx = -1;
       this.addPlaceholder(this.fromIx);
     }
