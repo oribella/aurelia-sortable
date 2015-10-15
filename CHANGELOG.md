@@ -1,3 +1,13 @@
+<a name="0.2.2"></a>
+## [0.2.2](https://github.com/oribella/aurelia-sortable/compare/v0.2.1...v0.2.2) (2015-10-15)
+
+
+### Bug Fixes
+
+* **sortable:** add `options.strategy` ([ac0ca0a](https://github.com/oribella/aurelia-sortable/commit/ac0ca0a))
+
+
+
 <a name="0.2.1"></a>
 ## [0.2.1](https://github.com/oribella/aurelia-sortable/compare/v0.2.0...v0.2.1) (2015-08-18)
 
