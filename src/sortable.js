@@ -1,9 +1,10 @@
+import {DOM} from "aurelia-pal";
 import {customAttribute, bindable} from "aurelia-templating";
 import {inject, transient} from "aurelia-dependency-injection";
-import {oribella, matchesSelector/*, STRATEGY_FLAG*/} from "oribella-default-gestures";
+import {oribella, matchesSelector} from "oribella-default-gestures";
 
 @customAttribute("sortable")
-@inject(Element)
+@inject(DOM.Element)
 @transient()
 export class Sortable {
 

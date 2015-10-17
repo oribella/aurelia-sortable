@@ -4,7 +4,8 @@ System.config({
   babelOptions: {
     "optional": [
       "runtime",
-      "optimisation.modules.system"
+      "es7.decorators",
+      "es7.classProperties"
     ]
   },
   paths: {
@@ -14,6 +15,7 @@ System.config({
 
   map: {
     "aurelia-dependency-injection": "github:aurelia/dependency-injection@0.11.0",
+    "aurelia-pal": "github:aurelia/pal@0.2.0",
     "aurelia-templating": "github:aurelia/templating@0.16.0",
     "babel": "npm:babel-core@5.8.25",
     "babel-runtime": "npm:babel-runtime@5.8.25",

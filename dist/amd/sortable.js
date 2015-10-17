@@ -1,4 +1,4 @@
-define(["exports", "aurelia-templating", "aurelia-dependency-injection", "oribella-default-gestures"], function (exports, _aureliaTemplating, _aureliaDependencyInjection, _oribellaDefaultGestures) {
+define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-injection", "oribella-default-gestures"], function (exports, _aureliaPal, _aureliaTemplating, _aureliaDependencyInjection, _oribellaDefaultGestures) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {
@@ -9,7 +9,7 @@ define(["exports", "aurelia-templating", "aurelia-dependency-injection", "oribel
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-  function _defineDecoratedPropertyDescriptor(target, key, descriptors) { var _descriptor = descriptors[key]; if (!_descriptor) return; var descriptor = {}; for (var _key in _descriptor) descriptor[_key] = _descriptor[_key]; descriptor.value = descriptor.initializer.call(target); Object.defineProperty(target, key, descriptor); }
+  function _defineDecoratedPropertyDescriptor(target, key, descriptors) { var _descriptor = descriptors[key]; if (!_descriptor) return; var descriptor = {}; for (var _key in _descriptor) descriptor[_key] = _descriptor[_key]; descriptor.value = descriptor.initializer ? descriptor.initializer.call(target) : undefined; Object.defineProperty(target, key, descriptor); }
 
   var Sortable = (function () {
     var _instanceInitializers = {};
@@ -593,7 +593,7 @@ define(["exports", "aurelia-templating", "aurelia-dependency-injection", "oribel
 
     var _Sortable = Sortable;
     Sortable = (0, _aureliaDependencyInjection.transient)()(Sortable) || Sortable;
-    Sortable = (0, _aureliaDependencyInjection.inject)(Element)(Sortable) || Sortable;
+    Sortable = (0, _aureliaDependencyInjection.inject)(_aureliaPal.DOM.Element)(Sortable) || Sortable;
     Sortable = (0, _aureliaTemplating.customAttribute)("sortable")(Sortable) || Sortable;
     return Sortable;
   })();
@@ -630,4 +630,3 @@ define(["exports", "aurelia-templating", "aurelia-dependency-injection", "oribel
 
   exports.SortableItem = SortableItem;
 });
-/*, STRATEGY_FLAG*/
