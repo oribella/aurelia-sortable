@@ -52,7 +52,7 @@ export class Sortable {
     if(typeof this.scroll === "string") {
       this.scroll = this.closest(this.element, this.scroll, document);
     }
-    if(!(this.scroll instanceof Element)) {
+    if(!(this.scroll instanceof DOM.Element)) {
       this.scroll = this.element;
     }
   }
