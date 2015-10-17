@@ -5,11 +5,12 @@ describe("Sortable", () => {
   let Sortable;
   let sortable;
   let templatingEngine;
+  let mockElement = {};
 
   before(() => {
     return System.import("aurelia-pal").then(pal => {
       pal.initializePAL((platform, feature, dom) => {
-        dom.Element = {};
+        dom.Element = mockElement;
         dom.createMutationObserver = function() { return { observe(){} }; };
         dom.createElement = function() {
           return {
@@ -24,7 +25,6 @@ describe("Sortable", () => {
         templatingEngine = tmpl.templatingEngine;
         templatingEngine.initialize();
         return System.import("./src/sortable").then(mod => {
-          console.log("sortable");
           Sortable = mod.Sortable;
         });
       });
@@ -35,36 +35,76 @@ describe("Sortable", () => {
     sortable = templatingEngine.createModelForUnitTest(Sortable);
   });
 
-  it("should set default scroll speed", () => {
-    expect(sortable.scrollSpeed).to.equal(10);
+  describe( "Constructor", () => {
+
+    it("should set element", () => {
+      expect(sortable.element).to.be.equal(mockElement);
+    });
+
+    it("should set selector", () => {
+      expect(sortable.selector).to.equal("[sortable-item]");
+    });
+
+    it("should set fromIx", () => {
+      expect(sortable.fromIx).to.equal(-1);
+    });
+
+    it("should set toIx", () => {
+      expect(sortable.toIx).to.equal(-1);
+    });
+
+    it("should set dragX", () => {
+      expect(sortable.dragX).to.equal(0);
+    });
+
+    it("should set dragY", () => {
+      expect(sortable.dragY).to.equal(0);
+    });
+
+    it("should set isAutoScrollingX", () => {
+      expect(sortable.isAutoScrollingX).to.equal(false);
+    });
+
+    it("should set isAutoScrollingY", () => {
+      expect(sortable.isAutoScrollingY).to.equal(false);
+    });
+
   });
 
-  it("should set default scroll sensitivity", () => {
-    expect(sortable.scrollSensitivity).to.equal(10);
-  });
+  describe( "Defaults", () =>{
 
-  it("should set default items", () => {
-    expect(sortable.items).to.have.length(0);
-  });
+    it("should set scroll speed", () => {
+      expect(sortable.scrollSpeed).to.equal(10);
+    });
 
-  it("should set default placeholder", () => {
-    expect(sortable.placeholder).to.deep.equal({ placeholderClass: "placeholder", style: {} });
-  });
+    it("should set scroll sensitivity", () => {
+      expect(sortable.scrollSensitivity).to.equal(10);
+    });
 
-  it("should set default axis", () => {
-    expect(sortable.axis).to.have.length(0);
-  });
+    it("should set items", () => {
+      expect(sortable.items).to.have.length(0);
+    });
 
-  it("should have a default moved function", () => {
-    expect(sortable.moved).to.be.a("function");
-  });
+    it("should set placeholder", () => {
+      expect(sortable.placeholder).to.deep.equal({ placeholderClass: "placeholder", style: {} });
+    });
 
-  it("should have a default allowDrag function", () => {
-    expect(sortable.allowDrag).to.be.a("function");
-  });
+    it("should set axis", () => {
+      expect(sortable.axis).to.have.length(0);
+    });
 
-  it("should have a default allowMove function", () => {
-    expect(sortable.allowMove).to.be.a("function");
+    it("should have a moved function", () => {
+      expect(sortable.moved).to.be.a("function");
+    });
+
+    it("should have a allowDrag function", () => {
+      expect(sortable.allowDrag).to.be.a("function");
+    });
+
+    it("should have a allowMove function", () => {
+      expect(sortable.allowMove).to.be.a("function");
+    });
+
   });
 
 });
