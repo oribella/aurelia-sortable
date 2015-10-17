@@ -97,6 +97,14 @@ describe("Sortable", () => {
       expect(sortable.moved).to.be.a("function");
     });
 
+    it("should set dragZIndex", () => {
+      expect(sortable.dragZIndex).to.equal(1);
+    });
+
+    it("should set disallowedDragTagNames", () => {
+      expect(sortable.disallowedDragTagNames).to.deep.equal(["INPUT", "SELECT", "TEXTAREA"]);
+    });
+
     it("should have a allowDrag function", () => {
       expect(sortable.allowDrag).to.be.a("function");
     });
