@@ -349,25 +349,13 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
     }, {
       key: "end",
       value: function end() {
-        this.stop();
-      }
-    }, {
-      key: "cancel",
-      value: function cancel() {
-        this.drag.end();
-        this.autoScroll.stop();
-        this.removePlaceholder();
-      }
-    }, {
-      key: "stop",
-      value: function stop() {
         this.toIx = this.items.indexOf(this.placeholder);
         if (this.toIx < 0) {
           return; //cancelled
         }
         this.move(this.toIx < this.fromIx ? this.fromIx + 1 : this.fromIx, this.toIx);
         this.drag.end();
-        this.autoScroll.stop();
+        this.autoScroll.end();
         this.removePlaceholder();
 
         if (this.fromIx < this.toIx) {
@@ -376,6 +364,13 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
         if (this.fromIx !== this.toIx) {
           this.moved({ fromIx: this.fromIx, toIx: this.toIx });
         }
+      }
+    }, {
+      key: "cancel",
+      value: function cancel() {
+        this.drag.end();
+        this.autoScroll.end();
+        this.removePlaceholder();
       }
     }], null, _instanceInitializers);
 

@@ -186,21 +186,13 @@ export class Sortable {
     this.autoScroll.update(this.scroll, x, y, this.scrollRect);
   }
   end() {
-    this.stop();
-  }
-  cancel() {
-    this.drag.end();
-    this.autoScroll.stop();
-    this.removePlaceholder();
-  }
-  stop() {
     this.toIx = this.items.indexOf(this.placeholder);
     if (this.toIx < 0) {
       return; //cancelled
     }
     this.move(this.toIx < this.fromIx ? this.fromIx + 1 : this.fromIx, this.toIx);
     this.drag.end();
-    this.autoScroll.stop();
+    this.autoScroll.end();
     this.removePlaceholder();
 
     if (this.fromIx < this.toIx) {
@@ -209,6 +201,11 @@ export class Sortable {
     if (this.fromIx !== this.toIx) {
       this.moved( { fromIx: this.fromIx, toIx: this.toIx } );
     }
+  }
+  cancel() {
+    this.drag.end();
+    this.autoScroll.end();
+    this.removePlaceholder();
   }
 }
 

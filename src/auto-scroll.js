@@ -54,7 +54,7 @@ export class AutoScroll {
     this.active = true;
     autoScroll();
   }
-  stop(cAF = cancelAnimationFrame) {
+  end(cAF = cancelAnimationFrame) {
     cAF(this.rAFId);
     this.ticks = [0, 0];
   }

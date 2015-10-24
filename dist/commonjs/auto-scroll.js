@@ -97,8 +97,8 @@ var AutoScroll = (function () {
       autoScroll();
     }
   }, {
-    key: "stop",
-    value: function stop() {
+    key: "end",
+    value: function end() {
       var cAF = arguments.length <= 0 || arguments[0] === undefined ? cancelAnimationFrame : arguments[0];
 
       cAF(this.rAFId);
