@@ -174,11 +174,17 @@ var Sortable = (function () {
       if (!(this.scroll instanceof _aureliaPal.DOM.Element)) {
         this.scroll = this.element;
       }
+      this.removeScroll = this.bindScroll(this.scroll, this.onScroll.bind(this));
     }
   }, {
     key: "deactivate",
     value: function deactivate() {
-      this.removeListener();
+      if (typeof this.removeListener === "function") {
+        this.removeListener();
+      }
+      if (typeof this.removeScroll === "function") {
+        this.removeScroll();
+      }
     }
   }, {
     key: "attached",
@@ -188,9 +194,7 @@ var Sortable = (function () {
   }, {
     key: "detached",
     value: function detached() {
-      if (typeof this.removeListener === "function") {
-        this.removeListener();
-      }
+      this.deactivate();
     }
   }, {
     key: "bindScroll",
@@ -330,7 +334,6 @@ var Sortable = (function () {
       this.pageY = data.pagePoints[0].y;
       this.scrollRect = this.scroll.getBoundingClientRect();
       this.boundingRect = this.boundingRect || { left: this.scrollRect.left + 5, top: this.scrollRect.top + 5, right: this.scrollRect.right - 5, bottom: this.scrollRect.bottom - 5 };
-      this.removeScroll = this.bindScroll(this.scroll, this.onScroll.bind(this));
       this.drag.start(element, this.pageX, this.pageY, this.scroll, this.dragZIndex, this.placeholder, this.axis);
       this.autoScroll.start(this.axis, this.scrollSpeed, this.scrollSensitivity);
       this.fromIx = this.getItemModel(element).ctx.$index;

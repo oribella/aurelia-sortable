@@ -51,17 +51,21 @@ export class Sortable {
     if(!(this.scroll instanceof DOM.Element)) {
       this.scroll = this.element;
     }
+    this.removeScroll = this.bindScroll(this.scroll, this.onScroll.bind(this));
   }
   deactivate() {
-    this.removeListener();
+    if(typeof this.removeListener === "function") {
+      this.removeListener();
+    }
+    if(typeof this.removeScroll === "function") {
+      this.removeScroll();
+    }
   }
   attached() {
     this.activate();
   }
   detached() {
-    if(typeof this.removeListener === "function") {
-      this.removeListener();
-    }
+    this.deactivate();
   }
   bindScroll(scroll, fn) {
     scroll.addEventListener("scroll", fn, false);
@@ -165,7 +169,6 @@ export class Sortable {
     this.pageY = data.pagePoints[0].y;
     this.scrollRect = this.scroll.getBoundingClientRect();
     this.boundingRect = this.boundingRect || { left: this.scrollRect.left + 5, top: this.scrollRect.top + 5, right: this.scrollRect.right - 5, bottom: this.scrollRect.bottom - 5 };
-    this.removeScroll = this.bindScroll(this.scroll, this.onScroll.bind(this));
     this.drag.start(element, this.pageX, this.pageY, this.scroll, this.dragZIndex, this.placeholder, this.axis);
     this.autoScroll.start(this.axis, this.scrollSpeed, this.scrollSensitivity);
     this.fromIx = this.getItemModel(element).ctx.$index;
