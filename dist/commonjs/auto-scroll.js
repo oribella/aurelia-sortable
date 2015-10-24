@@ -8,9 +8,11 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var _aureliaDependencyInjection = require("aurelia-dependency-injection");
+
 var AutoScroll = (function () {
   function AutoScroll() {
-    _classCallCheck(this, AutoScroll);
+    _classCallCheck(this, _AutoScroll);
 
     this.ticks = [0, 0];
     this.rAFId = -1;
@@ -128,6 +130,8 @@ var AutoScroll = (function () {
     }
   }]);
 
+  var _AutoScroll = AutoScroll;
+  AutoScroll = (0, _aureliaDependencyInjection.transient)()(AutoScroll) || AutoScroll;
   return AutoScroll;
 })();
 

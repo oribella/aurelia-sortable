@@ -1,4 +1,4 @@
-define(["exports"], function (exports) {
+define(["exports", "aurelia-dependency-injection"], function (exports, _aureliaDependencyInjection) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {
@@ -11,7 +11,7 @@ define(["exports"], function (exports) {
 
   var AutoScroll = (function () {
     function AutoScroll() {
-      _classCallCheck(this, AutoScroll);
+      _classCallCheck(this, _AutoScroll);
 
       this.ticks = [0, 0];
       this.rAFId = -1;
@@ -129,6 +129,8 @@ define(["exports"], function (exports) {
       }
     }]);
 
+    var _AutoScroll = AutoScroll;
+    AutoScroll = (0, _aureliaDependencyInjection.transient)()(AutoScroll) || AutoScroll;
     return AutoScroll;
   })();
 

@@ -1,18 +1,20 @@
-System.register([], function (_export) {
+System.register(["aurelia-dependency-injection"], function (_export) {
   "use strict";
 
-  var AutoScroll;
+  var transient, AutoScroll;
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
   return {
-    setters: [],
+    setters: [function (_aureliaDependencyInjection) {
+      transient = _aureliaDependencyInjection.transient;
+    }],
     execute: function () {
       AutoScroll = (function () {
         function AutoScroll() {
-          _classCallCheck(this, AutoScroll);
+          _classCallCheck(this, _AutoScroll);
 
           this.ticks = [0, 0];
           this.rAFId = -1;
@@ -130,6 +132,8 @@ System.register([], function (_export) {
           }
         }]);
 
+        var _AutoScroll = AutoScroll;
+        AutoScroll = transient()(AutoScroll) || AutoScroll;
         return AutoScroll;
       })();
 

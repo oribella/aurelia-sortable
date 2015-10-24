@@ -8,9 +8,11 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var _aureliaDependencyInjection = require("aurelia-dependency-injection");
+
 var Drag = (function () {
   function Drag() {
-    _classCallCheck(this, Drag);
+    _classCallCheck(this, _Drag);
 
     this.startLeft = 0;
     this.startTop = 0;
@@ -115,6 +117,8 @@ var Drag = (function () {
     }
   }]);
 
+  var _Drag = Drag;
+  Drag = (0, _aureliaDependencyInjection.transient)()(Drag) || Drag;
   return Drag;
 })();
 

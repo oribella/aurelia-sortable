@@ -1,3 +1,6 @@
+import {transient} from "aurelia-dependency-injection";
+
+@transient()
 export class AutoScroll {
   ticks = [0, 0];
   rAFId = -1;

@@ -1,4 +1,4 @@
-define(["exports"], function (exports) {
+define(["exports", "aurelia-dependency-injection"], function (exports, _aureliaDependencyInjection) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {
@@ -11,7 +11,7 @@ define(["exports"], function (exports) {
 
   var Drag = (function () {
     function Drag() {
-      _classCallCheck(this, Drag);
+      _classCallCheck(this, _Drag);
 
       this.startLeft = 0;
       this.startTop = 0;
@@ -116,6 +116,8 @@ define(["exports"], function (exports) {
       }
     }]);
 
+    var _Drag = Drag;
+    Drag = (0, _aureliaDependencyInjection.transient)()(Drag) || Drag;
     return Drag;
   })();
 

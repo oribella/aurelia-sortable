@@ -1,3 +1,6 @@
+import {transient} from "aurelia-dependency-injection";
+
+@transient()
 export class Drag {
   startLeft = 0;
   startTop = 0;
