@@ -78,7 +78,7 @@ export class Sortable {
       return;
     }
     this.drag.update(this.pageX, this.pageY, this.scroll, this.axis);
-    let { x, y } = this.getCoordinate(this.pageX, this.pageY);
+    let { x, y } = this.getPoint(this.pageX, this.pageY);
     this.tryMove(x, y);
   }
   hide(element) {
@@ -141,7 +141,7 @@ export class Sortable {
       this.movePlaceholder(ix);
     }
   }
-  getCoordinate(pageX, pageY) {
+  getPoint(pageX, pageY) {
     switch (this.axis) {
     case "x":
       pageY = this.drag.getCenterY();
@@ -181,7 +181,7 @@ export class Sortable {
     let pageY = (this.pageY = p.y);
 
     this.drag.update(pageX, pageY, this.scroll, this.axis);
-    let { x, y } = this.getCoordinate(pageX, pageY);
+    let { x, y } = this.getPoint(pageX, pageY);
     this.tryUpdate(x, y);
     this.autoScroll.update(this.scroll, x, y, this.scrollRect);
   }

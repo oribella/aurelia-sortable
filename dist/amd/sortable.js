@@ -201,10 +201,10 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
         }
         this.drag.update(this.pageX, this.pageY, this.scroll, this.axis);
 
-        var _getCoordinate = this.getCoordinate(this.pageX, this.pageY);
+        var _getPoint = this.getPoint(this.pageX, this.pageY);
 
-        var x = _getCoordinate.x;
-        var y = _getCoordinate.y;
+        var x = _getPoint.x;
+        var y = _getPoint.y;
 
         this.tryMove(x, y);
       }
@@ -290,8 +290,8 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
         }
       }
     }, {
-      key: "getCoordinate",
-      value: function getCoordinate(pageX, pageY) {
+      key: "getPoint",
+      value: function getPoint(pageX, pageY) {
         switch (this.axis) {
           case "x":
             pageY = this.drag.getCenterY();
@@ -338,10 +338,10 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
 
         this.drag.update(pageX, pageY, this.scroll, this.axis);
 
-        var _getCoordinate2 = this.getCoordinate(pageX, pageY);
+        var _getPoint2 = this.getPoint(pageX, pageY);
 
-        var x = _getCoordinate2.x;
-        var y = _getCoordinate2.y;
+        var x = _getPoint2.x;
+        var y = _getPoint2.y;
 
         this.tryUpdate(x, y);
         this.autoScroll.update(this.scroll, x, y, this.scrollRect);
