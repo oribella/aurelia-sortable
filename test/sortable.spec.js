@@ -41,6 +41,18 @@ describe("Sortable", () => {
       expect(sortable.element).to.be.equal(mockElement);
     });
 
+    it("should set drag", () => {
+      return System.import("./src/drag").then(mod => {
+        expect(sortable.drag).to.be.an.instanceof(mod.Drag);
+      });
+    });
+
+    it("should set autoScroll", () => {
+      return System.import("./src/auto-scroll").then(mod => {
+        expect(sortable.autoScroll).to.be.an.instanceof(mod.AutoScroll);
+      });
+    });
+
     it("should set selector", () => {
       expect(sortable.selector).to.equal("[sortable-item]");
     });
