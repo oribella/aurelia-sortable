@@ -53,22 +53,6 @@ describe("Sortable", () => {
       expect(sortable.toIx).to.equal(-1);
     });
 
-    it("should set dragX", () => {
-      expect(sortable.dragX).to.equal(0);
-    });
-
-    it("should set dragY", () => {
-      expect(sortable.dragY).to.equal(0);
-    });
-
-    it("should set isAutoScrollingX", () => {
-      expect(sortable.isAutoScrollingX).to.equal(false);
-    });
-
-    it("should set isAutoScrollingY", () => {
-      expect(sortable.isAutoScrollingY).to.equal(false);
-    });
-
   });
 
   describe( "Defaults", () =>{
@@ -92,6 +76,10 @@ describe("Sortable", () => {
     it("should set axis", () => {
       expect(sortable.axis).to.have.length(0);
     });
+
+    it("should have a bounding rect", () => {
+      expect(sortable.boundingRect).to.be.a("null");
+    })
 
     it("should have a moved function", () => {
       expect(sortable.moved).to.be.a("function");
