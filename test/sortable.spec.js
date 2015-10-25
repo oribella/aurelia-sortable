@@ -5,12 +5,12 @@ describe("Sortable", () => {
   let Sortable;
   let sortable;
   let templatingEngine;
-  let mockElement = {};
+  let MockElement = () => {};
 
   before(() => {
     return System.import("aurelia-pal").then(pal => {
       pal.initializePAL((platform, feature, dom) => {
-        dom.Element = mockElement;
+        dom.Element = MockElement;
         dom.createMutationObserver = function() { return { observe(){} }; };
         dom.createElement = function() {
           return {
@@ -19,7 +19,7 @@ describe("Sortable", () => {
             }
           };
         };
-        dom.createTextNode = function() {};
+        dom.createTextNode = function() { return {}; };
       });
       return System.import("aurelia-templating").then(tmpl => {
         templatingEngine = tmpl.templatingEngine;
@@ -38,7 +38,7 @@ describe("Sortable", () => {
   describe( "Constructor", () => {
 
     it("should set element", () => {
-      expect(sortable.element).to.be.equal(mockElement);
+      expect(sortable.element).to.be.an("object");
     });
 
     it("should set drag", () => {
@@ -111,6 +111,60 @@ describe("Sortable", () => {
 
     it("should have a allowMove function", () => {
       expect(sortable.allowMove).to.be.a("function");
+    });
+
+  });
+
+  describe("activate", () => {
+    let sandbox;
+    let oribella;
+    let removeGestureFn = () => {};
+    let removeScrollFn = () => {};
+    let on;
+    let bindScroll;
+    let closest;
+    let mockElement = {};
+    let mockScroll = {};
+
+    before(() => {
+      return System.import("oribella-default-gestures").then(mod => {
+        oribella = mod.oribella;
+      });
+    });
+
+    beforeEach(() => {
+      sandbox = sinon.sandbox.create();
+      sortable.element = mockElement;
+      on = sandbox.stub(oribella, "on").returns(removeGestureFn);
+      bindScroll = sandbox.stub(sortable, "bindScroll").returns(removeScrollFn);
+      closest = sandbox.stub(sortable, "closest").returns(mockScroll);
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    it("should add a oribella swipe listener", () => {
+      sortable.activate();
+      expect(on).to.have.been.calledWith({}, "swipe", sortable);
+      expect(sortable.removeListener).to.equal(removeGestureFn);
+    });
+
+    it("should find closest scroll if a selector was bound", () => {
+      sortable.scroll = "foo";
+      sortable.activate();
+      expect(closest).to.have.been.calledWith(mockElement, "foo");
+    });
+
+    it("should default scroll to injected element", () => {
+      sortable.activate();
+      expect(sortable.scroll).to.equal(mockElement);
+    });
+
+    it("should add a scroll listener", () => {
+      sortable.activate();
+      expect(bindScroll).to.have.been.calledWith(mockElement, sinon.match.func);
+      expect(sortable.removeScroll).to.equal(removeScrollFn);
     });
 
   });
