@@ -91,7 +91,7 @@ describe("Sortable", () => {
 
     it("should have a bounding rect", () => {
       expect(sortable.boundingRect).to.be.a("null");
-    })
+    });
 
     it("should have a moved function", () => {
       expect(sortable.moved).to.be.a("function");
