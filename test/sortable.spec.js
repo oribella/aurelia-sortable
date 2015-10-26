@@ -281,4 +281,75 @@ describe("Sortable", () => {
 
   });
 
+  describe("hide", () => {
+
+    it("should set display none", () => {
+      let mockElement = { style: { display: "block" } };
+      sortable.hide(mockElement);
+      expect(mockElement.style.display).to.equal("none");
+    });
+
+    it("should reset display", () => {
+      let mockElement = { style: { display: "block" } };
+      let showFn = sortable.hide(mockElement);
+      showFn();
+      expect(mockElement.style.display).to.equal("block");
+    });
+
+  });
+
+  describe("getItemModel", () => {
+
+    it("should get item model", () => {
+      let model = {};
+      let mockElement = { au: { "sortable-item": { model: model } } };
+      expect(sortable.getItemModel(mockElement)).to.equal(model);
+    });
+
+  });
+
+  describe("placeholder", () => {
+    let splice;
+    let indexOf;
+    let move;
+
+    beforeEach(() => {
+      splice = sandbox.stub(sortable.items, "splice");
+      indexOf = sandbox.stub(sortable.items, "indexOf");
+      move = sandbox.stub(sortable, "move");
+    });
+
+    it("should add a placeholder", () => {
+      sortable.addPlaceholder(13);
+      expect(splice).to.have.been.calledWithExactly(13, 0, sortable.placeholder);
+    });
+
+    it("should remove placeholder", () => {
+      indexOf.returns(5);
+      sortable.removePlaceholder();
+      expect(splice).to.have.been.calledWithExactly(5, 1);
+    });
+
+    it("should move placeholder", () => {
+      indexOf.returns(5);
+      sortable.movePlaceholder(8);
+      expect(move).to.have.been.calledWithExactly(5, 8);
+    });
+
+  });
+
+  describe("move", () => {
+    let splice;
+
+    beforeEach(() => {
+      splice = sandbox.stub(sortable.items, "splice", () => { return [5]; });
+    });
+
+    it("should move an item", () => {
+      sortable.move(2, 7);
+      expect(splice.getCall(0)).to.have.been.calledWithExactly(2, 1);
+      expect(splice.getCall(1)).to.have.been.calledWithExactly(7, 0, 5);
+    });
+
+  });
 });
