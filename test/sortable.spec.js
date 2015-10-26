@@ -2,6 +2,7 @@ import {Loader as loader} from "jspm";
 let System = loader();
 
 describe("Sortable", () => {
+  let sandbox;
   let Sortable;
   let sortable;
   let templatingEngine;
@@ -32,7 +33,12 @@ describe("Sortable", () => {
   });
 
   beforeEach(() => {
+    sandbox = sinon.sandbox.create();
     sortable = templatingEngine.createModelForUnitTest(Sortable);
+  });
+
+  afterEach(() => {
+    sandbox.restore();
   });
 
   describe( "Constructor", () => {
@@ -116,7 +122,6 @@ describe("Sortable", () => {
   });
 
   describe("activate", () => {
-    let sandbox;
     let oribella;
     let removeGestureFn = () => {};
     let removeScrollFn = () => {};
@@ -133,15 +138,10 @@ describe("Sortable", () => {
     });
 
     beforeEach(() => {
-      sandbox = sinon.sandbox.create();
       sortable.element = mockElement;
       on = sandbox.stub(oribella, "on").returns(removeGestureFn);
       bindScroll = sandbox.stub(sortable, "bindScroll").returns(removeScrollFn);
       closest = sandbox.stub(sortable, "closest").returns(mockScroll);
-    });
-
-    afterEach(() => {
-      sandbox.restore();
     });
 
     it("should add a oribella swipe listener", () => {
@@ -165,6 +165,34 @@ describe("Sortable", () => {
       sortable.activate();
       expect(bindScroll).to.have.been.calledWith(mockElement, sinon.match.func);
       expect(sortable.removeScroll).to.equal(removeScrollFn);
+    });
+
+  });
+
+  describe("deactivate", () => {
+
+    it("should remove oribella swipe listener", () => {
+      let removeListener = sandbox.stub();
+      sortable.removeListener = removeListener;
+      sortable.deactivate();
+      expect(removeListener).to.have.been.calledWithExactly();
+    });
+
+    it("should not throw if typeof removeListener isn't a function", () => {
+      sortable.removeListener = null;
+      expect(sortable.deactivate.bind(sortable)).not.to.throw();
+    });
+
+    it("should remove scroll listener", () => {
+      let removeScroll = sandbox.stub();
+      sortable.removeScroll = removeScroll;
+      sortable.deactivate();
+      expect(removeScroll).to.have.been.calledWithExactly();
+    });
+
+    it("should not throw if typeof removeScroll isn't a function", () => {
+      sortable.removeScroll = null;
+      expect(sortable.deactivate.bind(sortable)).not.to.throw();
     });
 
   });
