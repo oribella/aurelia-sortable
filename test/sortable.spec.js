@@ -197,4 +197,88 @@ describe("Sortable", () => {
 
   });
 
+  describe("attached", () => {
+
+    it("should call activate", () => {
+      let activate = sandbox.stub(sortable, "activate");
+      sortable.attached();
+      expect(activate).to.have.been.calledWithExactly();
+    });
+
+  });
+
+  describe("detached", () => {
+
+    it("should call deactivate", () => {
+      let deactivate = sandbox.stub(sortable, "deactivate");
+      sortable.detached();
+      expect(deactivate).to.have.been.calledWithExactly();
+    });
+
+  });
+
+  describe("bindScroll", () => {
+    let mockElement;
+    let onScroll;
+
+    beforeEach(() => {
+      mockElement = { addEventListener: sandbox.stub(), removeEventListener: sandbox.stub() };
+      onScroll = sandbox.stub();
+    });
+
+    it("should add scroll listener", () => {
+      sortable.bindScroll(mockElement, onScroll);
+      expect(mockElement.addEventListener).to.have.been.calledWithExactly("scroll", onScroll, false);
+    });
+
+    it("should remove scroll listener", () => {
+      let removeScroll = sortable.bindScroll(mockElement, onScroll);
+      removeScroll();
+      expect(mockElement.removeEventListener).to.have.been.calledWithExactly("scroll", onScroll, false);
+    });
+
+  });
+
+  describe("onScroll", () => {
+    let dragUpdate;
+    let getPoint;
+    let tryMove;
+
+    beforeEach(() => {
+      sortable.drag.element = {};
+      sortable.scroll = {};
+      sortable.pageX = 100;
+      sortable.pageY = 200;
+      sortable.axis = "foo";
+      dragUpdate = sandbox.stub(sortable.drag, "update");
+      getPoint = sandbox.stub(sortable, "getPoint").returns({ x: 0, y: 0 });
+      tryMove = sandbox.stub(sortable, "tryMove");
+    });
+
+    it("should do a quick return if not dragging", () => {
+      sortable.drag.element = null;
+      sortable.onScroll();
+      expect(dragUpdate).to.have.callCount(0);
+      expect(getPoint).to.have.callCount(0);
+      expect(tryMove).to.have.callCount(0);
+    });
+
+    it("should call `drag.update`", () => {
+      sortable.onScroll();
+      expect(dragUpdate).to.have.been.calledWithExactly(100, 200, {}, "foo");
+    });
+
+    it("should call `getPoint`", () => {
+      sortable.onScroll();
+      expect(getPoint).to.have.been.calledWithExactly(100, 200);
+    });
+
+    it("should call `tryMove`", () => {
+      getPoint.returns({ x: 300, y: 400 });
+      sortable.onScroll();
+      expect(tryMove).to.have.been.calledWithExactly(300, 400);
+    });
+
+  });
+
 });
