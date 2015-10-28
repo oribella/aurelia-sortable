@@ -284,21 +284,20 @@ var Sortable = (function () {
   }, {
     key: "tryMove",
     value: function tryMove(x, y) {
-      var doc = arguments.length <= 2 || arguments[2] === undefined ? document : arguments[2];
-
-      var element = doc.elementFromPoint(x, y);
+      var element = document.elementFromPoint(x, y);
       if (!element) {
         return;
       }
       element = this.closest(element, this.selector, this.element);
-      if (element) {
-        var model = this.getItemModel(element);
-        if (!this.allowMove({ item: model.item })) {
-          return;
-        }
-        var ix = model.ctx.$index;
-        this.movePlaceholder(ix);
+      if (!element) {
+        return;
       }
+      var model = this.getItemModel(element);
+      if (!this.allowMove({ item: model.item })) {
+        return;
+      }
+      var ix = model.ctx.$index;
+      this.movePlaceholder(ix);
     }
   }, {
     key: "getPoint",

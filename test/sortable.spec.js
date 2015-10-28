@@ -352,4 +352,106 @@ describe("Sortable", () => {
     });
 
   });
+
+  describe("tryUpdate", () => {
+    let hide;
+    let tryMove;
+    let showFn;
+    let mockElement = {};
+
+    beforeEach(() => {
+      showFn = sandbox.spy();
+      hide = sandbox.stub(sortable, "hide", () => { return showFn; });
+      tryMove = sandbox.stub(sortable, "tryMove");
+    });
+
+    it("should hide drag element", () => {
+      sortable.drag.element = mockElement;
+      sortable.tryUpdate();
+      expect(hide).to.have.been.calledWithExactly(mockElement);
+    });
+
+    it("should show the drag element", () => {
+      sortable.drag.element = mockElement;
+      sortable.tryUpdate();
+      expect(showFn).to.have.callCount(1);
+    });
+
+    it("should call `tryMove`", () => {
+      sortable.tryUpdate(100, 200);
+      expect(tryMove).to.have.been.calledWithExactly(100, 200);
+    });
+
+  });
+
+  describe("tryMove", () => {
+    let mockElement = {};
+    let mockElementFromPoint = {};
+    let mockSelector = "foo";
+    let elementFromPoint;
+    let closest;
+    let getItemModel;
+    let movePlaceholder;
+
+    beforeEach(() => {
+      elementFromPoint = sandbox.stub();
+      global.document = { elementFromPoint: elementFromPoint };
+      closest = sandbox.stub(sortable, "closest");
+      getItemModel = sandbox.stub(sortable, "getItemModel");
+      movePlaceholder = sandbox.stub(sortable, "movePlaceholder");
+    });
+
+    afterEach(() => {
+      delete global.document;
+    });
+
+    it("should call `elementFromPoint`", () => {
+      sortable.tryMove(100, 200);
+      expect(elementFromPoint).to.have.been.calledWithExactly(100, 200);
+    });
+
+    it("should do a quick return if `elementFromPoint` returns falsy", () => {
+      elementFromPoint.returns(null);
+      sortable.tryMove(100, 200);
+      expect(elementFromPoint).to.have.callCount(1);
+      expect(closest).to.have.callCount(0);
+      expect(getItemModel).to.have.callCount(0);
+      expect(movePlaceholder).to.have.callCount(0);
+    });
+
+    it("should call `closest`", () => {
+      elementFromPoint.returns(mockElementFromPoint);
+      sortable.element = mockElement;
+      sortable.selector = mockSelector;
+      sortable.tryMove(100, 200);
+      expect(closest).to.have.been.calledWithExactly(mockElementFromPoint, mockSelector, mockElement);
+    });
+
+    it("should do a quick return if `closest` returns falsy", () => {
+      elementFromPoint.returns(mockElementFromPoint);
+      closest.returns(null);
+      sortable.tryMove(100, 200);
+      expect(elementFromPoint).to.have.callCount(1);
+      expect(closest).to.have.callCount(1);
+      expect(getItemModel).to.have.callCount(0);
+      expect(movePlaceholder).to.have.callCount(0);
+    });
+
+    it("should call `getItemModel`", () => {
+      elementFromPoint.returns(mockElementFromPoint);
+      closest.returns(mockElementFromPoint);
+      getItemModel.returns({ item: {}, ctx: {} });
+      sortable.tryMove(100, 200);
+      expect(getItemModel).to.have.been.calledWithExactly(mockElementFromPoint);
+    });
+
+    it("should call `movePlaceholder`", () => {
+      elementFromPoint.returns(mockElementFromPoint);
+      closest.returns(mockElementFromPoint);
+      getItemModel.returns({ item: {}, ctx: { $index: 13 } });
+      sortable.tryMove(100, 200);
+      expect(movePlaceholder).to.have.been.calledWithExactly(13);
+    });
+
+  });
 });

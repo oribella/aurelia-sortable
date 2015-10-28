@@ -126,20 +126,21 @@ export class Sortable {
     this.tryMove(pageX, pageY);
     showFn();
   }
-  tryMove(x, y, doc = document) {
-    let element = doc.elementFromPoint(x, y);
+  tryMove(x, y) {
+    let element = document.elementFromPoint(x, y);
     if(!element) {
       return;
     }
     element = this.closest(element, this.selector, this.element);
-    if(element) {
-      let model = this.getItemModel(element);
-      if(!this.allowMove({ item: model.item })) {
-        return;
-      }
-      var ix = model.ctx.$index;
-      this.movePlaceholder(ix);
+    if(!element) {
+      return;
     }
+    let model = this.getItemModel(element);
+    if(!this.allowMove({ item: model.item })) {
+      return;
+    }
+    var ix = model.ctx.$index;
+    this.movePlaceholder(ix);
   }
   getPoint(pageX, pageY) {
     switch (this.axis) {

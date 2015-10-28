@@ -19,7 +19,7 @@
     "build:watch:system": "babel src --modules system --out-dir dist/system -w",
     "build:amd": "babel src --modules amd --out-dir dist/amd",
     "build:watch:amd": "babel src --modules amd --out-dir dist/amd -w",
-    "test": "mocha ./test --require ./test/global.js --compilers js:babel/register",
+    "test": "mocha ./test --require ./test/global.js --compilers js:babel/register --timeout 5000",
     "test:watch": "mocha ./test --require ./test/global.js --compilers js:babel/register -w",
     "lint": "eslint src"
   },
