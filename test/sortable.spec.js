@@ -121,7 +121,7 @@ describe("Sortable", () => {
 
   });
 
-  describe("activate", () => {
+  describe("`activate`", () => {
     let oribella;
     let removeGestureFn = () => {};
     let removeScrollFn = () => {};
@@ -169,7 +169,7 @@ describe("Sortable", () => {
 
   });
 
-  describe("deactivate", () => {
+  describe("`deactivate`", () => {
 
     it("should remove oribella swipe listener", () => {
       let removeListener = sandbox.stub();
@@ -197,7 +197,7 @@ describe("Sortable", () => {
 
   });
 
-  describe("attached", () => {
+  describe("`attached`", () => {
 
     it("should call activate", () => {
       let activate = sandbox.stub(sortable, "activate");
@@ -217,7 +217,7 @@ describe("Sortable", () => {
 
   });
 
-  describe("bindScroll", () => {
+  describe("`bindScroll`", () => {
     let mockElement;
     let onScroll;
 
@@ -239,7 +239,7 @@ describe("Sortable", () => {
 
   });
 
-  describe("onScroll", () => {
+  describe("`onScroll`", () => {
     let dragUpdate;
     let getPoint;
     let tryMove;
@@ -281,7 +281,7 @@ describe("Sortable", () => {
 
   });
 
-  describe("hide", () => {
+  describe("`hide`", () => {
 
     it("should set display none", () => {
       let mockElement = { style: { display: "block" } };
@@ -298,7 +298,7 @@ describe("Sortable", () => {
 
   });
 
-  describe("getItemModel", () => {
+  describe("`getItemModel`", () => {
 
     it("should get item model", () => {
       let model = {};
@@ -338,7 +338,7 @@ describe("Sortable", () => {
 
   });
 
-  describe("move", () => {
+  describe("`move`", () => {
     let splice;
 
     beforeEach(() => {
@@ -353,7 +353,7 @@ describe("Sortable", () => {
 
   });
 
-  describe("tryUpdate", () => {
+  describe("`tryUpdate`", () => {
     let hide;
     let tryMove;
     let showFn;
@@ -384,7 +384,7 @@ describe("Sortable", () => {
 
   });
 
-  describe("tryMove", () => {
+  describe("`tryMove`", () => {
     let mockElement = {};
     let mockElementFromPoint = {};
     let mockSelector = "foo";
@@ -392,8 +392,16 @@ describe("Sortable", () => {
     let closest;
     let getItemModel;
     let movePlaceholder;
+    let allowMove;
 
     beforeEach(() => {
+      allowMove = sandbox.stub().returns(true);
+      sortable = Object.create(sortable, {
+        "allowMove": {
+          value: allowMove
+        }
+      });
+
       elementFromPoint = sandbox.stub();
       global.document = { elementFromPoint: elementFromPoint };
       closest = sandbox.stub(sortable, "closest");
@@ -445,7 +453,16 @@ describe("Sortable", () => {
       expect(getItemModel).to.have.been.calledWithExactly(mockElementFromPoint);
     });
 
-    it("should call `movePlaceholder`", () => {
+    it("should call `allowMove`", () => {
+      let item = {};
+      elementFromPoint.returns(mockElementFromPoint);
+      closest.returns(mockElementFromPoint);
+      getItemModel.returns({ item: item, ctx: {} });
+      sortable.tryMove(100, 200);
+      expect(allowMove).to.have.been.calledWithExactly({ item: item });
+    });
+
+    it("should call `movePlaceholder` if `allowMove` is truthy", () => {
       elementFromPoint.returns(mockElementFromPoint);
       closest.returns(mockElementFromPoint);
       getItemModel.returns({ item: {}, ctx: { $index: 13 } });
@@ -453,5 +470,113 @@ describe("Sortable", () => {
       expect(movePlaceholder).to.have.been.calledWithExactly(13);
     });
 
+    it("should not call `movePlaceholder` if `allowMove` is falsy", () => {
+      allowMove.returns(false);
+      elementFromPoint.returns(mockElementFromPoint);
+      closest.returns(mockElementFromPoint);
+      getItemModel.returns({ item: {}, ctx: { $index: 13 } });
+      sortable.tryMove(100, 200);
+      expect(movePlaceholder).to.have.callCount(0);
+    });
+
   });
+
+  describe("`getPoint`", () => {
+    let boundingRect = { left: 5, top: 10, right: 75, bottom: 100 };
+    let dragCenterX;
+    let dragCenterY;
+
+    beforeEach(() => {
+      sortable = Object.create(sortable, {
+        "axis": {
+          value: "",
+          writable: true
+        },
+        "boundingRect": {
+          value: boundingRect
+        }
+      });
+      dragCenterX = sandbox.stub(sortable.drag, "getCenterX");
+      dragCenterY = sandbox.stub(sortable.drag, "getCenterY");
+    });
+
+    it("should call `drag.getCenterX`", () => {
+      sortable.axis = "y";
+      sortable.getPoint();
+      expect(dragCenterX).to.have.been.calledWithExactly();
+    });
+
+    it("should call `drag.getCenterY`", () => {
+      sortable.axis = "x";
+      sortable.getPoint();
+      expect(dragCenterY).to.have.been.calledWithExactly();
+    });
+
+    describe("`boundingRect`", () => {
+
+      it("should return min x", () => {
+        let { x } = sortable.getPoint(1);
+        expect(x).to.equal(boundingRect.left);
+      });
+
+      it("should return max x", () => {
+        let { x } = sortable.getPoint(200);
+        expect(x).to.equal(boundingRect.right);
+      });
+
+      it("should return min y", () => {
+        let { y } = sortable.getPoint( -1, 1);
+        expect(y).to.equal(boundingRect.top);
+      });
+
+      it("should return max y", () => {
+        let { y } = sortable.getPoint( -1, 200);
+        expect(y).to.equal(boundingRect.bottom);
+      });
+
+      it("should return valid x, y", () => {
+        let { x, y } = sortable.getPoint(50, 75);
+        expect(x).to.equal(50);
+        expect(y).to.equal(75);
+      });
+    });
+
+  });
+
+  describe("`down`", () => {
+    let allowDrag;
+    let getItemModel;
+    let event = {};
+    let item = {};
+
+    beforeEach(() => {
+      allowDrag = sandbox.stub().returns(true);
+      sortable = Object.create(sortable, {
+        "allowDrag": {
+          value: allowDrag
+        }
+      });
+      getItemModel = sandbox.stub(sortable, "getItemModel");
+      getItemModel.returns({ item: item });
+      event.preventDefault = sandbox.spy();
+    });
+
+    it("should call `allowDrag`", () => {
+      getItemModel.returns({ item: item });
+      expect(sortable.down(event, null, null)).to.be.an("undefined");
+      expect(allowDrag).to.have.been.calledWithExactly({ event: event, item: item});
+    });
+
+    it("should call `preventDefault` if `allowDrag` is truthy", () => {
+      sortable.down(event, null, null);
+      expect(event.preventDefault).to.have.been.calledWithExactly();
+    });
+
+    it("should return falsy if `allowDrag` is falsy", () => {
+      allowDrag.returns(false);
+      expect(sortable.down()).to.equal(false);
+    });
+
+  });
+
 });
