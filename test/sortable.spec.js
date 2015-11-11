@@ -5,36 +5,46 @@ describe("Sortable", () => {
   let sandbox;
   let Sortable;
   let sortable;
+  let Container;
+  let container;
+  let TemplatingEngine;
   let templatingEngine;
   let MockElement = () => {};
 
   before(() => {
-    return System.import("aurelia-pal").then(pal => {
-      pal.initializePAL((platform, feature, dom) => {
-        dom.Element = MockElement;
-        dom.createMutationObserver = function() { return { observe(){} }; };
-        dom.createElement = function() {
-          return {
-            firstChild: {
-              firstElementChild: {}
-            }
+    return System.import("aurelia-dependency-injection").then( mod => {
+      Container = mod.Container;
+    }).then(() => {
+      return System.import("aurelia-pal").then(pal => {
+        pal.initializePAL((platform, feature, dom) => {
+          dom.Element = MockElement;
+          dom.createMutationObserver = function() { return { observe(){} }; };
+          dom.createElement = function() {
+            return {
+              firstChild: {
+                firstElementChild: {}
+              }
+            };
           };
-        };
-        dom.createTextNode = function() { return {}; };
-      });
-      return System.import("aurelia-templating").then(tmpl => {
-        templatingEngine = tmpl.templatingEngine;
-        templatingEngine.initialize();
-        return System.import("./src/sortable").then(mod => {
-          Sortable = mod.Sortable;
+          dom.createTextNode = function() { return {}; };
         });
+      });
+    }).then(() => {
+      return System.import("aurelia-templating").then(tmpl => {
+        TemplatingEngine = tmpl.TemplatingEngine;
+      });
+    }).then(() => {
+      return System.import("./src/sortable").then(mod => {
+        Sortable = mod.Sortable;
       });
     });
   });
 
   beforeEach(() => {
+    container = new Container();
+    templatingEngine = container.get(TemplatingEngine);
+    sortable = templatingEngine.createViewModelForUnitTest(Sortable);
     sandbox = sinon.sandbox.create();
-    sortable = templatingEngine.createModelForUnitTest(Sortable);
   });
 
   afterEach(() => {
