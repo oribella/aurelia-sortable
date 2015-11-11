@@ -233,9 +233,9 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
         return valid ? element : null;
       }
     }, {
-      key: "getItemModel",
-      value: function getItemModel(element) {
-        return element.au["sortable-item"].model;
+      key: "getItemViewModel",
+      value: function getItemViewModel(element) {
+        return element.au["sortable-item"].viewModel;
       }
     }, {
       key: "addPlaceholder",
@@ -281,7 +281,7 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
         if (!element) {
           return;
         }
-        var model = this.getItemModel(element);
+        var model = this.getItemViewModel(element);
         if (!this.allowMove({ item: model.item })) {
           return;
         }
@@ -309,7 +309,7 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
     }, {
       key: "down",
       value: function down(e, data, element) {
-        if (this.allowDrag({ event: e, item: this.getItemModel(element).item })) {
+        if (this.allowDrag({ event: e, item: this.getItemViewModel(element).item })) {
           e.preventDefault();
           return undefined;
         }
@@ -324,7 +324,7 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
         this.boundingRect = this.boundingRect || { left: this.scrollRect.left + 5, top: this.scrollRect.top + 5, right: this.scrollRect.right - 5, bottom: this.scrollRect.bottom - 5 };
         this.drag.start(element, this.pageX, this.pageY, this.scroll, this.dragZIndex, this.placeholder, this.axis);
         this.autoScroll.start(this.axis, this.scrollSpeed, this.scrollSensitivity);
-        this.fromIx = this.getItemModel(element).ctx.$index;
+        this.fromIx = this.getItemViewModel(element).ctx.$index;
         this.toIx = -1;
         this.addPlaceholder(this.fromIx);
       }
@@ -393,8 +393,8 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
 
     _createDecoratedClass(SortableItem, [{
       key: "bind",
-      value: function bind(ctx) {
-        this.ctx = ctx; //Need a reference to the item's $index
+      value: function bind(ctx, overrideCtx) {
+        this.ctx = overrideCtx; //Need a reference to the item's $index
       }
     }, {
       key: "item",

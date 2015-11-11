@@ -308,12 +308,12 @@ describe("Sortable", () => {
 
   });
 
-  describe("`getItemModel`", () => {
+  describe("`getItemViewModel`", () => {
 
     it("should get item model", () => {
-      let model = {};
-      let mockElement = { au: { "sortable-item": { model: model } } };
-      expect(sortable.getItemModel(mockElement)).to.equal(model);
+      let viewModel = {};
+      let mockElement = { au: { "sortable-item": { viewModel: viewModel } } };
+      expect(sortable.getItemViewModel(mockElement)).to.equal(viewModel);
     });
 
   });
@@ -400,7 +400,7 @@ describe("Sortable", () => {
     let mockSelector = "foo";
     let elementFromPoint;
     let closest;
-    let getItemModel;
+    let getItemViewModel;
     let movePlaceholder;
     let allowMove;
 
@@ -415,7 +415,7 @@ describe("Sortable", () => {
       elementFromPoint = sandbox.stub();
       global.document = { elementFromPoint: elementFromPoint };
       closest = sandbox.stub(sortable, "closest");
-      getItemModel = sandbox.stub(sortable, "getItemModel");
+      getItemViewModel = sandbox.stub(sortable, "getItemViewModel");
       movePlaceholder = sandbox.stub(sortable, "movePlaceholder");
     });
 
@@ -433,7 +433,7 @@ describe("Sortable", () => {
       sortable.tryMove(100, 200);
       expect(elementFromPoint).to.have.callCount(1);
       expect(closest).to.have.callCount(0);
-      expect(getItemModel).to.have.callCount(0);
+      expect(getItemViewModel).to.have.callCount(0);
       expect(movePlaceholder).to.have.callCount(0);
     });
 
@@ -451,23 +451,23 @@ describe("Sortable", () => {
       sortable.tryMove(100, 200);
       expect(elementFromPoint).to.have.callCount(1);
       expect(closest).to.have.callCount(1);
-      expect(getItemModel).to.have.callCount(0);
+      expect(getItemViewModel).to.have.callCount(0);
       expect(movePlaceholder).to.have.callCount(0);
     });
 
-    it("should call `getItemModel`", () => {
+    it("should call `getItemViewModel`", () => {
       elementFromPoint.returns(mockElementFromPoint);
       closest.returns(mockElementFromPoint);
-      getItemModel.returns({ item: {}, ctx: {} });
+      getItemViewModel.returns({ item: {}, ctx: {} });
       sortable.tryMove(100, 200);
-      expect(getItemModel).to.have.been.calledWithExactly(mockElementFromPoint);
+      expect(getItemViewModel).to.have.been.calledWithExactly(mockElementFromPoint);
     });
 
     it("should call `allowMove`", () => {
       let item = {};
       elementFromPoint.returns(mockElementFromPoint);
       closest.returns(mockElementFromPoint);
-      getItemModel.returns({ item: item, ctx: {} });
+      getItemViewModel.returns({ item: item, ctx: {} });
       sortable.tryMove(100, 200);
       expect(allowMove).to.have.been.calledWithExactly({ item: item });
     });
@@ -475,7 +475,7 @@ describe("Sortable", () => {
     it("should call `movePlaceholder` if `allowMove` is truthy", () => {
       elementFromPoint.returns(mockElementFromPoint);
       closest.returns(mockElementFromPoint);
-      getItemModel.returns({ item: {}, ctx: { $index: 13 } });
+      getItemViewModel.returns({ item: {}, ctx: { $index: 13 } });
       sortable.tryMove(100, 200);
       expect(movePlaceholder).to.have.been.calledWithExactly(13);
     });
@@ -484,7 +484,7 @@ describe("Sortable", () => {
       allowMove.returns(false);
       elementFromPoint.returns(mockElementFromPoint);
       closest.returns(mockElementFromPoint);
-      getItemModel.returns({ item: {}, ctx: { $index: 13 } });
+      getItemViewModel.returns({ item: {}, ctx: { $index: 13 } });
       sortable.tryMove(100, 200);
       expect(movePlaceholder).to.have.callCount(0);
     });
@@ -555,7 +555,7 @@ describe("Sortable", () => {
 
   describe("`down`", () => {
     let allowDrag;
-    let getItemModel;
+    let getItemViewModel;
     let event = {};
     let item = {};
 
@@ -566,13 +566,13 @@ describe("Sortable", () => {
           value: allowDrag
         }
       });
-      getItemModel = sandbox.stub(sortable, "getItemModel");
-      getItemModel.returns({ item: item });
+      getItemViewModel = sandbox.stub(sortable, "getItemViewModel");
+      getItemViewModel.returns({ item: item });
       event.preventDefault = sandbox.spy();
     });
 
     it("should call `allowDrag`", () => {
-      getItemModel.returns({ item: item });
+      getItemViewModel.returns({ item: item });
       expect(sortable.down(event, null, null)).to.be.an("undefined");
       expect(allowDrag).to.have.been.calledWithExactly({ event: event, item: item});
     });

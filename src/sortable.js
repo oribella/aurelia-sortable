@@ -100,8 +100,8 @@ export class Sortable {
     }
     return valid ? element : null;
   }
-  getItemModel(element) {
-    return element.au["sortable-item"].model;
+  getItemViewModel(element) {
+    return element.au["sortable-item"].viewModel;
   }
   addPlaceholder(toIx) {
     this.items.splice(toIx, 0, this.placeholder);
@@ -135,7 +135,7 @@ export class Sortable {
     if(!element) {
       return;
     }
-    let model = this.getItemModel(element);
+    let model = this.getItemViewModel(element);
     if(!this.allowMove({ item: model.item })) {
       return;
     }
@@ -159,7 +159,7 @@ export class Sortable {
     };
   }
   down(e, data, element) {
-    if(this.allowDrag({ event: e, item: this.getItemModel(element).item })) {
+    if(this.allowDrag({ event: e, item: this.getItemViewModel(element).item })) {
       e.preventDefault();
       return undefined;
     }
@@ -172,7 +172,7 @@ export class Sortable {
     this.boundingRect = this.boundingRect || { left: this.scrollRect.left + 5, top: this.scrollRect.top + 5, right: this.scrollRect.right - 5, bottom: this.scrollRect.bottom - 5 };
     this.drag.start(element, this.pageX, this.pageY, this.scroll, this.dragZIndex, this.placeholder, this.axis);
     this.autoScroll.start(this.axis, this.scrollSpeed, this.scrollSensitivity);
-    this.fromIx = this.getItemModel(element).ctx.$index;
+    this.fromIx = this.getItemViewModel(element).ctx.$index;
     this.toIx = -1;
     this.addPlaceholder(this.fromIx);
   }
@@ -215,7 +215,7 @@ export class SortableItem {
 
   @bindable item = null;
 
-  bind(ctx) {
-    this.ctx = ctx; //Need a reference to the item's $index
+  bind(ctx, overrideCtx) {
+    this.ctx = overrideCtx; //Need a reference to the item's $index
   }
 }
