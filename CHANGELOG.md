@@ -1,3 +1,16 @@
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/oribella/aurelia-sortable/compare/v0.2.2...v0.3.0) (2015-11-11)
+
+
+### Bug Fixes
+
+* ***:** decorate Drag, AutoScroll as transient ([0d366f4](https://github.com/oribella/aurelia-sortable/commit/0d366f4))
+* ***:** use the new PAL from Aurelia ([a40992c](https://github.com/oribella/aurelia-sortable/commit/a40992c))
+* **scroll:** make sure to remove all event listeners ([6f6fc91](https://github.com/oribella/aurelia-sortable/commit/6f6fc91))
+* **sortable:** use DOM.Element instead of Element ([d8a2fbd](https://github.com/oribella/aurelia-sortable/commit/d8a2fbd))
+
+
+
 <a name="0.2.2"></a>
 ## [0.2.2](https://github.com/oribella/aurelia-sortable/compare/v0.2.1...v0.2.2) (2015-10-15)
 
