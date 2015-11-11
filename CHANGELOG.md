@@ -1,3 +1,13 @@
+<a name="0.3.1"></a>
+## [0.3.1](https://github.com/oribella/aurelia-sortable/compare/v0.3.0...v0.3.1) (2015-11-11)
+
+
+### Bug Fixes
+
+* **sortable:** update to get the correct view model for a `sortable-item` ([df68c1d](https://github.com/oribella/aurelia-sortable/commit/df68c1d))
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/oribella/aurelia-sortable/compare/v0.2.2...v0.3.0) (2015-11-11)
 
