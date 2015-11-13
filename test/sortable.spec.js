@@ -503,7 +503,8 @@ describe("Sortable", () => {
           writable: true
         },
         "boundingRect": {
-          value: boundingRect
+          value: boundingRect,
+          writable: true
         }
       });
       dragCenterX = sandbox.stub(sortable.drag, "getCenterX");
@@ -563,7 +564,8 @@ describe("Sortable", () => {
       allowDrag = sandbox.stub().returns(true);
       sortable = Object.create(sortable, {
         "allowDrag": {
-          value: allowDrag
+          value: allowDrag,
+          writable: true
         }
       });
       getItemViewModel = sandbox.stub(sortable, "getItemViewModel");
@@ -585,6 +587,133 @@ describe("Sortable", () => {
     it("should return falsy if `allowDrag` is falsy", () => {
       allowDrag.returns(false);
       expect(sortable.down()).to.equal(false);
+    });
+
+  });
+
+  describe("`start`", () => {
+    let element;
+    let pageX;
+    let pageY;
+    let scroll;
+    let boundingRect;
+    let placeholder;
+    let scrollSpeed;
+    let scrollSensitivity;
+    let getItemViewModel;
+    let addPlaceholder;
+    let item = {};
+    let ctx = {};
+    let dragStart;
+    let autoScrollStart;
+
+    beforeEach(() => {
+      element = {};
+      pageX = 10;
+      pageY = 20;
+      boundingRect = { left: 10, top: 20, right: 30, bottom: 40 };
+      scroll = { getBoundingClientRect: sandbox.stub().returns({}) };
+      placeholder = {};
+      scrollSpeed = 99;
+      scrollSensitivity = 66;
+      sortable = Object.create(sortable, {
+        "scroll": {
+          value: scroll,
+          writable: true
+        },
+        "boundingRect": {
+          value: boundingRect,
+          writable: true
+        },
+        "axis": {
+          value: "foo",
+          writable: true
+        },
+        "dragZIndex": {
+          value: -1,
+          writable: true
+        },
+        "placeholder": {
+          value: placeholder,
+          writable: true
+        },
+        "scrollSpeed": {
+          value: scrollSpeed,
+          writable: true
+        },
+        "scrollSensitivity": {
+          value: scrollSensitivity,
+          writable: true
+        }
+      });
+      getItemViewModel = sandbox.stub(sortable, "getItemViewModel");
+      getItemViewModel.returns({ item: item, ctx: ctx });
+      dragStart = sandbox.stub(sortable.drag, "start");
+      autoScrollStart = sandbox.stub(sortable.autoScroll, "start");
+      addPlaceholder = sandbox.stub(sortable, "addPlaceholder");
+    });
+
+    it("should set `pageX`", () => {
+      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+      expect(sortable.pageX).to.equal(pageX);
+    });
+
+    it("should set `pageY`", () => {
+      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+      expect(sortable.pageY).to.equal(pageY);
+    });
+
+    it("should set `scrollRect`", () => {
+      scroll.getBoundingClientRect.returns( { left: 5, top: 6, bottom: 7, right: 8, width: 9, height: 10 });
+      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+      expect(sortable.scrollRect).to.deep.equal({ left: 5, top: 6, bottom: 7, right: 8, width: 9, height: 10 });
+    });
+
+    describe("`boundingRect`", () => {
+
+      it("should set `boundingRect`", () => {
+        sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+        expect(sortable.boundingRect).to.equal(boundingRect);
+      });
+
+      it("should set default `boundingRect`", () => {
+        sortable.boundingRect = null;
+        sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+        expect(sortable.boundingRect).to.deep.equal({
+          left: sortable.scrollRect.left + 5,
+          top: sortable.scrollRect.top + 5,
+          right: sortable.scrollRect.right - 5,
+          bottom: sortable.scrollRect.bottom - 5
+        });
+      });
+
+    });
+
+    it("should call `drag.start`", () => {
+      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+      expect(dragStart).to.have.been.calledWithExactly(element, 10, 20, scroll, -1, placeholder, "foo");
+    });
+
+    it("should call `autoScroll.start`", () => {
+      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+      expect(autoScrollStart).to.have.been.calledWithExactly("foo", scrollSpeed, scrollSensitivity);
+    });
+
+    it("should set `fromIx`", () => {
+      getItemViewModel.returns( { ctx: { $index: 13 } });
+      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+      expect(sortable.fromIx).to.equal(13);
+    });
+
+    it("should set `toIx`", () => {
+      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+      expect(sortable.toIx).to.equal(-1);
+    });
+
+    it("should call `addPlaceholder`", () => {
+      getItemViewModel.returns( { ctx: { $index: 13 } });
+      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+      expect(addPlaceholder).to.have.been.calledWithExactly(13);
     });
 
   });
