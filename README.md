@@ -31,9 +31,8 @@ export function configure(aurelia) {
 
 To get started you need to bind the *sortable*, *sortable-item* attributes in conjunction with the *repeat* attribute.
 ```markup
-<div repeat.for="image of images"
-  sortable="items.bind: images">
-  <div sortable-item="item.bind image"></div>
+<div sortable="items.bind: images">
+  <div repeat.for="image of images" sortable-item="item.bind image"></div>
 </div>
 ```
 This will enable the plugin to keep track of and move around the items.
@@ -88,7 +87,7 @@ To be able to constrain the *sortable* bounding rect add:
 </div>
 ```
 This is useful if the list has a padding and you still want to lock the `axis` movement.
-###### Default `boundingRect={ left: 0, top: 0, right: 0, bottom : 0}`.
+###### Default `boundingRect={ left: 0, top: 0, right: 0, bottom : 0 }`.
 
 To make sure that the dragging of a *sortable item* always is on top of other elements make sure to bind:
 ```markup
