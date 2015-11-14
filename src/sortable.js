@@ -188,7 +188,7 @@ export class Sortable {
   }
   end() {
     this.toIx = this.items.indexOf(this.placeholder);
-    if (this.toIx < 0) {
+    if (this.toIx === -1) {
       return; //cancelled
     }
     this.move(this.toIx < this.fromIx ? this.fromIx + 1 : this.fromIx, this.toIx);

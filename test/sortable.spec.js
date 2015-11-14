@@ -793,4 +793,112 @@ describe("Sortable", () => {
 
   });
 
+  describe("`end`", () => {
+    let indexOf;
+    let move;
+    let dragEnd;
+    let autoScrollEnd;
+    let removePlaceholder;
+    let moved;
+    let fromIx;
+    let toIx;
+
+    beforeEach(() => {
+      indexOf = sandbox.stub(sortable.items, "indexOf");
+      move = sandbox.stub(sortable, "move");
+      dragEnd = sandbox.stub(sortable.drag, "end");
+      autoScrollEnd = sandbox.stub(sortable.autoScroll, "end");
+      removePlaceholder = sandbox.stub(sortable, "removePlaceholder");
+      moved = sandbox.stub();
+      sortable = Object.create(sortable, {
+        "moved": {
+          value: moved,
+          writable: true
+        }
+      });
+    });
+
+    it("should do a quick return if `placeholder` can't be found", () => {
+      indexOf.returns(-1);
+      sortable.end();
+      expect(move).to.have.callCount(0);
+      expect(dragEnd).to.have.callCount(0);
+      expect(autoScrollEnd).to.have.callCount(0);
+      expect(removePlaceholder).to.have.callCount(0);
+      expect(moved).to.have.callCount(0);
+    });
+
+    describe("`toIx`", () => {
+
+      it("should set `toIx` to indexOf `placeholder` if `fromIx` is greater than `toIx`", () => {
+        fromIx = 2;
+        sortable.fromIx = fromIx;
+        toIx = 1;
+        indexOf.returns(toIx);
+        sortable.end();
+        expect(sortable.toIx).to.equal(toIx);
+      });
+
+      it("should set `toIx` to indexOf `placeholder` - 1 if `fromIx` is less than `toIx`", () => {
+        fromIx = 4;
+        sortable.fromIx = fromIx;
+        toIx = 6;
+        indexOf.returns(toIx);
+        sortable.end();
+        expect(sortable.toIx).to.equal(toIx - 1);
+      });
+
+    });
+
+    describe("`move`", () => {
+
+      it("should call `move` with `fromIx` + 1 if `toIx` less than `fromIx`", () => {
+        fromIx = 2;
+        sortable.fromIx = fromIx;
+        toIx = 1;
+        indexOf.returns(toIx);
+        sortable.end();
+        expect(move).to.have.been.calledWithExactly(fromIx + 1, toIx);
+      });
+
+      it("should call `move` with `fromIx` if `toIx` greater than `fromIx`", () => {
+        fromIx = 2;
+        sortable.fromIx = fromIx;
+        toIx = 3;
+        indexOf.returns(toIx);
+        sortable.end();
+        expect(move).to.have.been.calledWithExactly(fromIx, toIx);
+      });
+
+    });
+
+    it("should call `drag.end`", () => {
+      sortable.end();
+      expect(dragEnd).to.have.been.calledWithExactly();
+    });
+
+    it("should call `autoScroll.end`", () => {
+      sortable.end();
+      expect(autoScrollEnd).to.have.been.calledWithExactly();
+    });
+
+    it("should call `removePlaceholder`", () => {
+      sortable.end();
+      expect(removePlaceholder).to.have.been.calledWithExactly();
+    });
+
+    it("should call `moved`", () => {
+      fromIx = 2;
+      sortable.fromIx = fromIx;
+      toIx = 1;
+      indexOf.returns(toIx);
+      sortable.end();
+      expect(moved).to.have.been.calledWithExactly( {
+        fromIx: fromIx,
+        toIx: toIx
+      });
+
+    });
+  });
+
 });
