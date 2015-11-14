@@ -718,4 +718,79 @@ describe("Sortable", () => {
 
   });
 
+  describe("`update`", () => {
+    let pageX;
+    let pageY;
+    let scroll;
+    let scrollRect;
+    let axis;
+    let dragUpdate;
+    let getPoint;
+    let tryUpdate;
+    let autoScrollUpdate;
+
+    beforeEach(() => {
+      pageX = 10;
+      pageY = 20;
+      scroll = {};
+      scrollRect = {};
+      axis = "foo";
+      dragUpdate = sandbox.stub(sortable.drag, "update");
+      getPoint = sandbox.stub(sortable, "getPoint").returns( { x: pageX, y: pageY });
+      tryUpdate = sandbox.stub(sortable, "tryUpdate");
+      autoScrollUpdate = sandbox.stub(sortable.autoScroll, "update");
+      sortable = Object.create(sortable, {
+        "scroll": {
+          value: scroll,
+          writable: true
+        },
+        "scrollRect": {
+          value: scrollRect,
+          writable: true
+        },
+        "axis": {
+          value: axis,
+          writable: true
+        }
+      });
+    });
+
+    it("should set `pageX`", () => {
+      sortable.update({}, { pagePoints: [{ x: pageX, y: pageY }] });
+      expect(sortable.pageX).to.equal(10);
+    });
+
+    it("should set `pageY`", () => {
+      sortable.update({}, { pagePoints: [{ x: pageX, y: pageY }] });
+      expect(sortable.pageY).to.equal(20);
+    });
+
+    it("should call `drag.update`", () => {
+      sortable.update({}, { pagePoints: [{ x: pageX, y: pageY }] });
+      expect(dragUpdate).to.have.been.calledWithExactly(pageX, pageY, scroll, axis);
+    });
+
+    it("should call `getPoint`", () => {
+      sortable.update({}, { pagePoints: [{ x: pageX, y: pageY }] });
+      expect(getPoint).to.have.been.calledWithExactly(pageX, pageY);
+    });
+
+    it("should call `tryUpdate`", () => {
+      pageX = 3;
+      pageY = 6;
+      getPoint.returns( { x: pageX, y: pageY });
+      sortable.update({}, { pagePoints: [{ x: pageX, y: pageY }] });
+      expect(tryUpdate).to.have.been.calledWithExactly(pageX, pageY);
+    });
+
+    it("should call `autoScroll.update`", () => {
+      pageX = 12;
+      pageY = 24;
+      getPoint.returns( { x: pageX, y: pageY });
+      sortable.update({}, { pagePoints: [{ x: pageX, y: pageY }] });
+      expect(autoScrollUpdate).to.have.been.calledWithExactly(scroll, pageX, pageY, scrollRect);
+    });
+
+  });
+
 });
