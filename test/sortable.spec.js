@@ -901,4 +901,32 @@ describe("Sortable", () => {
     });
   });
 
+  describe("`cancel`", () => {
+    let dragEnd;
+    let autoScrollEnd;
+    let removePlaceholder;
+
+    beforeEach(() => {
+      dragEnd = sandbox.stub(sortable.drag, "end");
+      autoScrollEnd = sandbox.stub(sortable.autoScroll, "end");
+      removePlaceholder = sandbox.stub(sortable, "removePlaceholder");
+    });
+
+    it("should call `drag.end`", () => {
+      sortable.cancel();
+      expect(dragEnd).to.have.been.calledWithExactly();
+    });
+
+    it("should call `autoScroll.end`", () => {
+      sortable.cancel();
+      expect(autoScrollEnd).to.have.been.calledWithExactly();
+    });
+
+    it("should call `removePlaceholder`", () => {
+      sortable.cancel();
+      expect(removePlaceholder).to.have.been.calledWithExactly();
+    });
+
+  });
+
 });
