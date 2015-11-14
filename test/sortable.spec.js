@@ -4,6 +4,7 @@ let System = loader();
 describe("Sortable", () => {
   let sandbox;
   let Sortable;
+  let SortableItem;
   let sortable;
   let Container;
   let container;
@@ -36,6 +37,7 @@ describe("Sortable", () => {
     }).then(() => {
       return System.import("./src/sortable").then(mod => {
         Sortable = mod.Sortable;
+        SortableItem = mod.SortableItem;
       });
     });
   });
@@ -925,6 +927,21 @@ describe("Sortable", () => {
     it("should call `removePlaceholder`", () => {
       sortable.cancel();
       expect(removePlaceholder).to.have.been.calledWithExactly();
+    });
+
+  });
+
+  describe("SortableItem", () => {
+    let sortableItem;
+
+    beforeEach(() => {
+      sortableItem = templatingEngine.createViewModelForUnitTest(SortableItem);
+    });
+
+    it("should set `ctx`", () => {
+      let overrideCtx = {};
+      sortableItem.bind({}, overrideCtx);
+      expect(sortableItem.ctx).to.equal(overrideCtx);
     });
 
   });
