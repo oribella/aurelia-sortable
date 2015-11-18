@@ -215,7 +215,7 @@ export class SortableItem {
 
   @bindable item = null;
 
-  bind(ctx, overrideCtx) {
-    this.ctx = overrideCtx; //Need a reference to the item's $index
+  bind(ctx) {
+    this.ctx = ctx; //Need a reference to the item's $index
   }
 }

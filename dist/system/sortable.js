@@ -365,7 +365,7 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
           key: "end",
           value: function end() {
             this.toIx = this.items.indexOf(this.placeholder);
-            if (this.toIx < 0) {
+            if (this.toIx === -1) {
               return; //cancelled
             }
             this.move(this.toIx < this.fromIx ? this.fromIx + 1 : this.fromIx, this.toIx);
@@ -409,8 +409,8 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
 
         _createDecoratedClass(SortableItem, [{
           key: "bind",
-          value: function bind(ctx, overrideCtx) {
-            this.ctx = overrideCtx; //Need a reference to the item's $index
+          value: function bind(ctx) {
+            this.ctx = ctx; //Need a reference to the item's $index
           }
         }, {
           key: "item",

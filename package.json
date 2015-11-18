@@ -40,9 +40,9 @@
       "lib": "dist/amd"
     },
     "dependencies": {
-      "aurelia-dependency-injection": "github:aurelia/dependency-injection@^0.12.0",
-      "aurelia-pal": "github:aurelia/pal@^0.3.0",
-      "aurelia-templating": "github:aurelia/templating@^0.17.0",
+      "aurelia-dependency-injection": "npm:aurelia-dependency-injection@^1.0.0-beta.1",
+      "aurelia-pal": "npm:aurelia-pal@^1.0.0-beta.1",
+      "aurelia-templating": "npm:aurelia-templating@^1.0.0-beta.1",
       "oribella-default-gestures": "github:oribella/default-gestures@^0.2.0"
     },
     "devDependencies": {
