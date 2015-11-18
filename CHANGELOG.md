@@ -1,3 +1,13 @@
+<a name="0.3.3"></a>
+## [0.3.3](https://github.com/oribella/aurelia-sortable/compare/v0.3.2...v0.3.3) (2015-11-18)
+
+
+### Bug Fixes
+
+* **sortable:** use `overrideCtx` ([b9ab4da](https://github.com/oribella/aurelia-sortable/commit/b9ab4da))
+
+
+
 <a name="0.3.2"></a>
 ## [0.3.2](https://github.com/oribella/aurelia-sortable/compare/v0.3.1...v0.3.2) (2015-11-18)
 
