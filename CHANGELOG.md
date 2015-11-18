@@ -1,3 +1,9 @@
+<a name="0.3.2"></a>
+## [0.3.2](https://github.com/oribella/aurelia-sortable/compare/v0.3.1...v0.3.2) (2015-11-18)
+
+
+
+
 <a name="0.3.1"></a>
 ## [0.3.1](https://github.com/oribella/aurelia-sortable/compare/v0.3.0...v0.3.1) (2015-11-11)
 
@@ -14,8 +20,8 @@
 
 ### Bug Fixes
 
-* ***:** decorate Drag, AutoScroll as transient ([0d366f4](https://github.com/oribella/aurelia-sortable/commit/0d366f4))
-* ***:** use the new PAL from Aurelia ([a40992c](https://github.com/oribella/aurelia-sortable/commit/a40992c))
+* decorate Drag, AutoScroll as transient ([0d366f4](https://github.com/oribella/aurelia-sortable/commit/0d366f4))
+* use the new PAL from Aurelia ([a40992c](https://github.com/oribella/aurelia-sortable/commit/a40992c))
 * **scroll:** make sure to remove all event listeners ([6f6fc91](https://github.com/oribella/aurelia-sortable/commit/6f6fc91))
 * **sortable:** use DOM.Element instead of Element ([d8a2fbd](https://github.com/oribella/aurelia-sortable/commit/d8a2fbd))
 
@@ -47,7 +53,7 @@
 
 ### Bug Fixes
 
-* ***:** fixed  dependency and updated accordingly ([fc110c4](https://github.com/oribella/aurelia-sortable/commit/fc110c4))
+* fixed  dependency and updated accordingly ([fc110c4](https://github.com/oribella/aurelia-sortable/commit/fc110c4))
 * **index:** change globalizeResources -> globalResources since BREAKING CHANGE in Aurelia ([0985f32](https://github.com/oribella/aurelia-sortable/commit/0985f32))
 * **index:** Move allow drag to  action. Make sure to call event.preventDefault to disable fi ([dcdcadc](https://github.com/oribella/aurelia-sortable/commit/dcdcadc))
 * **sortable:** only align position if the offsetParent element is the same as the scroll elemen ([e20e377](https://github.com/oribella/aurelia-sortable/commit/e20e377))
