@@ -393,8 +393,8 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
 
     _createDecoratedClass(SortableItem, [{
       key: "bind",
-      value: function bind(ctx) {
-        this.ctx = ctx; //Need a reference to the item's $index
+      value: function bind(ctx, overrideCtx) {
+        this.ctx = overrideCtx; //Need a reference to the item's $index
       }
     }, {
       key: "item",
