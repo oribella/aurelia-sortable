@@ -49,6 +49,13 @@ However you might want to control the `placeholder` that is moved around. Add a 
 ```
 to simulate an `item` in the repeat.
 
+It could then be used in the `sortable-item` like this:
+```markup
+<!-- Other bindings omitted -->
+<div sortable-item="item.bind: image" class="${image.media.placeholderClass}">
+</div>
+```
+
 If the `sortable` *custom attribute* is in an area that is scrollable you have to bind either a `selector` or an `Element`:
 ```markup
 <!-- Other bindings omitted -->
