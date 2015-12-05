@@ -112,10 +112,10 @@ To be able to have a *sortable* where you might be editing the *sortable items* 
 ```
 ###### Default `disallowedDragTagNames=['INPUT', 'SELECT', 'TEXTAREA']` - element tags that disallows start dragging.
 
-If that insufficient:
+If that is insufficient:
 ```markup
 <!-- Other bindings omitted -->
-<div sortable="allow-drag.bind: allowDrag();">
+<div sortable="allow-drag.call: allowDrag($event);">
 </div>
 ```
 ###### Default `allowDrag`
@@ -130,14 +130,29 @@ If that insufficient:
   return true;
 };
 ```
+where `$event` has `event` and `item` properties.
+`event` - the native DOM event
+`item` - the `sortable-item` view-model
 
 Control whether a *sortable item* is allowed to move:
 ```markup
 <!-- Other bindings omitted -->
-<div sortable="allow-move.bind: allowMove();">
+<div sortable="allow-move.call: allowMove($event);">
 </div>
 ```
 ###### Default `allowMove`
 ```javascript
 @bindable allowMove = () => { return true; };
 ```
+where `$event` has an `item` property.
+`item` - the `sortable-item` view-model
+
+If you need it you can also bind `moved` which will be called after an item has been sorted
+```markup
+<!-- Other bindings omitted -->
+<div sortable="moved.call: moved($event);">
+</div>
+```
+where `$event` has `fromIx` and `toIx` properties.
+`fromIx` - the from index in the `sortable`
+`toIx` - the to index in the `sortable`

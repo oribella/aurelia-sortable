@@ -284,9 +284,9 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
           }
         }, {
           key: "tryUpdate",
-          value: function tryUpdate(pageX, pageY, scrollLeft, scrollTop) {
+          value: function tryUpdate(pageX, pageY, offsetX, offsetY) {
             var showFn = this.hide(this.drag.element);
-            this.tryMove(pageX, pageY, scrollLeft, scrollTop);
+            this.tryMove(pageX, pageY, offsetX, offsetY);
             showFn();
           }
         }, {
@@ -310,9 +310,7 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
         }, {
           key: "canThrottle",
           value: function canThrottle(x, y, offsetX, offsetY) {
-            x += offsetX;
-            y += offsetY;
-            return this.lastElementFromPointRect && this.pointInside(x, y, this.lastElementFromPointRect);
+            return this.lastElementFromPointRect && this.pointInside(x + offsetX, y + offsetY, this.lastElementFromPointRect);
           }
         }, {
           key: "tryMove",

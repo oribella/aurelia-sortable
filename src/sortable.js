@@ -124,9 +124,9 @@ export class Sortable {
       this.items.splice(toIx, 0, this.items.splice(fromIx, 1)[0]);
     }
   }
-  tryUpdate(pageX, pageY, scrollLeft, scrollTop) {
+  tryUpdate(pageX, pageY, offsetX, offsetY) {
     const showFn = this.hide(this.drag.element);
-    this.tryMove(pageX, pageY, scrollLeft, scrollTop);
+    this.tryMove(pageX, pageY, offsetX, offsetY);
     showFn();
   }
   pointInside(x, y, rect) {
@@ -147,10 +147,8 @@ export class Sortable {
     return element;
   }
   canThrottle(x, y, offsetX, offsetY) {
-    x += offsetX;
-    y += offsetY;
     return this.lastElementFromPointRect &&
-      this.pointInside(x, y, this.lastElementFromPointRect);
+      this.pointInside(x + offsetX, y + offsetY, this.lastElementFromPointRect);
   }
   tryMove(x, y, offsetX, offsetY) {
     if(this.canThrottle(x, y, offsetX, offsetY)) {
