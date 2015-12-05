@@ -35,25 +35,13 @@ var AutoScroll = (function () {
     }
   }, {
     key: "update",
-    value: function update(element, x, y, scrollRect) {
+    value: function update(element, x, y, scrollWidth, scrollHeight, scrollRect) {
       var _this = this;
 
-      var rAF = arguments.length <= 4 || arguments[4] === undefined ? requestAnimationFrame : arguments[4];
-      var cAF = arguments.length <= 5 || arguments[5] === undefined ? cancelAnimationFrame : arguments[5];
-      var _scrollRect$left = scrollRect.left;
-      var left = _scrollRect$left === undefined ? 0 : _scrollRect$left;
-      var _scrollRect$top = scrollRect.top;
-      var top = _scrollRect$top === undefined ? 0 : _scrollRect$top;
-      var _scrollRect$width = scrollRect.width;
-      var width = _scrollRect$width === undefined ? 0 : _scrollRect$width;
-      var _scrollRect$height = scrollRect.height;
-      var height = _scrollRect$height === undefined ? 0 : _scrollRect$height;
-      var _scrollRect$right = scrollRect.right;
-      var right = _scrollRect$right === undefined ? 0 : _scrollRect$right;
-      var _scrollRect$bottom = scrollRect.bottom;
-      var bottom = _scrollRect$bottom === undefined ? 0 : _scrollRect$bottom;
+      var rAF = arguments.length <= 6 || arguments[6] === undefined ? requestAnimationFrame : arguments[6];
+      var cAF = arguments.length <= 7 || arguments[7] === undefined ? cancelAnimationFrame : arguments[7];
 
-      var d = this.getScrollDirection(x, y, top, bottom, left, right);
+      var d = this.getScrollDirection(x, y, scrollRect);
       if (this.active) {
         if (d[0] === 0 && d[1] === 0) {
           cAF(this.rAFId);
@@ -65,7 +53,7 @@ var AutoScroll = (function () {
         return;
       }
 
-      this.ticks = this.getTicks(d, element.scrollLeft, element.scrollTop, element.scrollWidth, element.scrollHeight, width, height);
+      this.ticks = this.getTicks(d, element.scrollLeft, element.scrollTop, scrollWidth, scrollHeight, scrollRect.width, scrollRect.height);
       if (this.ticks[0] <= 0 && this.ticks[1] <= 0) {
         return;
       }
@@ -116,7 +104,13 @@ var AutoScroll = (function () {
     }
   }, {
     key: "getScrollDirection",
-    value: function getScrollDirection(x, y, top, bottom, left, right) {
+    value: function getScrollDirection(x, y, scrollRect) {
+      var left = scrollRect.left;
+      var top = scrollRect.top;
+      var right = scrollRect.right;
+      var _scrollRect$bottom = scrollRect.bottom;
+      var bottom = _scrollRect$bottom === undefined ? 0 : _scrollRect$bottom;
+
       var d = [0, 0];
 
       d[0] = this.axis === "y" ? 0 : x >= right - this.sensitivity ? 1 : x <= left + this.sensitivity ? -1 : 0;

@@ -347,6 +347,8 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
         this.pageX = data.pagePoints[0].x;
         this.pageY = data.pagePoints[0].y;
         this.scrollRect = this.scroll.getBoundingClientRect();
+        this.scrollWidth = this.scroll.scrollWidth;
+        this.scrollHeight = this.scroll.scrollHeight;
         this.boundingRect = this.boundingRect || { left: this.scrollRect.left + 5, top: this.scrollRect.top + 5, right: this.scrollRect.right - 5, bottom: this.scrollRect.bottom - 5 };
         this.drag.start(element, this.pageX, this.pageY, this.scroll.scrollLeft, this.scroll.scrollTop, this.dragZIndex, this.placeholder, this.axis);
         this.autoScroll.start(this.axis, this.scrollSpeed, this.scrollSensitivity);
@@ -374,7 +376,7 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
         var scrollX = this.autoScroll.active ? scrollLeft : 0;
         var scrollY = this.autoScroll.active ? scrollTop : 0;
         this.tryUpdate(x, y, scrollX, scrollY);
-        this.autoScroll.update(this.scroll, x, y, this.scrollRect);
+        this.autoScroll.update(this.scroll, x, y, this.scrollWidth, this.scrollHeight, this.scrollRect);
       }
     }, {
       key: "end",

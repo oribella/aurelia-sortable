@@ -14,9 +14,8 @@ export class AutoScroll {
     this.speed = speed;
     this.sensitivity = sensitivity;
   }
-  update(element, x, y, scrollRect, rAF = requestAnimationFrame, cAF = cancelAnimationFrame) {
-    const { left = 0, top = 0, width = 0, height = 0, right = 0, bottom = 0 } = scrollRect;
-    const d = this.getScrollDirection(x, y, top, bottom, left, right);
+  update(element, x, y, scrollWidth, scrollHeight, scrollRect, rAF = requestAnimationFrame, cAF = cancelAnimationFrame) {
+    const d = this.getScrollDirection(x, y, scrollRect);
     if(this.active) {
       if(d[0] === 0 && d[1] === 0) {
         cAF(this.rAFId);
@@ -28,7 +27,7 @@ export class AutoScroll {
       return;
     }
 
-    this.ticks = this.getTicks(d, element.scrollLeft, element.scrollTop, element.scrollWidth, element.scrollHeight, width, height);
+    this.ticks = this.getTicks(d, element.scrollLeft, element.scrollTop, scrollWidth, scrollHeight, scrollRect.width, scrollRect.height);
     if(this.ticks[0] <= 0 && this.ticks[1] <= 0) {
       return;
     }
@@ -75,7 +74,8 @@ export class AutoScroll {
 
     return ticks;
   }
-  getScrollDirection(x, y, top, bottom, left, right) {
+  getScrollDirection(x, y, scrollRect) {
+    const { left, top, right, bottom = 0 } = scrollRect;
     const d = [0, 0];
 
     d[0] = this.axis === "y" ? 0 :
