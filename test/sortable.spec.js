@@ -258,7 +258,7 @@ describe("Sortable", () => {
 
     beforeEach(() => {
       sortable.drag.element = {};
-      sortable.scroll = {};
+      sortable.scroll = { scrollLeft: 0, scrollTop: 0 };
       sortable.pageX = 100;
       sortable.pageY = 200;
       sortable.axis = "foo";
@@ -277,7 +277,7 @@ describe("Sortable", () => {
 
     it("should call `drag.update`", () => {
       sortable.onScroll();
-      expect(dragUpdate).to.have.been.calledWithExactly(100, 200, {}, "foo");
+      expect(dragUpdate).to.have.been.calledWithExactly(100, 200, 0, 0, "foo");
     });
 
     it("should call `getPoint`", () => {
@@ -288,7 +288,7 @@ describe("Sortable", () => {
     it("should call `tryMove`", () => {
       getPoint.returns({ x: 300, y: 400 });
       sortable.onScroll();
-      expect(tryMove).to.have.been.calledWithExactly(300, 400);
+      expect(tryMove).to.have.been.calledWithExactly(300, 400, 0, 0);
     });
 
   });
@@ -390,8 +390,8 @@ describe("Sortable", () => {
     });
 
     it("should call `tryMove`", () => {
-      sortable.tryUpdate(100, 200);
-      expect(tryMove).to.have.been.calledWithExactly(100, 200);
+      sortable.tryUpdate(100, 200, 20, 30);
+      expect(tryMove).to.have.been.calledWithExactly(100, 200, 20, 30);
     });
 
   });
@@ -407,6 +407,7 @@ describe("Sortable", () => {
     let allowMove;
 
     beforeEach(() => {
+      mockElementFromPoint.getBoundingClientRect = sandbox.stub();
       allowMove = sandbox.stub().returns(true);
       sortable = Object.create(sortable, {
         "allowMove": {
@@ -614,7 +615,7 @@ describe("Sortable", () => {
       pageX = 10;
       pageY = 20;
       boundingRect = { left: 10, top: 20, right: 30, bottom: 40 };
-      scroll = { getBoundingClientRect: sandbox.stub().returns({}) };
+      scroll = { scrollLeft: 0, scrollTop: 0, getBoundingClientRect: sandbox.stub().returns({}) };
       placeholder = {};
       scrollSpeed = 99;
       scrollSensitivity = 66;
@@ -693,7 +694,7 @@ describe("Sortable", () => {
 
     it("should call `drag.start`", () => {
       sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
-      expect(dragStart).to.have.been.calledWithExactly(element, 10, 20, scroll, -1, placeholder, "foo");
+      expect(dragStart).to.have.been.calledWithExactly(element, 10, 20, scroll.scrollLeft, scroll.scrollTop, -1, placeholder, "foo");
     });
 
     it("should call `autoScroll.start`", () => {
@@ -734,7 +735,7 @@ describe("Sortable", () => {
     beforeEach(() => {
       pageX = 10;
       pageY = 20;
-      scroll = {};
+      scroll = { scrollLeft: 0, scrollTop: 0 };
       scrollRect = {};
       axis = "foo";
       dragUpdate = sandbox.stub(sortable.drag, "update");
@@ -769,7 +770,7 @@ describe("Sortable", () => {
 
     it("should call `drag.update`", () => {
       sortable.update({}, { pagePoints: [{ x: pageX, y: pageY }] });
-      expect(dragUpdate).to.have.been.calledWithExactly(pageX, pageY, scroll, axis);
+      expect(dragUpdate).to.have.been.calledWithExactly(pageX, pageY, scroll.scrollLeft, scroll.scrollTop, axis);
     });
 
     it("should call `getPoint`", () => {
@@ -782,7 +783,7 @@ describe("Sortable", () => {
       pageY = 6;
       getPoint.returns( { x: pageX, y: pageY });
       sortable.update({}, { pagePoints: [{ x: pageX, y: pageY }] });
-      expect(tryUpdate).to.have.been.calledWithExactly(pageX, pageY);
+      expect(tryUpdate).to.have.been.calledWithExactly(pageX, pageY, scroll.scrollLeft, scroll.scrollTop);
     });
 
     it("should call `autoScroll.update`", () => {

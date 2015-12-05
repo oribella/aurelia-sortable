@@ -158,6 +158,7 @@ var Sortable = (function () {
     this.pageX = 0;
     this.pageY = 0;
     this.scrollRect = { left: 0, top: 0, width: 0, height: 0 };
+    this.lastElementFromPointRect = null;
 
     this.element = element;
     this.drag = drag;
@@ -210,14 +211,16 @@ var Sortable = (function () {
       if (!this.drag.element) {
         return;
       }
-      this.drag.update(this.pageX, this.pageY, this.scroll, this.axis);
+      var scrollLeft = this.scroll.scrollLeft;
+      var scrollTop = this.scroll.scrollTop;
+      this.drag.update(this.pageX, this.pageY, scrollLeft, scrollTop, this.axis);
 
       var _getPoint = this.getPoint(this.pageX, this.pageY);
 
       var x = _getPoint.x;
       var y = _getPoint.y;
 
-      this.tryMove(x, y);
+      this.tryMove(x, y, scrollLeft, scrollTop);
     }
   }, {
     key: "hide",
@@ -276,23 +279,48 @@ var Sortable = (function () {
     }
   }, {
     key: "tryUpdate",
-    value: function tryUpdate(pageX, pageY) {
+    value: function tryUpdate(pageX, pageY, scrollLeft, scrollTop) {
       var showFn = this.hide(this.drag.element);
-      this.tryMove(pageX, pageY);
+      this.tryMove(pageX, pageY, scrollLeft, scrollTop);
       showFn();
     }
   }, {
-    key: "tryMove",
-    value: function tryMove(x, y) {
+    key: "pointInside",
+    value: function pointInside(x, y, rect) {
+      return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+    }
+  }, {
+    key: "elementFromPoint",
+    value: function elementFromPoint(x, y) {
       var element = document.elementFromPoint(x, y);
       if (!element) {
-        return;
+        return null;
       }
       element = this.closest(element, this.selector, this.element);
+      if (!element) {
+        return null;
+      }
+      return element;
+    }
+  }, {
+    key: "canThrottle",
+    value: function canThrottle(x, y, offsetX, offsetY) {
+      x += offsetX;
+      y += offsetY;
+      return this.lastElementFromPointRect && this.pointInside(x, y, this.lastElementFromPointRect);
+    }
+  }, {
+    key: "tryMove",
+    value: function tryMove(x, y, offsetX, offsetY) {
+      if (this.canThrottle(x, y, offsetX, offsetY)) {
+        return;
+      }
+      var element = this.elementFromPoint(x, y);
       if (!element) {
         return;
       }
       var model = this.getItemViewModel(element);
+      this.lastElementFromPointRect = element.getBoundingClientRect();
       if (!this.allowMove({ item: model.item })) {
         return;
       }
@@ -333,11 +361,12 @@ var Sortable = (function () {
       this.pageY = data.pagePoints[0].y;
       this.scrollRect = this.scroll.getBoundingClientRect();
       this.boundingRect = this.boundingRect || { left: this.scrollRect.left + 5, top: this.scrollRect.top + 5, right: this.scrollRect.right - 5, bottom: this.scrollRect.bottom - 5 };
-      this.drag.start(element, this.pageX, this.pageY, this.scroll, this.dragZIndex, this.placeholder, this.axis);
+      this.drag.start(element, this.pageX, this.pageY, this.scroll.scrollLeft, this.scroll.scrollTop, this.dragZIndex, this.placeholder, this.axis);
       this.autoScroll.start(this.axis, this.scrollSpeed, this.scrollSensitivity);
       this.fromIx = this.getItemViewModel(element).ctx.$index;
       this.toIx = -1;
       this.addPlaceholder(this.fromIx);
+      this.lastElementFromPointRect = this.drag.rect;
     }
   }, {
     key: "update",
@@ -345,15 +374,19 @@ var Sortable = (function () {
       var p = data.pagePoints[0];
       var pageX = this.pageX = p.x;
       var pageY = this.pageY = p.y;
+      var scrollLeft = this.scroll.scrollLeft;
+      var scrollTop = this.scroll.scrollTop;
 
-      this.drag.update(pageX, pageY, this.scroll, this.axis);
+      this.drag.update(pageX, pageY, scrollLeft, scrollTop, this.axis);
 
       var _getPoint2 = this.getPoint(pageX, pageY);
 
       var x = _getPoint2.x;
       var y = _getPoint2.y;
 
-      this.tryUpdate(x, y);
+      var scrollX = this.autoScroll.active ? scrollLeft : 0;
+      var scrollY = this.autoScroll.active ? scrollTop : 0;
+      this.tryUpdate(x, y, scrollX, scrollY);
       this.autoScroll.update(this.scroll, x, y, this.scrollRect);
     }
   }, {

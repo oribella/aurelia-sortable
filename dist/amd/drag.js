@@ -58,10 +58,7 @@ define(["exports", "aurelia-dependency-injection"], function (exports, _aureliaD
       }
     }, {
       key: "start",
-      value: function start(element, pageX, pageY, _ref, dragZIndex, placeholder) {
-        var scrollLeft = _ref.scrollLeft;
-        var scrollTop = _ref.scrollTop;
-
+      value: function start(element, pageX, pageY, scrollLeft, scrollTop, dragZIndex, placeholder) {
         var rect = this.rect = element.getBoundingClientRect();
         var offsetParentRect = element.offsetParent.getBoundingClientRect();
 
@@ -79,14 +76,11 @@ define(["exports", "aurelia-dependency-injection"], function (exports, _aureliaD
         placeholder.style.width = rect.width + "px";
         placeholder.style.height = rect.height + "px";
 
-        this.update(pageX, pageY, { scrollLeft: scrollLeft, scrollTop: scrollTop });
+        this.update(pageX, pageY, scrollLeft, scrollTop);
       }
     }, {
       key: "update",
-      value: function update(pageX, pageY, _ref2, axis) {
-        var scrollLeft = _ref2.scrollLeft;
-        var scrollTop = _ref2.scrollTop;
-
+      value: function update(pageX, pageY, scrollLeft, scrollTop, axis) {
         var left = pageX + this.offsetX + scrollLeft;
         var top = pageY + this.offsetY + scrollTop;
 

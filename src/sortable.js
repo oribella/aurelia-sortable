@@ -37,6 +37,7 @@ export class Sortable {
   pageX = 0;
   pageY = 0;
   scrollRect = { left: 0, top: 0, width: 0, height: 0 };
+  lastElementFromPointRect = null;
 
   constructor(element, drag, autoScroll) {
     this.element = element;
@@ -77,12 +78,14 @@ export class Sortable {
     if(!this.drag.element) {
       return;
     }
-    this.drag.update(this.pageX, this.pageY, this.scroll, this.axis);
-    let { x, y } = this.getPoint(this.pageX, this.pageY);
-    this.tryMove(x, y);
+    const scrollLeft = this.scroll.scrollLeft;
+    const scrollTop = this.scroll.scrollTop;
+    this.drag.update(this.pageX, this.pageY, scrollLeft, scrollTop, this.axis);
+    const { x, y } = this.getPoint(this.pageX, this.pageY);
+    this.tryMove(x, y, scrollLeft, scrollTop);
   }
   hide(element) {
-    let display = element.style.display;
+    const display = element.style.display;
     element.style.display = "none";
     return () => {
       element.style.display = display;
@@ -107,13 +110,13 @@ export class Sortable {
     this.items.splice(toIx, 0, this.placeholder);
   }
   removePlaceholder() {
-    var ix = this.items.indexOf(this.placeholder);
+    const ix = this.items.indexOf(this.placeholder);
     if (ix !== -1) {
       this.items.splice(ix, 1);
     }
   }
   movePlaceholder(toIx) {
-    var fromIx = this.items.indexOf(this.placeholder);
+    const fromIx = this.items.indexOf(this.placeholder);
     this.move(fromIx, toIx);
   }
   move(fromIx, toIx) {
@@ -121,25 +124,48 @@ export class Sortable {
       this.items.splice(toIx, 0, this.items.splice(fromIx, 1)[0]);
     }
   }
-  tryUpdate(pageX, pageY) {
-    let showFn = this.hide(this.drag.element);
-    this.tryMove(pageX, pageY);
+  tryUpdate(pageX, pageY, scrollLeft, scrollTop) {
+    const showFn = this.hide(this.drag.element);
+    this.tryMove(pageX, pageY, scrollLeft, scrollTop);
     showFn();
   }
-  tryMove(x, y) {
+  pointInside(x, y, rect) {
+    return x >= rect.left &&
+      x <= rect.right &&
+      y >= rect.top &&
+      y <= rect.bottom;
+  }
+  elementFromPoint(x, y) {
     let element = document.elementFromPoint(x, y);
     if(!element) {
-      return;
+      return null;
     }
     element = this.closest(element, this.selector, this.element);
     if(!element) {
+      return null;
+    }
+    return element;
+  }
+  canThrottle(x, y, offsetX, offsetY) {
+    x += offsetX;
+    y += offsetY;
+    return this.lastElementFromPointRect &&
+      this.pointInside(x, y, this.lastElementFromPointRect);
+  }
+  tryMove(x, y, offsetX, offsetY) {
+    if(this.canThrottle(x, y, offsetX, offsetY)) {
       return;
     }
-    let model = this.getItemViewModel(element);
+    const element = this.elementFromPoint(x, y);
+    if(!element) {
+      return;
+    }
+    const model = this.getItemViewModel(element);
+    this.lastElementFromPointRect = element.getBoundingClientRect();
     if(!this.allowMove({ item: model.item })) {
       return;
     }
-    var ix = model.ctx.$index;
+    const ix = model.ctx.$index;
     this.movePlaceholder(ix);
   }
   getPoint(pageX, pageY) {
@@ -170,20 +196,25 @@ export class Sortable {
     this.pageY = data.pagePoints[0].y;
     this.scrollRect = this.scroll.getBoundingClientRect();
     this.boundingRect = this.boundingRect || { left: this.scrollRect.left + 5, top: this.scrollRect.top + 5, right: this.scrollRect.right - 5, bottom: this.scrollRect.bottom - 5 };
-    this.drag.start(element, this.pageX, this.pageY, this.scroll, this.dragZIndex, this.placeholder, this.axis);
+    this.drag.start(element, this.pageX, this.pageY, this.scroll.scrollLeft, this.scroll.scrollTop, this.dragZIndex, this.placeholder, this.axis);
     this.autoScroll.start(this.axis, this.scrollSpeed, this.scrollSensitivity);
     this.fromIx = this.getItemViewModel(element).ctx.$index;
     this.toIx = -1;
     this.addPlaceholder(this.fromIx);
+    this.lastElementFromPointRect = this.drag.rect;
   }
   update(e, data) {
-    let p = data.pagePoints[0];
-    let pageX = (this.pageX = p.x);
-    let pageY = (this.pageY = p.y);
+    const p = data.pagePoints[0];
+    const pageX = (this.pageX = p.x);
+    const pageY = (this.pageY = p.y);
+    const scrollLeft = this.scroll.scrollLeft;
+    const scrollTop = this.scroll.scrollTop;
 
-    this.drag.update(pageX, pageY, this.scroll, this.axis);
-    let { x, y } = this.getPoint(pageX, pageY);
-    this.tryUpdate(x, y);
+    this.drag.update(pageX, pageY, scrollLeft, scrollTop, this.axis);
+    const { x, y } = this.getPoint(pageX, pageY);
+    const scrollX = this.autoScroll.active ? scrollLeft : 0;
+    const scrollY = this.autoScroll.active ? scrollTop : 0;
+    this.tryUpdate(x, y, scrollX, scrollY);
     this.autoScroll.update(this.scroll, x, y, this.scrollRect);
   }
   end() {

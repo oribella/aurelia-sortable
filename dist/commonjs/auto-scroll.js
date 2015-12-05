@@ -35,26 +35,23 @@ var AutoScroll = (function () {
     }
   }, {
     key: "update",
-    value: function update(element, x, y) {
+    value: function update(element, x, y, scrollRect) {
       var _this = this;
 
       var rAF = arguments.length <= 4 || arguments[4] === undefined ? requestAnimationFrame : arguments[4];
-
-      var _ref = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
-
-      var _ref$left = _ref.left;
-      var left = _ref$left === undefined ? 0 : _ref$left;
-      var _ref$top = _ref.top;
-      var top = _ref$top === undefined ? 0 : _ref$top;
-      var _ref$width = _ref.width;
-      var width = _ref$width === undefined ? 0 : _ref$width;
-      var _ref$height = _ref.height;
-      var height = _ref$height === undefined ? 0 : _ref$height;
-      var _ref$right = _ref.right;
-      var right = _ref$right === undefined ? 0 : _ref$right;
-      var _ref$bottom = _ref.bottom;
-      var bottom = _ref$bottom === undefined ? 0 : _ref$bottom;
       var cAF = arguments.length <= 5 || arguments[5] === undefined ? cancelAnimationFrame : arguments[5];
+      var _scrollRect$left = scrollRect.left;
+      var left = _scrollRect$left === undefined ? 0 : _scrollRect$left;
+      var _scrollRect$top = scrollRect.top;
+      var top = _scrollRect$top === undefined ? 0 : _scrollRect$top;
+      var _scrollRect$width = scrollRect.width;
+      var width = _scrollRect$width === undefined ? 0 : _scrollRect$width;
+      var _scrollRect$height = scrollRect.height;
+      var height = _scrollRect$height === undefined ? 0 : _scrollRect$height;
+      var _scrollRect$right = scrollRect.right;
+      var right = _scrollRect$right === undefined ? 0 : _scrollRect$right;
+      var _scrollRect$bottom = scrollRect.bottom;
+      var bottom = _scrollRect$bottom === undefined ? 0 : _scrollRect$bottom;
 
       var d = this.getScrollDirection(x, y, top, bottom, left, right);
       if (this.active) {

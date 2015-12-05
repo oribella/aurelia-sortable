@@ -38,9 +38,9 @@ export class Drag {
   getCenterY() {
     return this.rect.top + this.rect.height / 2;
   }
-  start(element, pageX, pageY, { scrollLeft, scrollTop }, dragZIndex, placeholder) {
-    let rect = (this.rect = element.getBoundingClientRect());
-    let offsetParentRect = element.offsetParent.getBoundingClientRect();
+  start(element, pageX, pageY, scrollLeft, scrollTop, dragZIndex, placeholder) {
+    const rect = (this.rect = element.getBoundingClientRect());
+    const offsetParentRect = element.offsetParent.getBoundingClientRect();
 
     this.startLeft = rect.left - offsetParentRect.left;
     this.startTop = rect.top - offsetParentRect.top;
@@ -56,9 +56,9 @@ export class Drag {
     placeholder.style.width = rect.width + "px";
     placeholder.style.height = rect.height + "px";
 
-    this.update(pageX, pageY, { scrollLeft, scrollTop });
+    this.update(pageX, pageY, scrollLeft, scrollTop);
   }
-  update(pageX, pageY, { scrollLeft, scrollTop }, axis) {
+  update(pageX, pageY, scrollLeft, scrollTop, axis) {
     let left = pageX + this.offsetX + scrollLeft;
     let top = pageY + this.offsetY + scrollTop;
 
