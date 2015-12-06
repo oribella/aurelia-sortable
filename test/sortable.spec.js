@@ -789,9 +789,11 @@ describe("Sortable", () => {
     it("should call `autoScroll.update`", () => {
       pageX = 12;
       pageY = 24;
+      sortable.scrollWidth = 0;
+      sortable.scrollHeight = 0;
       getPoint.returns( { x: pageX, y: pageY });
       sortable.update({}, { pagePoints: [{ x: pageX, y: pageY }] });
-      expect(autoScrollUpdate).to.have.been.calledWithExactly(scroll, pageX, pageY, scrollRect);
+      expect(autoScrollUpdate).to.have.been.calledWithExactly(scroll, pageX, pageY, 0, 0, scrollRect);
     });
 
   });
