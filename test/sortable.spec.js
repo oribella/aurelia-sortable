@@ -6,6 +6,7 @@ describe("Sortable", () => {
   let Sortable;
   let SortableItem;
   let sortable;
+  let PLACEHOLDER;
   let Container;
   let container;
   let TemplatingEngine;
@@ -38,6 +39,7 @@ describe("Sortable", () => {
       return System.import("./src/sortable").then(mod => {
         Sortable = mod.Sortable;
         SortableItem = mod.SortableItem;
+        PLACEHOLDER = mod.PLACEHOLDER;
       });
     });
   });
@@ -99,8 +101,8 @@ describe("Sortable", () => {
       expect(sortable.items).to.have.length(0);
     });
 
-    it("should set placeholder", () => {
-      expect(sortable.placeholder).to.deep.equal({ placeholderClass: "placeholder", style: {} });
+    it("should set placeholderClass", () => {
+      expect(sortable.placeholderClass).to.equal("placeholder");
     });
 
     it("should set axis", () => {
@@ -332,8 +334,8 @@ describe("Sortable", () => {
     });
 
     it("should add a placeholder", () => {
-      sortable.addPlaceholder(13);
-      expect(splice).to.have.been.calledWithExactly(13, 0, sortable.placeholder);
+      sortable.addPlaceholder(13, {});
+      expect(splice).to.have.been.calledWithExactly(13, 0, sortable[PLACEHOLDER]);
     });
 
     it("should remove placeholder", () => {
@@ -694,7 +696,7 @@ describe("Sortable", () => {
 
     it("should call `drag.start`", () => {
       sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
-      expect(dragStart).to.have.been.calledWithExactly(element, 10, 20, scroll.scrollLeft, scroll.scrollTop, -1, placeholder, "foo");
+      expect(dragStart).to.have.been.calledWithExactly(element, 10, 20, scroll.scrollLeft, scroll.scrollTop, -1);
     });
 
     it("should call `autoScroll.start`", () => {
@@ -714,9 +716,9 @@ describe("Sortable", () => {
     });
 
     it("should call `addPlaceholder`", () => {
-      getItemViewModel.returns( { ctx: { $index: 13 } });
+      getItemViewModel.returns( { ctx: { $index: 13 }, item: { foo: {} }});
       sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
-      expect(addPlaceholder).to.have.been.calledWithExactly(13);
+      expect(addPlaceholder).to.have.been.calledWithExactly(13, { foo: {} });
     });
 
   });

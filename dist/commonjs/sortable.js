@@ -22,6 +22,10 @@ var _drag = require("./drag");
 
 var _autoScroll = require("./auto-scroll");
 
+var PLACEHOLDER = "__placeholder__";
+
+exports.PLACEHOLDER = PLACEHOLDER;
+
 var Sortable = (function () {
   var _instanceInitializers = {};
   var _instanceInitializers = {};
@@ -55,10 +59,10 @@ var Sortable = (function () {
     },
     enumerable: true
   }, {
-    key: "placeholder",
+    key: "placeholderClass",
     decorators: [_aureliaTemplating.bindable],
     initializer: function initializer() {
-      return { placeholderClass: "placeholder", style: {} };
+      return "placeholder";
     },
     enumerable: true
   }, {
@@ -136,7 +140,7 @@ var Sortable = (function () {
 
     _defineDecoratedPropertyDescriptor(this, "items", _instanceInitializers);
 
-    _defineDecoratedPropertyDescriptor(this, "placeholder", _instanceInitializers);
+    _defineDecoratedPropertyDescriptor(this, "placeholderClass", _instanceInitializers);
 
     _defineDecoratedPropertyDescriptor(this, "axis", _instanceInitializers);
 
@@ -253,13 +257,22 @@ var Sortable = (function () {
     }
   }, {
     key: "addPlaceholder",
-    value: function addPlaceholder(toIx) {
-      this.items.splice(toIx, 0, this.placeholder);
+    value: function addPlaceholder(toIx, item) {
+      var placeholder = Object.create(item, { placeholderClass: { value: this.placeholderClass, writable: true } });
+
+      if (!placeholder.style) {
+        placeholder.style = {};
+      }
+      placeholder.style.width = this.drag.rect.width;
+      placeholder.style.height = this.drag.rect.height;
+
+      this[PLACEHOLDER] = placeholder;
+      this.items.splice(toIx, 0, placeholder);
     }
   }, {
     key: "removePlaceholder",
     value: function removePlaceholder() {
-      var ix = this.items.indexOf(this.placeholder);
+      var ix = this.items.indexOf(this[PLACEHOLDER]);
       if (ix !== -1) {
         this.items.splice(ix, 1);
       }
@@ -267,7 +280,7 @@ var Sortable = (function () {
   }, {
     key: "movePlaceholder",
     value: function movePlaceholder(toIx) {
-      var fromIx = this.items.indexOf(this.placeholder);
+      var fromIx = this.items.indexOf(this[PLACEHOLDER]);
       this.move(fromIx, toIx);
     }
   }, {
@@ -361,11 +374,12 @@ var Sortable = (function () {
       this.scrollWidth = this.scroll.scrollWidth;
       this.scrollHeight = this.scroll.scrollHeight;
       this.boundingRect = this.boundingRect || { left: this.scrollRect.left + 5, top: this.scrollRect.top + 5, right: this.scrollRect.right - 5, bottom: this.scrollRect.bottom - 5 };
-      this.drag.start(element, this.pageX, this.pageY, this.scroll.scrollLeft, this.scroll.scrollTop, this.dragZIndex, this.placeholder, this.axis);
+      this.drag.start(element, this.pageX, this.pageY, this.scroll.scrollLeft, this.scroll.scrollTop, this.dragZIndex);
       this.autoScroll.start(this.axis, this.scrollSpeed, this.scrollSensitivity);
-      this.fromIx = this.getItemViewModel(element).ctx.$index;
+      var viewModel = this.getItemViewModel(element);
+      this.fromIx = viewModel.ctx.$index;
       this.toIx = -1;
-      this.addPlaceholder(this.fromIx);
+      this.addPlaceholder(this.fromIx, viewModel.item);
       this.lastElementFromPointRect = this.drag.rect;
     }
   }, {
@@ -392,7 +406,7 @@ var Sortable = (function () {
   }, {
     key: "end",
     value: function end() {
-      this.toIx = this.items.indexOf(this.placeholder);
+      this.toIx = this.items.indexOf(this[PLACEHOLDER]);
       if (this.toIx === -1) {
         return; //cancelled
       }

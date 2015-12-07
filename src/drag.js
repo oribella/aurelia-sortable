@@ -38,7 +38,7 @@ export class Drag {
   getCenterY() {
     return this.rect.top + this.rect.height / 2;
   }
-  start(element, pageX, pageY, scrollLeft, scrollTop, dragZIndex, placeholder) {
+  start(element, pageX, pageY, scrollLeft, scrollTop, dragZIndex) {
     const rect = (this.rect = element.getBoundingClientRect());
     const offsetParentRect = element.offsetParent.getBoundingClientRect();
 
@@ -49,12 +49,6 @@ export class Drag {
     this.offsetY = this.startTop - pageY - scrollTop;
 
     this.unpin = this.pin(element, rect, dragZIndex);
-
-    if(typeof placeholder.style !== "object") {
-      placeholder.style = {};
-    }
-    placeholder.style.width = rect.width + "px";
-    placeholder.style.height = rect.height + "px";
 
     this.update(pageX, pageY, scrollLeft, scrollTop);
   }

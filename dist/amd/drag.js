@@ -58,7 +58,7 @@ define(["exports", "aurelia-dependency-injection"], function (exports, _aureliaD
       }
     }, {
       key: "start",
-      value: function start(element, pageX, pageY, scrollLeft, scrollTop, dragZIndex, placeholder) {
+      value: function start(element, pageX, pageY, scrollLeft, scrollTop, dragZIndex) {
         var rect = this.rect = element.getBoundingClientRect();
         var offsetParentRect = element.offsetParent.getBoundingClientRect();
 
@@ -69,12 +69,6 @@ define(["exports", "aurelia-dependency-injection"], function (exports, _aureliaD
         this.offsetY = this.startTop - pageY - scrollTop;
 
         this.unpin = this.pin(element, rect, dragZIndex);
-
-        if (typeof placeholder.style !== "object") {
-          placeholder.style = {};
-        }
-        placeholder.style.width = rect.width + "px";
-        placeholder.style.height = rect.height + "px";
 
         this.update(pageX, pageY, scrollLeft, scrollTop);
       }

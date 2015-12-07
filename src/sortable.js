@@ -5,6 +5,8 @@ import {oribella, matchesSelector} from "oribella-default-gestures";
 import {Drag} from "./drag";
 import {AutoScroll} from "./auto-scroll";
 
+export const PLACEHOLDER = "__placeholder__";
+
 @customAttribute("sortable")
 @inject(DOM.Element, Drag, AutoScroll)
 @transient()
@@ -14,7 +16,7 @@ export class Sortable {
   @bindable scrollSpeed = 10;
   @bindable scrollSensitivity = 10;
   @bindable items = [];
-  @bindable placeholder = { placeholderClass: "placeholder", style: {} };
+  @bindable placeholderClass = "placeholder";
   @bindable axis = "";
   @bindable boundingRect = null; //{ left, top, right, bottom }
   @bindable moved = () => {};
@@ -106,17 +108,26 @@ export class Sortable {
   getItemViewModel(element) {
     return element.au["sortable-item"].viewModel;
   }
-  addPlaceholder(toIx) {
-    this.items.splice(toIx, 0, this.placeholder);
+  addPlaceholder(toIx, item) {
+    let placeholder = Object.create(item, { placeholderClass: { value: this.placeholderClass, writable: true }});
+
+    if (!placeholder.style) {
+      placeholder.style = {};
+    }
+    placeholder.style.width = this.drag.rect.width;
+    placeholder.style.height = this.drag.rect.height;
+
+    this[PLACEHOLDER] = placeholder;
+    this.items.splice(toIx, 0, placeholder);
   }
   removePlaceholder() {
-    const ix = this.items.indexOf(this.placeholder);
+    const ix = this.items.indexOf(this[PLACEHOLDER]);
     if (ix !== -1) {
       this.items.splice(ix, 1);
     }
   }
   movePlaceholder(toIx) {
-    const fromIx = this.items.indexOf(this.placeholder);
+    const fromIx = this.items.indexOf(this[PLACEHOLDER]);
     this.move(fromIx, toIx);
   }
   move(fromIx, toIx) {
@@ -196,11 +207,12 @@ export class Sortable {
     this.scrollWidth = this.scroll.scrollWidth;
     this.scrollHeight = this.scroll.scrollHeight;
     this.boundingRect = this.boundingRect || { left: this.scrollRect.left + 5, top: this.scrollRect.top + 5, right: this.scrollRect.right - 5, bottom: this.scrollRect.bottom - 5 };
-    this.drag.start(element, this.pageX, this.pageY, this.scroll.scrollLeft, this.scroll.scrollTop, this.dragZIndex, this.placeholder, this.axis);
+    this.drag.start(element, this.pageX, this.pageY, this.scroll.scrollLeft, this.scroll.scrollTop, this.dragZIndex);
     this.autoScroll.start(this.axis, this.scrollSpeed, this.scrollSensitivity);
-    this.fromIx = this.getItemViewModel(element).ctx.$index;
+    const viewModel = this.getItemViewModel(element);
+    this.fromIx = viewModel.ctx.$index;
     this.toIx = -1;
-    this.addPlaceholder(this.fromIx);
+    this.addPlaceholder(this.fromIx, viewModel.item);
     this.lastElementFromPointRect = this.drag.rect;
   }
   update(e, data) {
@@ -218,7 +230,7 @@ export class Sortable {
     this.autoScroll.update(this.scroll, x, y, this.scrollWidth, this.scrollHeight, this.scrollRect);
   }
   end() {
-    this.toIx = this.items.indexOf(this.placeholder);
+    this.toIx = this.items.indexOf(this[PLACEHOLDER]);
     if (this.toIx === -1) {
       return; //cancelled
     }
