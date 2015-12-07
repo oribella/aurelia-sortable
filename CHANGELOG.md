@@ -1,3 +1,26 @@
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/oribella/aurelia-sortable/compare/v0.3.3...v0.4.0) (2015-12-07)
+
+
+### Bug Fixes
+
+* **auto-scroll:** dont auto scroll if bottom is reached ([a386ed5](https://github.com/oribella/aurelia-sortable/commit/a386ed5))
+
+### Features
+
+* **placeholder:** simplify placeholder ([dd55d4d](https://github.com/oribella/aurelia-sortable/commit/dd55d4d))
+
+### Performance Improvements
+
+* **sortable:** throttle `tryMove` ([a1407bb](https://github.com/oribella/aurelia-sortable/commit/a1407bb))
+
+
+### BREAKING CHANGES
+
+* placeholder: remove the verbose `placeholder` binding and replace with a simple `placeholderClass` binding. Instead of manually defining the placeholder just clone the dragging view-model item and add the `placeholderClass`.
+
+
+
 <a name="0.3.3"></a>
 ## [0.3.3](https://github.com/oribella/aurelia-sortable/compare/v0.3.2...v0.3.3) (2015-11-18)
 
