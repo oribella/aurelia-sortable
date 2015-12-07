@@ -37,22 +37,25 @@ To get started you need to bind the *sortable*, *sortable-item* attributes in co
 ```
 This will enable the plugin to keep track of and move around the items.
 
-However you might want to control the `placeholder` that is moved around. Add a binding:
+However you might want to add a class to the `placeholder` that is moved around. Add a binding:
 ```markup
 <!-- Other bindings omitted -->
-<div sortable="placeholder.bind: {
-    media: {
-      m: '//:0', placeholderClass: 'placeholder'
-    }
-  }">
+<div sortable="placeholderClass.bind: 'some-fancy-placeholder'">
 </div>
 ```
-to simulate an `item` in the repeat.
+###### Default `placeholderClass='placeholder'`
+If you have variable dimensions on the `sortable-item` you can add a binding so the `placeholder` gets the same size as the dragging element by:
+```markup
+<!-- Other bindings omitted -->
+<div sortable-item="css.bind: item.style;">
+</div>
+```
+
 
 It could then be used in the `sortable-item` like this:
 ```markup
 <!-- Other bindings omitted -->
-<div sortable-item="item.bind: image" class="${image.media.placeholderClass}">
+<div sortable-item="item.bind: image" class="${image.placeholderClass}">
 </div>
 ```
 
@@ -62,6 +65,8 @@ If the `sortable` *custom attribute* is in an area that is scrollable you have t
 <div sortable="scroll.bind: '.page-host'">
 </div>
 ```
+###### Default `scroll=sortable`
+
 so it can auto scroll when needed. If you want you may even do a manual scroll when it's auto scrolling or combine them by first auto scrolling then manual scrolling and it should still behave as intended. If you are not happy with the sensitivity or scroll speed for the auto scroll you can set it with below bindings:
 ```
 <!-- Other bindings omitted -->
@@ -131,7 +136,9 @@ If that is insufficient:
 };
 ```
 where `$event` has `event` and `item` properties.
+
 `event` - the native DOM event
+
 `item` - the `sortable-item` view-model
 
 Control whether a *sortable item* is allowed to move:
@@ -145,6 +152,7 @@ Control whether a *sortable item* is allowed to move:
 @bindable allowMove = () => { return true; };
 ```
 where `$event` has an `item` property.
+
 `item` - the `sortable-item` view-model
 
 If you need it you can also bind `moved` which will be called after an item has been sorted
@@ -154,5 +162,7 @@ If you need it you can also bind `moved` which will be called after an item has 
 </div>
 ```
 where `$event` has `fromIx` and `toIx` properties.
+
 `fromIx` - the from index in the `sortable`
+
 `toIx` - the to index in the `sortable`
