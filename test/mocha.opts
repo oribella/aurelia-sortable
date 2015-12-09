@@ -1,0 +1,3 @@
+--timeout 3000
+--require ./test/global.js
+--compilers js:babel/register
