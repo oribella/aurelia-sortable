@@ -1,18 +1,21 @@
 "use strict";
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _dec, _class;
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+exports.AutoScroll = undefined;
 
 var _aureliaDependencyInjection = require("aurelia-dependency-injection");
 
-var AutoScroll = (function () {
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var AutoScroll = exports.AutoScroll = (_dec = (0, _aureliaDependencyInjection.transient)(), _dec(_class = (function () {
   function AutoScroll() {
-    _classCallCheck(this, _AutoScroll);
+    _classCallCheck(this, AutoScroll);
 
     this.ticks = [0, 0];
     this.rAFId = -1;
@@ -121,9 +124,5 @@ var AutoScroll = (function () {
     }
   }]);
 
-  var _AutoScroll = AutoScroll;
-  AutoScroll = (0, _aureliaDependencyInjection.transient)()(AutoScroll) || AutoScroll;
   return AutoScroll;
-})();
-
-exports.AutoScroll = AutoScroll;
+})()) || _class);

@@ -1,5 +1,9 @@
 {
-  "ignore": "*node_modules*",
-  "stage": 2,
-  "optional": ["es7.decorators", "es7.classProperties"]
+  "extends": "./node_modules/oribella-dev/.babelrc",
+  "presets": ["stage-2"],
+  "plugins": [
+    "transform-es2015-modules-commonjs",
+    "transform-class-properties",
+    "transform-decorators-legacy"
+  ]
 }
