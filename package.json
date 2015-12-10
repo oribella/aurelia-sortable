@@ -27,7 +27,7 @@
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@^1.0.0-beta.1",
       "aurelia-pal": "npm:aurelia-pal@^1.0.0-beta.1",
       "aurelia-templating": "npm:aurelia-templating@^1.0.0-beta.1.0.1",
-      "oribella-default-gestures": "npm:oribella-default-gestures@^0.3.0"
+      "oribella-default-gestures": "npm:oribella-default-gestures@^0.3.1"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",
@@ -40,6 +40,6 @@
     "babel-plugin-transform-decorators-legacy": "^1.2.0",
     "babel-preset-stage-2": "^6.3.13",
     "jspm": "^0.16.15",
-    "oribella-dev": "^0.1.3"
+    "oribella-dev": "^0.1.4"
   }
 }

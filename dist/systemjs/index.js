@@ -1,9 +1,14 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
+System.register([], function (_export) {
+  return {
+    setters: [],
+    execute: function () {
+      function configure(config) {
+        config.globalResources("./sortable");
+      }
+
+      _export("configure", configure);
+    }
+  };
 });
-exports.configure = configure;
-function configure(config) {
-  config.globalResources("./sortable");
-}
