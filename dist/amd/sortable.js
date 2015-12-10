@@ -42,6 +42,9 @@ var Sortable = exports.Sortable = (_dec = (0, _aureliaTemplating.customAttribute
     this.element = element;
     this.drag = drag;
     this.autoScroll = autoScroll;
+    this.options = {
+      strategy: _oribellaDefaultGestures.STRATEGY_FLAG.REMOVE_IF_POINTERS_GT
+    };
   }
 
   _createClass(Sortable, [{

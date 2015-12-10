@@ -1,7 +1,7 @@
 import {DOM} from "aurelia-pal";
 import {customAttribute, bindable} from "aurelia-templating";
 import {inject, transient} from "aurelia-dependency-injection";
-import {oribella, matchesSelector} from "oribella-default-gestures";
+import {oribella, matchesSelector, STRATEGY_FLAG} from "oribella-default-gestures";
 import {Drag} from "./drag";
 import {AutoScroll} from "./auto-scroll";
 
@@ -45,6 +45,9 @@ export class Sortable {
     this.element = element;
     this.drag = drag;
     this.autoScroll = autoScroll;
+    this.options = {
+      strategy: STRATEGY_FLAG.REMOVE_IF_POINTERS_GT
+    };
   }
   activate() {
     this.removeListener = oribella.on(this.element, "swipe", this);
