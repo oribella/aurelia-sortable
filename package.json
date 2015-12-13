@@ -11,7 +11,7 @@
   },
   "scripts": {
     "version": "dev-changelog && git add CHANGELOG.md",
-    "build": "dev-build -cas",
+    "build": "dev-build -cas -- --stage 2 --optional es7.decorators,es7.classProperties",
     "test": "dev-test -- --timeout 5000",
     "coverage": "dev-coverage",
     "lint": "dev-lint"
@@ -36,10 +36,7 @@
     }
   },
   "devDependencies": {
-    "babel-plugin-transform-class-properties": "^6.3.13",
-    "babel-plugin-transform-decorators-legacy": "^1.2.0",
-    "babel-preset-stage-2": "^6.3.13",
     "jspm": "^0.16.15",
-    "oribella-dev": "^0.1.4"
+    "oribella-dev": "^0.1.9"
   }
 }

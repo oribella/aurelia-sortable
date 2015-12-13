@@ -21,7 +21,7 @@ System.config({
     "babel": "npm:babel-core@5.8.34",
     "babel-runtime": "npm:babel-runtime@5.8.34",
     "core-js": "npm:core-js@1.2.6",
-    "oribella-default-gestures": "github:oribella/default-gestures@0.2.0",
+    "oribella-default-gestures": "npm:oribella-default-gestures@0.3.6",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
     },
@@ -33,37 +33,6 @@ System.config({
     },
     "github:jspm/nodelibs-util@0.1.0": {
       "util": "npm:util@0.10.3"
-    },
-    "github:oribella/default-gestures@0.2.0": {
-      "oribella-doubletap": "github:oribella/doubletap@0.2.0",
-      "oribella-framework": "github:oribella/framework@0.2.0",
-      "oribella-longtap": "github:oribella/longtap@0.2.0",
-      "oribella-longtap-swipe": "github:oribella/longtap-swipe@0.2.0",
-      "oribella-pinch": "github:oribella/pinch@0.2.0",
-      "oribella-rotate": "github:oribella/rotate@0.2.0",
-      "oribella-swipe": "github:oribella/swipe@0.2.0",
-      "oribella-tap": "github:oribella/tap@0.2.0"
-    },
-    "github:oribella/doubletap@0.2.0": {
-      "oribella-framework": "github:oribella/framework@0.2.0"
-    },
-    "github:oribella/longtap-swipe@0.2.0": {
-      "oribella-framework": "github:oribella/framework@0.2.0"
-    },
-    "github:oribella/longtap@0.2.0": {
-      "oribella-framework": "github:oribella/framework@0.2.0"
-    },
-    "github:oribella/pinch@0.2.0": {
-      "oribella-framework": "github:oribella/framework@0.2.0"
-    },
-    "github:oribella/rotate@0.2.0": {
-      "oribella-framework": "github:oribella/framework@0.2.0"
-    },
-    "github:oribella/swipe@0.2.0": {
-      "oribella-framework": "github:oribella/framework@0.2.0"
-    },
-    "github:oribella/tap@0.2.0": {
-      "oribella-framework": "github:oribella/framework@0.2.0"
     },
     "npm:assert@1.3.0": {
       "util": "npm:util@0.10.3"
@@ -113,6 +82,37 @@ System.config({
     },
     "npm:inherits@2.0.1": {
       "util": "github:jspm/nodelibs-util@0.1.0"
+    },
+    "npm:oribella-default-gestures@0.3.6": {
+      "oribella-doubletap": "npm:oribella-doubletap@0.3.4",
+      "oribella-framework": "npm:oribella-framework@0.3.5",
+      "oribella-longtap": "npm:oribella-longtap@0.3.4",
+      "oribella-longtap-swipe": "npm:oribella-longtap-swipe@0.3.4",
+      "oribella-pinch": "npm:oribella-pinch@0.3.4",
+      "oribella-rotate": "npm:oribella-rotate@0.3.4",
+      "oribella-swipe": "npm:oribella-swipe@0.3.6",
+      "oribella-tap": "npm:oribella-tap@0.3.6"
+    },
+    "npm:oribella-doubletap@0.3.4": {
+      "oribella-framework": "npm:oribella-framework@0.3.5"
+    },
+    "npm:oribella-longtap-swipe@0.3.4": {
+      "oribella-framework": "npm:oribella-framework@0.3.5"
+    },
+    "npm:oribella-longtap@0.3.4": {
+      "oribella-framework": "npm:oribella-framework@0.3.5"
+    },
+    "npm:oribella-pinch@0.3.4": {
+      "oribella-framework": "npm:oribella-framework@0.3.5"
+    },
+    "npm:oribella-rotate@0.3.4": {
+      "oribella-framework": "npm:oribella-framework@0.3.5"
+    },
+    "npm:oribella-swipe@0.3.6": {
+      "oribella-framework": "npm:oribella-framework@0.3.5"
+    },
+    "npm:oribella-tap@0.3.6": {
+      "oribella-framework": "npm:oribella-framework@0.3.5"
     },
     "npm:path-browserify@0.0.0": {
       "process": "github:jspm/nodelibs-process@0.1.2"
