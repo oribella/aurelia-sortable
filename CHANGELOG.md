@@ -1,3 +1,13 @@
+<a name="0.5.3"></a>
+## [0.5.3](https://github.com/oribella/aurelia-sortable/compare/v0.5.2...v0.5.3) (2015-12-13)
+
+
+### Bug Fixes
+
+* **dist:** update `dist` ([c0d8e31](https://github.com/oribella/aurelia-sortable/commit/c0d8e31))
+
+
+
 <a name="0.5.2"></a>
 ## [0.5.2](https://github.com/oribella/aurelia-sortable/compare/v0.5.1...v0.5.2) (2015-12-10)
 
