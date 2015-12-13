@@ -1,9 +1,0 @@
-{
-  "extends": "./node_modules/oribella-dev/.babelrc",
-  "presets": ["stage-2"],
-  "plugins": [
-    "transform-es2015-modules-commonjs",
-    "transform-class-properties",
-    "transform-decorators-legacy"
-  ]
-}
