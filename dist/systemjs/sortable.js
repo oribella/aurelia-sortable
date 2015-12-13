@@ -1,13 +1,13 @@
-"use strict";
-
 System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-injection", "oribella-default-gestures", "./drag", "./auto-scroll"], function (_export) {
-  var DOM, customAttribute, bindable, inject, transient, oribella, matchesSelector, STRATEGY_FLAG, Drag, AutoScroll, _createClass, _dec, _dec2, _dec3, _class, _dec4, _class2, PLACEHOLDER, Sortable, SortableItem;
+  "use strict";
 
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
+  var DOM, customAttribute, bindable, inject, transient, oribella, matchesSelector, STRATEGY_FLAG, Drag, AutoScroll, PLACEHOLDER, Sortable, SortableItem;
+
+  var _createDecoratedClass = (function () { function defineProperties(target, descriptors, initializers) { for (var i = 0; i < descriptors.length; i++) { var descriptor = descriptors[i]; var decorators = descriptor.decorators; var key = descriptor.key; delete descriptor.key; delete descriptor.decorators; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor || descriptor.initializer) descriptor.writable = true; if (decorators) { for (var f = 0; f < decorators.length; f++) { var decorator = decorators[f]; if (typeof decorator === "function") { descriptor = decorator(target, key, descriptor) || descriptor; } else { throw new TypeError("The decorator for method " + descriptor.key + " is of the invalid type " + typeof decorator); } } if (descriptor.initializer !== undefined) { initializers[key] = descriptor; continue; } } Object.defineProperty(target, key, descriptor); } } return function (Constructor, protoProps, staticProps, protoInitializers, staticInitializers) { if (protoProps) defineProperties(Constructor.prototype, protoProps, protoInitializers); if (staticProps) defineProperties(Constructor, staticProps, staticInitializers); return Constructor; }; })();
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+  function _defineDecoratedPropertyDescriptor(target, key, descriptors) { var _descriptor = descriptors[key]; if (!_descriptor) return; var descriptor = {}; for (var _key in _descriptor) descriptor[_key] = _descriptor[_key]; descriptor.value = descriptor.initializer ? descriptor.initializer.call(target) : undefined; Object.defineProperty(target, key, descriptor); }
 
   return {
     setters: [function (_aureliaPal) {
@@ -28,33 +28,139 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
       AutoScroll = _autoScroll.AutoScroll;
     }],
     execute: function () {
-      _createClass = (function () {
-        function defineProperties(target, props) {
-          for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-          }
-        }
-
-        return function (Constructor, protoProps, staticProps) {
-          if (protoProps) defineProperties(Constructor.prototype, protoProps);
-          if (staticProps) defineProperties(Constructor, staticProps);
-          return Constructor;
-        };
-      })();
-
-      _export("PLACEHOLDER", PLACEHOLDER = "__placeholder__");
+      PLACEHOLDER = "__placeholder__";
 
       _export("PLACEHOLDER", PLACEHOLDER);
 
-      _export("Sortable", Sortable = (_dec = customAttribute("sortable"), _dec2 = inject(DOM.Element, Drag, AutoScroll), _dec3 = transient(), _dec(_class = _dec2(_class = _dec3(_class = (function () {
-        //{ left, top, right, bottom }
+      Sortable = (function () {
+        var _instanceInitializers = {};
+        var _instanceInitializers = {};
+
+        _createDecoratedClass(Sortable, [{
+          key: "scroll",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return null;
+          },
+          enumerable: true
+        }, {
+          key: "scrollSpeed",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return 10;
+          },
+          enumerable: true
+        }, {
+          key: "scrollSensitivity",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return 10;
+          },
+          enumerable: true
+        }, {
+          key: "items",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return [];
+          },
+          enumerable: true
+        }, {
+          key: "placeholderClass",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return "placeholder";
+          },
+          enumerable: true
+        }, {
+          key: "axis",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return "";
+          },
+          enumerable: true
+        }, {
+          key: "boundingRect",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return null;
+          },
+          //{ left, top, right, bottom }
+          enumerable: true
+        }, {
+          key: "moved",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return function () {};
+          },
+          enumerable: true
+        }, {
+          key: "dragZIndex",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return 1;
+          },
+          enumerable: true
+        }, {
+          key: "disallowedDragTagNames",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return ["INPUT", "SELECT", "TEXTAREA"];
+          },
+          enumerable: true
+        }, {
+          key: "allowDrag",
+          decorators: [bindable],
+          initializer: function initializer() {
+            var _this = this;
+
+            return function (args) {
+              if (_this.disallowedDragTagNames.indexOf(args.event.target.tagName) !== -1) {
+                return false;
+              }
+              if (args.event.target.isContentEditable) {
+                return false;
+              }
+              return true;
+            };
+          },
+          enumerable: true
+        }, {
+          key: "allowMove",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return function () {
+              return true;
+            };
+          },
+          enumerable: true
+        }], null, _instanceInitializers);
 
         function Sortable(element, drag, autoScroll) {
-          _classCallCheck(this, Sortable);
+          _classCallCheck(this, _Sortable);
+
+          _defineDecoratedPropertyDescriptor(this, "scroll", _instanceInitializers);
+
+          _defineDecoratedPropertyDescriptor(this, "scrollSpeed", _instanceInitializers);
+
+          _defineDecoratedPropertyDescriptor(this, "scrollSensitivity", _instanceInitializers);
+
+          _defineDecoratedPropertyDescriptor(this, "items", _instanceInitializers);
+
+          _defineDecoratedPropertyDescriptor(this, "placeholderClass", _instanceInitializers);
+
+          _defineDecoratedPropertyDescriptor(this, "axis", _instanceInitializers);
+
+          _defineDecoratedPropertyDescriptor(this, "boundingRect", _instanceInitializers);
+
+          _defineDecoratedPropertyDescriptor(this, "moved", _instanceInitializers);
+
+          _defineDecoratedPropertyDescriptor(this, "dragZIndex", _instanceInitializers);
+
+          _defineDecoratedPropertyDescriptor(this, "disallowedDragTagNames", _instanceInitializers);
+
+          _defineDecoratedPropertyDescriptor(this, "allowDrag", _instanceInitializers);
+
+          _defineDecoratedPropertyDescriptor(this, "allowMove", _instanceInitializers);
 
           this.selector = "[sortable-item]";
           this.fromIx = -1;
@@ -72,7 +178,7 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
           };
         }
 
-        _createClass(Sortable, [{
+        _createDecoratedClass(Sortable, [{
           key: "activate",
           value: function activate() {
             this.removeListener = oribella.on(this.element, "swipe", this);
@@ -332,27 +438,44 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
             this.autoScroll.end();
             this.removePlaceholder();
           }
-        }]);
+        }], null, _instanceInitializers);
 
+        var _Sortable = Sortable;
+        Sortable = transient()(Sortable) || Sortable;
+        Sortable = inject(DOM.Element, Drag, AutoScroll)(Sortable) || Sortable;
+        Sortable = customAttribute("sortable")(Sortable) || Sortable;
         return Sortable;
-      })()) || _class) || _class) || _class));
+      })();
 
       _export("Sortable", Sortable);
 
-      _export("SortableItem", SortableItem = (_dec4 = customAttribute("sortable-item"), _dec4(_class2 = (function () {
+      SortableItem = (function () {
+        var _instanceInitializers2 = {};
+
         function SortableItem() {
-          _classCallCheck(this, SortableItem);
+          _classCallCheck(this, _SortableItem);
+
+          _defineDecoratedPropertyDescriptor(this, "item", _instanceInitializers2);
         }
 
-        _createClass(SortableItem, [{
+        _createDecoratedClass(SortableItem, [{
           key: "bind",
           value: function bind(ctx, overrideCtx) {
-            this.ctx = overrideCtx;
+            this.ctx = overrideCtx; //Need a reference to the item's $index
           }
-        }]);
+        }, {
+          key: "item",
+          decorators: [bindable],
+          initializer: function initializer() {
+            return null;
+          },
+          enumerable: true
+        }], null, _instanceInitializers2);
 
+        var _SortableItem = SortableItem;
+        SortableItem = customAttribute("sortable-item")(SortableItem) || SortableItem;
         return SortableItem;
-      })()) || _class2));
+      })();
 
       _export("SortableItem", SortableItem);
     }
