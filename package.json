@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "jspm": "^0.16.15",
-    "oribella-dev": "^0.1.9",
+    "oribella-dev": "^0.1.10",
     "aurelia-dependency-injection": "^1.0.0-beta.1",
     "aurelia-pal": "^1.0.0-beta.1.0.1",
     "aurelia-pal-browser": "^1.0.0-beta.1.0.1",
