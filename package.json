@@ -13,6 +13,7 @@
     "version": "dev-changelog && git add CHANGELOG.md",
     "build": "dev-build -cas -- --stage 2 --optional es7.decorators,es7.classProperties",
     "test": "dev-test -- --timeout 5000",
+    "test:browser": "dev-test-browser test/sortable-browser.spec.js --init-files test/initialize-pal-browser.js",
     "coverage": "dev-coverage",
     "lint": "dev-lint"
   },
@@ -25,9 +26,10 @@
     },
     "dependencies": {
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@^1.0.0-beta.1",
-      "aurelia-pal": "npm:aurelia-pal@^1.0.0-beta.1",
+      "aurelia-pal": "npm:aurelia-pal@^1.0.0-beta.1.0.1",
+      "aurelia-pal-browser": "npm:aurelia-pal-browser@^1.0.0-beta.1.0.1",
       "aurelia-templating": "npm:aurelia-templating@^1.0.0-beta.1.0.1",
-      "oribella-default-gestures": "npm:oribella-default-gestures@^0.3.1"
+      "oribella-default-gestures": "npm:oribella-default-gestures@^0.3.6"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",
@@ -37,6 +39,11 @@
   },
   "devDependencies": {
     "jspm": "^0.16.15",
-    "oribella-dev": "^0.1.9"
+    "oribella-dev": "^0.1.9",
+    "aurelia-dependency-injection": "^1.0.0-beta.1",
+    "aurelia-pal": "^1.0.0-beta.1.0.1",
+    "aurelia-pal-browser": "^1.0.0-beta.1.0.1",
+    "aurelia-templating": "^1.0.0-beta.1.0.1",
+    "oribella-default-gestures": "^0.3.6"
   }
 }
