@@ -14,7 +14,7 @@
     "build": "dev-build -cas",
     "test": "dev-test -- test/initialize-pal.js test/*.spec.js",
     "test:browser": "dev-test-browser test/*.spec.js --init-files test/initialize-pal-browser.js",
-    "coverage": "dev-coverage",
+    "coverage": "dev-coverage -- -- test/initialize-pal.js test/*.spec.js",
     "lint": "dev-lint"
   },
   "jspmNodeConversion": false,
