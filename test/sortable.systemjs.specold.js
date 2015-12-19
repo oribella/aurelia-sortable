@@ -1,19 +1,51 @@
-import {Container} from "aurelia-dependency-injection";
-import {TemplatingEngine} from "aurelia-templating";
-import {Sortable, SortableItem, PLACEHOLDER} from "../src/sortable";
-import {DOM} from "aurelia-pal";
+import {Loader as loader} from "jspm";
+let System = loader();
 
 describe("Sortable", () => {
   let sandbox;
-  let element;
+  let Sortable;
+  let SortableItem;
   let sortable;
+  let PLACEHOLDER;
+  let Container;
   let container;
+  let TemplatingEngine;
   let templatingEngine;
+  let MockElement = () => {};
+
+  before(() => {
+    return System.import("aurelia-dependency-injection").then( mod => {
+      Container = mod.Container;
+    }).then(() => {
+      return System.import("aurelia-pal").then(pal => {
+        pal.initializePAL((platform, feature, dom) => {
+          dom.Element = MockElement;
+          dom.createMutationObserver = function() { return { observe(){} }; };
+          dom.createElement = function() {
+            return {
+              firstChild: {
+                firstElementChild: {}
+              }
+            };
+          };
+          dom.createTextNode = function() { return {}; };
+        });
+      });
+    }).then(() => {
+      return System.import("aurelia-templating").then(tmpl => {
+        TemplatingEngine = tmpl.TemplatingEngine;
+      });
+    }).then(() => {
+      return System.import("./src/sortable").then(mod => {
+        Sortable = mod.Sortable;
+        SortableItem = mod.SortableItem;
+        PLACEHOLDER = mod.PLACEHOLDER;
+      });
+    });
+  });
 
   beforeEach(() => {
     container = new Container();
-    element = DOM.createElement("div");
-    container.registerInstance(DOM.Element, element);
     templatingEngine = container.get(TemplatingEngine);
     sortable = templatingEngine.createViewModelForUnitTest(Sortable);
     sandbox = sinon.sandbox.create();
@@ -26,7 +58,7 @@ describe("Sortable", () => {
   describe( "Constructor", () => {
 
     it("should set element", () => {
-      expect(sortable.element).to.be.an.instanceOf(DOM.Element);
+      expect(sortable.element).to.be.an("object");
     });
 
     it("should set drag", () => {
@@ -110,6 +142,7 @@ describe("Sortable", () => {
     let on;
     let bindScroll;
     let closest;
+    let mockElement = {};
     let mockScroll = {};
 
     before(() => {
@@ -119,6 +152,7 @@ describe("Sortable", () => {
     });
 
     beforeEach(() => {
+      sortable.element = mockElement;
       on = sandbox.stub(oribella, "on").returns(removeGestureFn);
       bindScroll = sandbox.stub(sortable, "bindScroll").returns(removeScrollFn);
       closest = sandbox.stub(sortable, "closest").returns(mockScroll);
@@ -126,24 +160,24 @@ describe("Sortable", () => {
 
     it("should add a oribella swipe listener", () => {
       sortable.activate();
-      expect(on).to.have.been.calledWith(element, "swipe", sortable);
+      expect(on).to.have.been.calledWith({}, "swipe", sortable);
       expect(sortable.removeListener).to.equal(removeGestureFn);
     });
 
     it("should find closest scroll if a selector was bound", () => {
       sortable.scroll = "foo";
       sortable.activate();
-      expect(closest).to.have.been.calledWith(element, "foo");
+      expect(closest).to.have.been.calledWith(mockElement, "foo");
     });
 
     it("should default scroll to injected element", () => {
       sortable.activate();
-      expect(sortable.scroll).to.equal(element);
+      expect(sortable.scroll).to.equal(mockElement);
     });
 
     it("should add a scroll listener", () => {
       sortable.activate();
-      expect(bindScroll).to.have.been.calledWith(element, sinon.match.func);
+      expect(bindScroll).to.have.been.calledWith(mockElement, sinon.match.func);
       expect(sortable.removeScroll).to.equal(removeScrollFn);
     });
 
@@ -198,23 +232,23 @@ describe("Sortable", () => {
   });
 
   describe("`bindScroll`", () => {
+    let mockElement;
     let onScroll;
 
     beforeEach(() => {
-      sandbox.stub(element, "addEventListener");
-      sandbox.stub(element, "removeEventListener");
+      mockElement = { addEventListener: sandbox.stub(), removeEventListener: sandbox.stub() };
       onScroll = sandbox.stub();
     });
 
     it("should add scroll listener", () => {
-      sortable.bindScroll(element, onScroll);
-      expect(element.addEventListener).to.have.been.calledWithExactly("scroll", onScroll, false);
+      sortable.bindScroll(mockElement, onScroll);
+      expect(mockElement.addEventListener).to.have.been.calledWithExactly("scroll", onScroll, false);
     });
 
     it("should remove scroll listener", () => {
-      let removeScroll = sortable.bindScroll(element, onScroll);
+      let removeScroll = sortable.bindScroll(mockElement, onScroll);
       removeScroll();
-      expect(element.removeEventListener).to.have.been.calledWithExactly("scroll", onScroll, false);
+      expect(mockElement.removeEventListener).to.have.been.calledWithExactly("scroll", onScroll, false);
     });
 
   });
@@ -383,10 +417,15 @@ describe("Sortable", () => {
         }
       });
 
-      elementFromPoint = sandbox.stub(document, "elementFromPoint");
+      elementFromPoint = sandbox.stub();
+      global.document = { elementFromPoint: elementFromPoint };
       closest = sandbox.stub(sortable, "closest");
       getItemViewModel = sandbox.stub(sortable, "getItemViewModel");
       movePlaceholder = sandbox.stub(sortable, "movePlaceholder");
+    });
+
+    afterEach(() => {
+      delete global.document;
     });
 
     it("should call `elementFromPoint`", () => {
@@ -558,6 +597,7 @@ describe("Sortable", () => {
   });
 
   describe("`start`", () => {
+    let element;
     let pageX;
     let pageY;
     let scroll;
@@ -573,6 +613,7 @@ describe("Sortable", () => {
     let autoScrollStart;
 
     beforeEach(() => {
+      element = {};
       pageX = 10;
       pageY = 20;
       boundingRect = { left: 10, top: 20, right: 30, bottom: 40 };
@@ -654,7 +695,7 @@ describe("Sortable", () => {
     });
 
     it("should call `drag.start`", () => {
-      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, element);
+      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
       expect(dragStart).to.have.been.calledWithExactly(element, 10, 20, scroll.scrollLeft, scroll.scrollTop, -1);
     });
 

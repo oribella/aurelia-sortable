@@ -11,9 +11,9 @@
   },
   "scripts": {
     "version": "dev-changelog && git add CHANGELOG.md",
-    "build": "dev-build -cas -- --stage 2 --optional es7.decorators,es7.classProperties",
-    "test": "dev-test -- --timeout 5000",
-    "test:browser": "dev-test-browser test/sortable-browser.spec.js --init-files test/initialize-pal-browser.js",
+    "build": "dev-build -cas",
+    "test": "dev-test -- test/initialize-pal.js test/*.spec.js",
+    "test:browser": "dev-test-browser test/*.spec.js --init-files test/initialize-pal-browser.js",
     "coverage": "dev-coverage",
     "lint": "dev-lint"
   },
@@ -44,6 +44,6 @@
     "aurelia-pal": "^1.0.0-beta.1.0.1",
     "aurelia-pal-browser": "^1.0.0-beta.1.0.1",
     "aurelia-templating": "^1.0.0-beta.1.0.1",
-    "oribella-default-gestures": "^0.3.6"
+    "oribella-default-gestures": "^0.3.7"
   }
 }
