@@ -40,7 +40,7 @@ This will enable the plugin to keep track of and move around the items.
 However you might want to add a class to the `placeholder` that is moved around. Add a binding:
 ```markup
 <!-- Other bindings omitted -->
-<div sortable="placeholderClass.bind: 'some-fancy-placeholder'">
+<div sortable="placeholder-class.bind: 'some-fancy-placeholder'">
 </div>
 ```
 ###### Default `placeholderClass='placeholder'`
