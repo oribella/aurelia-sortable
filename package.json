@@ -38,12 +38,13 @@
     }
   },
   "devDependencies": {
-    "jspm": "^0.16.15",
-    "oribella-dev": "^0.1.14",
     "aurelia-dependency-injection": "^1.0.0-beta.1",
     "aurelia-pal": "^1.0.0-beta.1.0.1",
     "aurelia-pal-browser": "^1.0.0-beta.1.0.1",
     "aurelia-templating": "^1.0.0-beta.1.0.1",
-    "oribella-default-gestures": "^0.3.7"
+    "core-js": "^2.0.3",
+    "jspm": "^0.16.15",
+    "oribella-default-gestures": "^0.3.7",
+    "oribella-dev": "^0.1.14"
   }
 }
