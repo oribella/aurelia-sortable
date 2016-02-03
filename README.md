@@ -66,6 +66,7 @@ If the `sortable` *custom attribute* is in an area that is scrollable you have t
 </div>
 ```
 ###### Default `scroll=sortable`
+>N.B It must be an instance of Element. So it can't be `window`/`document` but `body` is fine
 
 so it can auto scroll when needed. If you want you may even do a manual scroll when it's auto scrolling or combine them by first auto scrolling then manual scrolling and it should still behave as intended. If you are not happy with the sensitivity or scroll speed for the auto scroll you can set it with below bindings:
 ```
