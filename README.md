@@ -9,7 +9,7 @@ Sortable plugin for *Aurelia* powered by *Oribella*
 Install via JSPM
 
 ```javascript
-jspm install github:oribella/aurelia-sortable
+jspm install npm:oribella-aurelia-sortable
 ```
 
 Load the plugin
@@ -19,7 +19,7 @@ export function configure(aurelia) {
   aurelia.use
     .standardConfiguration()
     .developmentLogging()
-    .plugin("oribella/aurelia-sortable");
+    .plugin("oribella-aurelia-sortable");
 
   aurelia.start().then(a => a.setRoot());
 }
