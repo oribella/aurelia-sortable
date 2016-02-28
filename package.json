@@ -16,7 +16,8 @@
     "test:browser": "dev-test-browser test/*.spec.js --init-files test/initialize-pal-browser.js",
     "test:browser:ci": "dev-test-browser test/*.spec.js --init-files test/initialize-pal-browser.js --single-run",
     "coverage": "dev-coverage -- -- test/initialize-pal.js test/*.spec.js",
-    "lint": "dev-lint"
+    "lint": "dev-lint",
+    "dev": "cd demo && dev-watch --no-babel --base-dir '../src' --static-watcher-glob '../src/*.js'"
   },
   "jspmNodeConversion": false,
   "jspm": {

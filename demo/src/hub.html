@@ -1,0 +1,14 @@
+<template>
+  <div class="row">
+    <div class="col-sm-6 col-md-4"
+      click.delegate="router.navigateToRoute(row.config.route)"
+      repeat.for="row of router.navigation">
+      <div class="thumbnail">
+        <img src.BIND="row.settings.icon" alt="...">
+        <div class="caption">
+          <h3>${row.settings.title}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

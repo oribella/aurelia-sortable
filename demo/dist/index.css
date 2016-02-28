@@ -1,0 +1,8 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+.placeholder {
+  opacity: 0.3;
+}

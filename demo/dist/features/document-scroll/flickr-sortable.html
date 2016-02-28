@@ -1,0 +1,12 @@
+<template>
+  <h2 style="text-align:center;">Vertical and horizontal sortable with document scroll</h2>
+  <div sortable="scroll.bind: 'document'; items.bind: images;">
+    <div class="${image.placeholderClass}"
+      repeat.for="image of images"
+      sortable-item="item.bind: image;">
+      <a class="thumbnail">
+        <img draggable="false" src.bind="image.media.m" class="flickr-img" />
+      </a>
+    </div>
+  </div>
+</template>
