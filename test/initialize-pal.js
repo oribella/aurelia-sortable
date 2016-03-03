@@ -1,4 +1,6 @@
+import "aurelia-polyfills";
 import {initializePAL} from "aurelia-pal";
+
 global.document = {
   elementFromPoint: () => {}
 };

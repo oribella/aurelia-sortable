@@ -371,8 +371,8 @@ var Sortable = (function () {
   }, {
     key: "start",
     value: function start(e, data, element) {
-      this.pageX = data.pagePoints[0].x;
-      this.pageY = data.pagePoints[0].y;
+      this.pageX = data.pointers[0].page.x;
+      this.pageY = data.pointers[0].page.y;
       this.scrollRect = this.scroll.getBoundingClientRect();
       this.scrollWidth = this.scroll.scrollWidth;
       this.scrollHeight = this.scroll.scrollHeight;
@@ -388,7 +388,7 @@ var Sortable = (function () {
   }, {
     key: "update",
     value: function update(e, data) {
-      var p = data.pagePoints[0];
+      var p = data.pointers[0].page;
       var pageX = this.pageX = p.x;
       var pageY = this.pageY = p.y;
       var scrollLeft = this.scroll.scrollLeft;

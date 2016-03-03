@@ -23,10 +23,10 @@ export class Sortable {
   @bindable dragZIndex = 1;
   @bindable disallowedDragTagNames = ["INPUT", "SELECT", "TEXTAREA"];
   @bindable allowDrag = args => {
-    if(this.disallowedDragTagNames.indexOf(args.event.target.tagName) !== -1) {
+    if (this.disallowedDragTagNames.indexOf(args.event.target.tagName) !== -1) {
       return false;
     }
-    if(args.event.target.isContentEditable) {
+    if (args.event.target.isContentEditable) {
       return false;
     }
     return true;
@@ -51,19 +51,19 @@ export class Sortable {
   }
   activate() {
     this.removeListener = oribella.on(this.element, "swipe", this);
-    if(typeof this.scroll === "string") {
+    if (typeof this.scroll === "string") {
       this.scroll = this.closest(this.element, this.scroll);
     }
-    if(!(this.scroll instanceof DOM.Element)) {
+    if (!(this.scroll instanceof DOM.Element)) {
       this.scroll = this.element;
     }
     this.removeScroll = this.bindScroll(this.scroll, this.onScroll.bind(this));
   }
   deactivate() {
-    if(typeof this.removeListener === "function") {
+    if (typeof this.removeListener === "function") {
       this.removeListener();
     }
-    if(typeof this.removeScroll === "function") {
+    if (typeof this.removeScroll === "function") {
       this.removeScroll();
     }
   }
@@ -80,7 +80,7 @@ export class Sortable {
     };
   }
   onScroll() {
-    if(!this.drag.element) {
+    if (!this.drag.element) {
       return;
     }
     const scrollLeft = this.scroll.scrollLeft;
@@ -134,7 +134,7 @@ export class Sortable {
     this.move(fromIx, toIx);
   }
   move(fromIx, toIx) {
-    if(fromIx !== -1 && toIx !== -1 && fromIx !== toIx) {
+    if (fromIx !== -1 && toIx !== -1 && fromIx !== toIx) {
       this.items.splice(toIx, 0, this.items.splice(fromIx, 1)[0]);
     }
   }
@@ -151,11 +151,11 @@ export class Sortable {
   }
   elementFromPoint(x, y) {
     let element = document.elementFromPoint(x, y);
-    if(!element) {
+    if (!element) {
       return null;
     }
     element = this.closest(element, this.selector, this.element);
-    if(!element) {
+    if (!element) {
       return null;
     }
     return element;
@@ -165,16 +165,16 @@ export class Sortable {
       this.pointInside(x + offsetX, y + offsetY, this.lastElementFromPointRect);
   }
   tryMove(x, y, offsetX, offsetY) {
-    if(this.canThrottle(x, y, offsetX, offsetY)) {
+    if (this.canThrottle(x, y, offsetX, offsetY)) {
       return;
     }
     const element = this.elementFromPoint(x, y);
-    if(!element) {
+    if (!element) {
       return;
     }
     const model = this.getItemViewModel(element);
     this.lastElementFromPointRect = element.getBoundingClientRect();
-    if(!this.allowMove({ item: model.item })) {
+    if (!this.allowMove({ item: model.item })) {
       return;
     }
     const ix = model.ctx.$index;
@@ -197,15 +197,15 @@ export class Sortable {
     };
   }
   down(e, data, element) {
-    if(this.allowDrag({ event: e, item: this.getItemViewModel(element).item })) {
+    if (this.allowDrag({ event: e, item: this.getItemViewModel(element).item })) {
       e.preventDefault();
       return undefined;
     }
     return false;
   }
   start(e, data, element) {
-    this.pageX = data.pagePoints[0].x;
-    this.pageY = data.pagePoints[0].y;
+    this.pageX = data.pointers[0].page.x;
+    this.pageY = data.pointers[0].page.y;
     this.scrollRect = this.scroll.getBoundingClientRect();
     this.scrollWidth = this.scroll.scrollWidth;
     this.scrollHeight = this.scroll.scrollHeight;
@@ -219,7 +219,7 @@ export class Sortable {
     this.lastElementFromPointRect = this.drag.rect;
   }
   update(e, data) {
-    const p = data.pagePoints[0];
+    const p = data.pointers[0].page;
     const pageX = (this.pageX = p.x);
     const pageY = (this.pageY = p.y);
     const scrollLeft = this.scroll.scrollLeft;

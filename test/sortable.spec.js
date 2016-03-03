@@ -610,31 +610,31 @@ describe("Sortable", () => {
     });
 
     it("should set `pageX`", () => {
-      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+      sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
       expect(sortable.pageX).to.equal(pageX);
     });
 
     it("should set `pageY`", () => {
-      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+      sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
       expect(sortable.pageY).to.equal(pageY);
     });
 
     it("should set `scrollRect`", () => {
       scroll.getBoundingClientRect.returns( { left: 5, top: 6, bottom: 7, right: 8, width: 9, height: 10 });
-      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+      sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
       expect(sortable.scrollRect).to.deep.equal({ left: 5, top: 6, bottom: 7, right: 8, width: 9, height: 10 });
     });
 
     describe("`boundingRect`", () => {
 
       it("should set `boundingRect`", () => {
-        sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+        sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
         expect(sortable.boundingRect).to.equal(boundingRect);
       });
 
       it("should set default `boundingRect`", () => {
         sortable.boundingRect = null;
-        sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+        sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
         expect(sortable.boundingRect).to.deep.equal({
           left: sortable.scrollRect.left + 5,
           top: sortable.scrollRect.top + 5,
@@ -646,29 +646,29 @@ describe("Sortable", () => {
     });
 
     it("should call `drag.start`", () => {
-      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, element);
+      sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, element);
       expect(dragStart).to.have.been.calledWithExactly(element, 10, 20, scroll.scrollLeft, scroll.scrollTop, -1);
     });
 
     it("should call `autoScroll.start`", () => {
-      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+      sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
       expect(autoScrollStart).to.have.been.calledWithExactly("foo", scrollSpeed, scrollSensitivity);
     });
 
     it("should set `fromIx`", () => {
       getItemViewModel.returns( { ctx: { $index: 13 } });
-      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+      sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
       expect(sortable.fromIx).to.equal(13);
     });
 
     it("should set `toIx`", () => {
-      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+      sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
       expect(sortable.toIx).to.equal(-1);
     });
 
     it("should call `addPlaceholder`", () => {
       getItemViewModel.returns( { ctx: { $index: 13 }, item: { foo: {} }});
-      sortable.start({}, { pagePoints: [{ x: pageX, y: pageY }] }, {});
+      sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
       expect(addPlaceholder).to.have.been.calledWithExactly(13, { foo: {} });
     });
 
@@ -712,22 +712,22 @@ describe("Sortable", () => {
     });
 
     it("should set `pageX`", () => {
-      sortable.update({}, { pagePoints: [{ x: pageX, y: pageY }] });
+      sortable.update({}, { pointers: [{ page: { x: pageX, y: pageY }}] });
       expect(sortable.pageX).to.equal(10);
     });
 
     it("should set `pageY`", () => {
-      sortable.update({}, { pagePoints: [{ x: pageX, y: pageY }] });
+      sortable.update({}, { pointers: [{ page: { x: pageX, y: pageY }}] });
       expect(sortable.pageY).to.equal(20);
     });
 
     it("should call `drag.update`", () => {
-      sortable.update({}, { pagePoints: [{ x: pageX, y: pageY }] });
+      sortable.update({}, { pointers: [{ page: { x: pageX, y: pageY }}] });
       expect(dragUpdate).to.have.been.calledWithExactly(pageX, pageY, scroll.scrollLeft, scroll.scrollTop, axis);
     });
 
     it("should call `getPoint`", () => {
-      sortable.update({}, { pagePoints: [{ x: pageX, y: pageY }] });
+      sortable.update({}, { pointers: [{ page: { x: pageX, y: pageY }}] });
       expect(getPoint).to.have.been.calledWithExactly(pageX, pageY);
     });
 
@@ -735,7 +735,7 @@ describe("Sortable", () => {
       pageX = 3;
       pageY = 6;
       getPoint.returns( { x: pageX, y: pageY });
-      sortable.update({}, { pagePoints: [{ x: pageX, y: pageY }] });
+      sortable.update({}, { pointers: [{ page: { x: pageX, y: pageY }}] });
       expect(tryUpdate).to.have.been.calledWithExactly(pageX, pageY, scroll.scrollLeft, scroll.scrollTop);
     });
 
@@ -745,7 +745,7 @@ describe("Sortable", () => {
       sortable.scrollWidth = 0;
       sortable.scrollHeight = 0;
       getPoint.returns( { x: pageX, y: pageY });
-      sortable.update({}, { pagePoints: [{ x: pageX, y: pageY }] });
+      sortable.update({}, { pointers: [{ page: { x: pageX, y: pageY }}] });
       expect(autoScrollUpdate).to.have.been.calledWithExactly(scroll, pageX, pageY, 0, 0, scrollRect);
     });
 
