@@ -1,5 +1,11 @@
+<a name="0.6.0"></a>
+# 0.6.0 (2016-03-03)
+
+
+
+
 <a name="0.5.3"></a>
-## [0.5.3](https://github.com/oribella/aurelia-sortable/compare/v0.5.2...v0.5.3) (2015-12-13)
+## [0.5.3](https://github.com/oribella/aurelia-sortable/compare/c0d8e31...v0.5.3) (2015-12-13)
 
 
 ### Bug Fixes
@@ -9,7 +15,7 @@
 
 
 <a name="0.5.2"></a>
-## [0.5.2](https://github.com/oribella/aurelia-sortable/compare/v0.5.1...v0.5.2) (2015-12-10)
+## [0.5.2](https://github.com/oribella/aurelia-sortable/compare/a9699b8...v0.5.2) (2015-12-10)
 
 
 ### Bug Fixes
@@ -19,7 +25,7 @@
 
 
 <a name="0.5.1"></a>
-## [0.5.1](https://github.com/oribella/aurelia-sortable/compare/v0.5.0...v0.5.1) (2015-12-10)
+## [0.5.1](https://github.com/oribella/aurelia-sortable/compare/8a6cb83...v0.5.1) (2015-12-10)
 
 
 ### Bug Fixes
@@ -29,19 +35,19 @@
 
 
 <a name="0.5.0"></a>
-# [0.5.0](https://github.com/oribella/aurelia-sortable/compare/v0.4.1...v0.5.0) (2015-12-10)
+# 0.5.0 (2015-12-10)
 
 
 
 
 <a name="0.4.1"></a>
-## [0.4.1](https://github.com/oribella/aurelia-sortable/compare/v0.4.0...v0.4.1) (2015-12-08)
+## 0.4.1 (2015-12-08)
 
 
 
 
 <a name="0.4.0"></a>
-# [0.4.0](https://github.com/oribella/aurelia-sortable/compare/v0.3.3...v0.4.0) (2015-12-07)
+# [0.4.0](https://github.com/oribella/aurelia-sortable/compare/a1407bb...v0.4.0) (2015-12-07)
 
 
 ### Bug Fixes
@@ -64,7 +70,7 @@
 
 
 <a name="0.3.3"></a>
-## [0.3.3](https://github.com/oribella/aurelia-sortable/compare/v0.3.2...v0.3.3) (2015-11-18)
+## [0.3.3](https://github.com/oribella/aurelia-sortable/compare/b9ab4da...v0.3.3) (2015-11-18)
 
 
 ### Bug Fixes
@@ -74,13 +80,13 @@
 
 
 <a name="0.3.2"></a>
-## [0.3.2](https://github.com/oribella/aurelia-sortable/compare/v0.3.1...v0.3.2) (2015-11-18)
+## 0.3.2 (2015-11-18)
 
 
 
 
 <a name="0.3.1"></a>
-## [0.3.1](https://github.com/oribella/aurelia-sortable/compare/v0.3.0...v0.3.1) (2015-11-11)
+## [0.3.1](https://github.com/oribella/aurelia-sortable/compare/df68c1d...v0.3.1) (2015-11-11)
 
 
 ### Bug Fixes
@@ -90,7 +96,7 @@
 
 
 <a name="0.3.0"></a>
-# [0.3.0](https://github.com/oribella/aurelia-sortable/compare/v0.2.2...v0.3.0) (2015-11-11)
+# [0.3.0](https://github.com/oribella/aurelia-sortable/compare/a40992c...v0.3.0) (2015-11-11)
 
 
 ### Bug Fixes
@@ -103,7 +109,7 @@
 
 
 <a name="0.2.2"></a>
-## [0.2.2](https://github.com/oribella/aurelia-sortable/compare/v0.2.1...v0.2.2) (2015-10-15)
+## [0.2.2](https://github.com/oribella/aurelia-sortable/compare/ac0ca0a...v0.2.2) (2015-10-15)
 
 
 ### Bug Fixes
@@ -113,7 +119,7 @@
 
 
 <a name="0.2.1"></a>
-## [0.2.1](https://github.com/oribella/aurelia-sortable/compare/v0.2.0...v0.2.1) (2015-08-18)
+## [0.2.1](https://github.com/oribella/aurelia-sortable/compare/c4a0a29...v0.2.1) (2015-08-18)
 
 
 ### Bug Fixes
@@ -123,7 +129,7 @@
 
 
 <a name="0.2.0"></a>
-# [0.2.0](https://github.com/oribella/aurelia-sortable/compare/0.1.0...v0.2.0) (2015-08-16)
+# [0.2.0](https://github.com/oribella/aurelia-sortable/compare/dcdcadc...v0.2.0) (2015-08-16)
 
 
 ### Bug Fixes
