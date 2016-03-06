@@ -1,8 +1,8 @@
 <template>
   <h2>
-    Sortable with document scroll
+    Sortable with parent scroll
   </h2>
-  <div sortable="scroll.bind: 'document'; items.bind: images;">
+  <div sortable="scroll.bind: '.page-host'; items.bind: images;">
     <div class="${image.placeholderClass}"
       repeat.for="image of images"
       sortable-item="item.bind: image;">

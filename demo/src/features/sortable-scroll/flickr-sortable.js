@@ -11,6 +11,13 @@ export class FlickrSortable{
     this.http = http;
   }
 
+  attached() {
+    document.body.parentElement.classList.add( "sortable-scroll" );
+  }
+  detached() {
+    document.body.parentElement.classList.remove( "sortable-scroll" );
+  }
+
   activate(){
     return this.http.jsonp(this.url).then(response => {
       this.images = response.content.items;

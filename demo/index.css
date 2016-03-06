@@ -1,8 +1,76 @@
 html, body {
   margin: 0;
   padding: 0;
+  font-family: monospace;
+  font-size: 13px;
 }
 
 .placeholder {
   opacity: 0.3;
+}
+
+.features, [sortable] {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.feature, [sortable-item] {
+  flex: 0 0 1;
+  padding: 8px 8px;
+  box-sizing: border-box;
+  max-width: 216px;
+}
+
+h2,  h3 {
+  padding: 8px 8px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+img {
+  width: 200px;
+  height: 160px;
+}
+
+.sortable-scroll,
+.sortable-scroll body,
+.sortable-scroll .page-host,
+.sortable-scroll router-view {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.sortable-scroll [sortable] {
+  position: relative;
+  height: calc(100% - 50px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.parent-scroll .page-host {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0px;
+  bottom: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.splash {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12.5%;
+}
+.message, .fa-spinner {
+  font-size: 48px;
+  flex: 0 0 1;
+  padding: 8px 8px;
+  box-sizing: border-box;
+  max-width: 216px;
 }

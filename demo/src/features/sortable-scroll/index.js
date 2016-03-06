@@ -6,14 +6,14 @@ export function configure(config) {
   routerConfig
     .map([{
       settings: {
-        title: "Sortable with document scroll",
-        icon: "src/features/document-scroll/flickr.svg"
+        title: "Sortable with element scroll",
+        icon: "src/features/sortable-scroll/flickr.svg"
       },
-      route: "flickr-document-scroll",
-      moduleId: "features/document-scroll/flickr-sortable",
-      name: "flickr-document-scroll",
+      route: "flickr-sortable-scroll",
+      moduleId: "features/sortable-scroll/flickr-sortable",
+      name: "flickr-sortable-scroll",
       nav: true,
-      title: "flickr-document-scroll"
+      title: "flickr-sortable-scroll"
     }])
     .exportToRouter(router);
 }
