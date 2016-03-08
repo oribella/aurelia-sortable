@@ -14,7 +14,7 @@ System.config({
 
   map: {
     "aurelia-binding": "npm:aurelia-binding@1.0.0-beta.1.2.2",
-    "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0-beta.1.1.4",
+    "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0-beta.1.1.5",
     "aurelia-loader": "npm:aurelia-loader@1.0.0-beta.1.1.1",
     "aurelia-logging": "npm:aurelia-logging@1.0.0-beta.1.1.2",
     "aurelia-metadata": "npm:aurelia-metadata@1.0.0-beta.1.1.6",
@@ -23,7 +23,7 @@ System.config({
     "aurelia-path": "npm:aurelia-path@1.0.0-beta.1.1.1",
     "aurelia-polyfills": "npm:aurelia-polyfills@1.0.0-beta.1.0.1",
     "aurelia-task-queue": "npm:aurelia-task-queue@1.0.0-beta.1.1.1",
-    "aurelia-templating": "npm:aurelia-templating@1.0.0-beta.1.1.2",
+    "aurelia-templating": "npm:aurelia-templating@1.0.0-beta.1.1.4",
     "babel": "npm:babel-core@5.8.35",
     "babel-runtime": "npm:babel-runtime@5.8.35",
     "core-js": "npm:core-js@2.1.3",
@@ -48,7 +48,7 @@ System.config({
       "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1.1.1",
       "aurelia-task-queue": "npm:aurelia-task-queue@1.0.0-beta.1.1.1"
     },
-    "npm:aurelia-dependency-injection@1.0.0-beta.1.1.4": {
+    "npm:aurelia-dependency-injection@1.0.0-beta.1.1.5": {
       "aurelia-logging": "npm:aurelia-logging@1.0.0-beta.1.1.2",
       "aurelia-metadata": "npm:aurelia-metadata@1.0.0-beta.1.1.6",
       "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1.1.1"
@@ -69,9 +69,9 @@ System.config({
     "npm:aurelia-task-queue@1.0.0-beta.1.1.1": {
       "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1.1.1"
     },
-    "npm:aurelia-templating@1.0.0-beta.1.1.2": {
+    "npm:aurelia-templating@1.0.0-beta.1.1.4": {
       "aurelia-binding": "npm:aurelia-binding@1.0.0-beta.1.2.2",
-      "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0-beta.1.1.4",
+      "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0-beta.1.1.5",
       "aurelia-loader": "npm:aurelia-loader@1.0.0-beta.1.1.1",
       "aurelia-logging": "npm:aurelia-logging@1.0.0-beta.1.1.2",
       "aurelia-metadata": "npm:aurelia-metadata@1.0.0-beta.1.1.6",
@@ -93,34 +93,34 @@ System.config({
     },
     "npm:oribella-default-gestures@0.4.0": {
       "oribella-doubletap": "npm:oribella-doubletap@0.4.0",
-      "oribella-framework": "npm:oribella-framework@0.4.1",
+      "oribella-framework": "npm:oribella-framework@0.4.2",
       "oribella-longtap": "npm:oribella-longtap@0.4.0",
       "oribella-longtap-swipe": "npm:oribella-longtap-swipe@0.4.0",
       "oribella-pinch": "npm:oribella-pinch@0.4.0",
       "oribella-rotate": "npm:oribella-rotate@0.4.0",
-      "oribella-swipe": "npm:oribella-swipe@0.4.0",
+      "oribella-swipe": "npm:oribella-swipe@0.4.1",
       "oribella-tap": "npm:oribella-tap@0.4.2"
     },
     "npm:oribella-doubletap@0.4.0": {
-      "oribella-framework": "npm:oribella-framework@0.4.1"
+      "oribella-framework": "npm:oribella-framework@0.4.2"
     },
     "npm:oribella-longtap-swipe@0.4.0": {
-      "oribella-framework": "npm:oribella-framework@0.4.1"
+      "oribella-framework": "npm:oribella-framework@0.4.2"
     },
     "npm:oribella-longtap@0.4.0": {
-      "oribella-framework": "npm:oribella-framework@0.4.1"
+      "oribella-framework": "npm:oribella-framework@0.4.2"
     },
     "npm:oribella-pinch@0.4.0": {
-      "oribella-framework": "npm:oribella-framework@0.4.1"
+      "oribella-framework": "npm:oribella-framework@0.4.2"
     },
     "npm:oribella-rotate@0.4.0": {
-      "oribella-framework": "npm:oribella-framework@0.4.1"
+      "oribella-framework": "npm:oribella-framework@0.4.2"
     },
-    "npm:oribella-swipe@0.4.0": {
-      "oribella-framework": "npm:oribella-framework@0.4.1"
+    "npm:oribella-swipe@0.4.1": {
+      "oribella-framework": "npm:oribella-framework@0.4.2"
     },
     "npm:oribella-tap@0.4.2": {
-      "oribella-framework": "npm:oribella-framework@0.4.1"
+      "oribella-framework": "npm:oribella-framework@0.4.2"
     },
     "npm:path-browserify@0.0.0": {
       "process": "github:jspm/nodelibs-process@0.1.2"

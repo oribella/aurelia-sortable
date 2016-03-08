@@ -76,10 +76,6 @@ describe("Sortable", () => {
       expect(sortable.axis).to.have.length(0);
     });
 
-    it("should have a bounding rect", () => {
-      expect(sortable.boundingRect).to.be.a("null");
-    });
-
     it("should have a moved function", () => {
       expect(sortable.moved).to.be.a("function");
     });
@@ -219,9 +215,10 @@ describe("Sortable", () => {
     beforeEach(() => {
       sortable.drag.element = {};
       sortable.scroll = { scrollLeft: 0, scrollTop: 0 };
-      sortable.pageX = 100;
-      sortable.pageY = 200;
+      sortable.x = 100;
+      sortable.y = 200;
       sortable.axis = "foo";
+      sortable.dragBoundingRect = { left: 0, top: 0, right: 100, bottom: 200 };
       dragUpdate = sandbox.stub(sortable.drag, "update");
       getPoint = sandbox.stub(sortable, "getPoint").returns({ x: 0, y: 0 });
       tryMove = sandbox.stub(sortable, "tryMove");
@@ -237,7 +234,7 @@ describe("Sortable", () => {
 
     it("should call `drag.update`", () => {
       sortable.onScroll();
-      expect(dragUpdate).to.have.been.calledWithExactly(100, 200, 0, 0, "foo");
+      expect(dragUpdate).to.have.been.calledWithExactly(100, 200, 0, 0, "foo", { left: 0, top: 0, right: 100, bottom: 200 });
     });
 
     it("should call `getPoint`", () => {
@@ -481,35 +478,6 @@ describe("Sortable", () => {
       expect(dragCenterY).to.have.been.calledWithExactly();
     });
 
-    describe("`boundingRect`", () => {
-
-      it("should return min x", () => {
-        let { x } = sortable.getPoint(1);
-        expect(x).to.equal(boundingRect.left);
-      });
-
-      it("should return max x", () => {
-        let { x } = sortable.getPoint(200);
-        expect(x).to.equal(boundingRect.right);
-      });
-
-      it("should return min y", () => {
-        let { y } = sortable.getPoint( -1, 1);
-        expect(y).to.equal(boundingRect.top);
-      });
-
-      it("should return max y", () => {
-        let { y } = sortable.getPoint( -1, 200);
-        expect(y).to.equal(boundingRect.bottom);
-      });
-
-      it("should return valid x, y", () => {
-        let { x, y } = sortable.getPoint(50, 75);
-        expect(x).to.equal(50);
-        expect(y).to.equal(75);
-      });
-    });
-
   });
 
   describe("`down`", () => {
@@ -550,10 +518,11 @@ describe("Sortable", () => {
   });
 
   describe("`start`", () => {
-    let pageX;
-    let pageY;
+    let x;
+    let y;
+    //let element;
     let scroll;
-    let boundingRect;
+    //let boundingRect;
     let placeholder;
     let scrollSpeed;
     let scrollSensitivity;
@@ -565,20 +534,21 @@ describe("Sortable", () => {
     let autoScrollStart;
 
     beforeEach(() => {
-      pageX = 10;
-      pageY = 20;
-      boundingRect = { left: 10, top: 20, right: 30, bottom: 40 };
-      scroll = { scrollLeft: 0, scrollTop: 0, getBoundingClientRect: sandbox.stub().returns({}) };
+      x = 10;
+      y = 20;
+      //boundingRect = { left: 10, top: 20, right: 30, bottom: 40 };
+      element = { getBoundingClientRect: sandbox.stub().returns({}), contains: sandbox.stub().returns(false) };
+      scroll = { scrollLeft: 0, scrollTop: 0, getBoundingClientRect: sandbox.stub().returns({}), contains: sandbox.stub().returns(false) };
       placeholder = {};
       scrollSpeed = 99;
       scrollSensitivity = 66;
       sortable = Object.create(sortable, {
-        "scroll": {
-          value: scroll,
+        "element": {
+          value: element,
           writable: true
         },
-        "boundingRect": {
-          value: boundingRect,
+        "scroll": {
+          value: scroll,
           writable: true
         },
         "axis": {
@@ -609,90 +579,94 @@ describe("Sortable", () => {
       addPlaceholder = sandbox.stub(sortable, "addPlaceholder");
     });
 
-    it("should set `pageX`", () => {
-      sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
-      expect(sortable.pageX).to.equal(pageX);
+    it("should set `x`", () => {
+      sortable.start({}, { pointers: [{ client: { x: x, y: y }}] }, {});
+      expect(sortable.x).to.equal(x);
     });
 
-    it("should set `pageY`", () => {
-      sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
-      expect(sortable.pageY).to.equal(pageY);
+    it("should set `y`", () => {
+      sortable.start({}, { pointers: [{ client: { x: x, y: y }}] }, {});
+      expect(sortable.y).to.equal(y);
     });
 
     it("should set `scrollRect`", () => {
       scroll.getBoundingClientRect.returns( { left: 5, top: 6, bottom: 7, right: 8, width: 9, height: 10 });
-      sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
+      sortable.start({}, { pointers: [{ client: { x: x, y: y }}] }, {});
       expect(sortable.scrollRect).to.deep.equal({ left: 5, top: 6, bottom: 7, right: 8, width: 9, height: 10 });
     });
 
     describe("`boundingRect`", () => {
 
-      it("should set `boundingRect`", () => {
-        sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
-        expect(sortable.boundingRect).to.equal(boundingRect);
-      });
+      // it("should set `boundingRect`", () => {
+      //   sortable.start({}, { pointers: [{ client: { x: x, y: y }}] }, {});
+      //   expect(sortable.boundingRect).to.equal(boundingRect);
+      // });
 
-      it("should set default `boundingRect`", () => {
-        sortable.boundingRect = null;
-        sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
-        expect(sortable.boundingRect).to.deep.equal({
-          left: sortable.scrollRect.left + 5,
-          top: sortable.scrollRect.top + 5,
-          right: sortable.scrollRect.right - 5,
-          bottom: sortable.scrollRect.bottom - 5
-        });
-      });
+      // it("should set default `boundingRect`", () => {
+      //   sortable.boundingRect = null;
+      //   sortable.start({}, { pointers: [{ client: { x: x, y: y }}] }, {});
+      //   expect(sortable.boundingRect).to.deep.equal({
+      //     left: sortable.scrollRect.left + 5,
+      //     top: sortable.scrollRect.top + 5,
+      //     right: sortable.scrollRect.right - 5,
+      //     bottom: sortable.scrollRect.bottom - 5
+      //   });
+      // });
 
     });
 
     it("should call `drag.start`", () => {
-      sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, element);
-      expect(dragStart).to.have.been.calledWithExactly(element, 10, 20, scroll.scrollLeft, scroll.scrollTop, -1);
+      sortable.start({}, { pointers: [{ client: { x: x, y: y }}] }, element);
+      expect(dragStart).to.have.been.calledWithExactly(element, 10, 20, false, false, scroll.scrollLeft, scroll.scrollTop, -1, "foo", sinon.match.object);
     });
 
     it("should call `autoScroll.start`", () => {
-      sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
-      expect(autoScrollStart).to.have.been.calledWithExactly("foo", scrollSpeed, scrollSensitivity);
+      sortable.start({}, { pointers: [{ client: { x: x, y: y }}] }, {});
+      expect(autoScrollStart).to.have.been.calledWithExactly(scrollSpeed);
     });
 
     it("should set `fromIx`", () => {
       getItemViewModel.returns( { ctx: { $index: 13 } });
-      sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
+      sortable.start({}, { pointers: [{ client: { x: x, y: y }}] }, {});
       expect(sortable.fromIx).to.equal(13);
     });
 
     it("should set `toIx`", () => {
-      sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
+      sortable.start({}, { pointers: [{ client: { x: x, y: y }}] }, {});
       expect(sortable.toIx).to.equal(-1);
     });
 
     it("should call `addPlaceholder`", () => {
       getItemViewModel.returns( { ctx: { $index: 13 }, item: { foo: {} }});
-      sortable.start({}, { pointers: [{ page: { x: pageX, y: pageY }}] }, {});
+      sortable.start({}, { pointers: [{ client: { x: x, y: y }}] }, {});
       expect(addPlaceholder).to.have.been.calledWithExactly(13, { foo: {} });
     });
 
   });
 
   describe("`update`", () => {
-    let pageX;
-    let pageY;
+    let x;
+    let y;
     let scroll;
     let scrollRect;
     let axis;
+    let boundingRect;
+    let dragBoundingRect;
     let dragUpdate;
     let getPoint;
     let tryUpdate;
     let autoScrollUpdate;
 
     beforeEach(() => {
-      pageX = 10;
-      pageY = 20;
+      x = 10;
+      y = 20;
       scroll = { scrollLeft: 0, scrollTop: 0 };
       scrollRect = {};
       axis = "foo";
+      boundingRect = { left: 0, top: 100, bottom: 150, right: 75 };
+      dragBoundingRect = { left: 0, top: 100, bottom: 200, right: 300 };
       dragUpdate = sandbox.stub(sortable.drag, "update");
-      getPoint = sandbox.stub(sortable, "getPoint").returns( { x: pageX, y: pageY });
+      getPoint = sandbox.stub(sortable, "getPoint").returns( { x: x, y: y });
       tryUpdate = sandbox.stub(sortable, "tryUpdate");
       autoScrollUpdate = sandbox.stub(sortable.autoScroll, "update");
       sortable = Object.create(sortable, {
@@ -707,46 +681,54 @@ describe("Sortable", () => {
         "axis": {
           value: axis,
           writable: true
+        },
+        "boundingRect": {
+          value: boundingRect,
+          writable: true
+        },
+        "dragBoundingRect": {
+          value: dragBoundingRect,
+          writable: true
         }
       });
     });
 
-    it("should set `pageX`", () => {
-      sortable.update({}, { pointers: [{ page: { x: pageX, y: pageY }}] });
-      expect(sortable.pageX).to.equal(10);
+    it("should set `x`", () => {
+      sortable.update({}, { pointers: [{ client: { x: x, y: y }}] });
+      expect(sortable.x).to.equal(10);
     });
 
-    it("should set `pageY`", () => {
-      sortable.update({}, { pointers: [{ page: { x: pageX, y: pageY }}] });
-      expect(sortable.pageY).to.equal(20);
+    it("should set `y`", () => {
+      sortable.update({}, { pointers: [{ client: { x: x, y: y }}] });
+      expect(sortable.y).to.equal(20);
     });
 
     it("should call `drag.update`", () => {
-      sortable.update({}, { pointers: [{ page: { x: pageX, y: pageY }}] });
-      expect(dragUpdate).to.have.been.calledWithExactly(pageX, pageY, scroll.scrollLeft, scroll.scrollTop, axis);
+      sortable.update({}, { pointers: [{ client: { x: x, y: y }}] });
+      expect(dragUpdate).to.have.been.calledWithExactly(x, y, scroll.scrollLeft, scroll.scrollTop, axis, sinon.match.object);
     });
 
     it("should call `getPoint`", () => {
-      sortable.update({}, { pointers: [{ page: { x: pageX, y: pageY }}] });
-      expect(getPoint).to.have.been.calledWithExactly(pageX, pageY);
+      sortable.update({}, { pointers: [{ client: { x: x, y: y }}] });
+      expect(getPoint).to.have.been.calledWithExactly(x, y);
     });
 
     it("should call `tryUpdate`", () => {
-      pageX = 3;
-      pageY = 6;
-      getPoint.returns( { x: pageX, y: pageY });
-      sortable.update({}, { pointers: [{ page: { x: pageX, y: pageY }}] });
-      expect(tryUpdate).to.have.been.calledWithExactly(pageX, pageY, scroll.scrollLeft, scroll.scrollTop);
+      x = 3;
+      y = 6;
+      getPoint.returns( { x: x, y: y });
+      sortable.update({}, { pointers: [{ client: { x: x, y: y }}] });
+      expect(tryUpdate).to.have.been.calledWithExactly(x, y, scroll.scrollLeft, scroll.scrollTop);
     });
 
-    it("should call `autoScroll.update`", () => {
-      pageX = 12;
-      pageY = 24;
+    it.skip("should call `autoScroll.update`", () => {
+      x = 12;
+      y = 24;
       sortable.scrollWidth = 0;
       sortable.scrollHeight = 0;
-      getPoint.returns( { x: pageX, y: pageY });
-      sortable.update({}, { pointers: [{ page: { x: pageX, y: pageY }}] });
-      expect(autoScrollUpdate).to.have.been.calledWithExactly(scroll, pageX, pageY, 0, 0, scrollRect);
+      getPoint.returns( { x: x, y: y });
+      sortable.update({}, { pointers: [{ client: { x: x, y: y }}] });
+      expect(autoScrollUpdate).to.have.been.calledWithExactly(scroll, x, y, 0, 0, scrollRect);
     });
 
   });

@@ -4,6 +4,8 @@ import {initializePAL} from "aurelia-pal";
 global.document = {
   elementFromPoint: () => {}
 };
+global.innerWidth = 1068;
+global.innerHeight = 768;
 global.MockElement = function() {
   this.firstChild = {
     firstElementChild: {}

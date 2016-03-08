@@ -79,14 +79,6 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
           },
           enumerable: true
         }, {
-          key: "boundingRect",
-          decorators: [bindable],
-          initializer: function initializer() {
-            return null;
-          },
-          //{ left, top, right, bottom }
-          enumerable: true
-        }, {
           key: "moved",
           decorators: [bindable],
           initializer: function initializer() {
@@ -150,8 +142,6 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
 
           _defineDecoratedPropertyDescriptor(this, "axis", _instanceInitializers);
 
-          _defineDecoratedPropertyDescriptor(this, "boundingRect", _instanceInitializers);
-
           _defineDecoratedPropertyDescriptor(this, "moved", _instanceInitializers);
 
           _defineDecoratedPropertyDescriptor(this, "dragZIndex", _instanceInitializers);
@@ -165,9 +155,8 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
           this.selector = "[sortable-item]";
           this.fromIx = -1;
           this.toIx = -1;
-          this.pageX = 0;
-          this.pageY = 0;
-          this.scrollRect = { left: 0, top: 0, width: 0, height: 0 };
+          this.x = 0;
+          this.y = 0;
           this.lastElementFromPointRect = null;
 
           this.element = element;
@@ -182,9 +171,17 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
           key: "activate",
           value: function activate() {
             this.removeListener = oribella.on(this.element, "swipe", this);
-            if (typeof this.scroll === "string") {
-              this.scroll = this.closest(this.element, this.scroll);
+            var scroll = this.scroll;
+            if (typeof scroll === "string") {
+              if (scroll === "document") {
+                this.scroll = document.scrollingElement || document.documentElement || document.body;
+                this.removeScroll = this.bindScroll(document, this.onScroll.bind(this));
+                return;
+              } else {
+                scroll = this.closest(this.element, scroll);
+              }
             }
+            this.scroll = scroll;
             if (!(this.scroll instanceof DOM.Element)) {
               this.scroll = this.element;
             }
@@ -226,14 +223,57 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
             }
             var scrollLeft = this.scroll.scrollLeft;
             var scrollTop = this.scroll.scrollTop;
-            this.drag.update(this.pageX, this.pageY, scrollLeft, scrollTop, this.axis);
+            this.drag.update(this.x, this.y, scrollLeft, scrollTop, this.axis, this.dragBoundingRect);
 
-            var _getPoint = this.getPoint(this.pageX, this.pageY);
+            var _getPoint = this.getPoint(this.x, this.y);
 
             var x = _getPoint.x;
             var y = _getPoint.y;
 
             this.tryMove(x, y, scrollLeft, scrollTop);
+          }
+        }, {
+          key: "getScrollFrames",
+          value: function getScrollFrames(maxPos, scrollPos) {
+            return Math.max(0, Math.ceil(Math.abs(maxPos - scrollPos) / this.scrollSpeed));
+          }
+        }, {
+          key: "getScrollDirectionX",
+          value: function getScrollDirectionX(x, _ref) {
+            var left = _ref.left;
+            var right = _ref.right;
+
+            var dir = 0;
+            switch (this.axis) {
+              default:
+              case "x":
+                if (x >= right - this.scrollSensitivity) {
+                  dir = 1;
+                } else if (x <= left + this.scrollSensitivity) {
+                  dir = -1;
+                }
+                break;
+            }
+            return dir;
+          }
+        }, {
+          key: "getScrollDirectionY",
+          value: function getScrollDirectionY(y, _ref2) {
+            var top = _ref2.top;
+            var bottom = _ref2.bottom;
+
+            var dir = 0;
+            switch (this.axis) {
+              default:
+              case "y":
+                if (y >= bottom - this.scrollSensitivity) {
+                  dir = 1;
+                } else if (y <= top + this.scrollSensitivity) {
+                  dir = -1;
+                }
+                break;
+            }
+            return dir;
           }
         }, {
           key: "hide",
@@ -344,8 +384,7 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
             if (!this.allowMove({ item: model.item })) {
               return;
             }
-            var ix = model.ctx.$index;
-            this.movePlaceholder(ix);
+            this.movePlaceholder(model.ctx.$index);
           }
         }, {
           key: "getPoint",
@@ -361,8 +400,8 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
                 break;
             }
             return {
-              x: Math.max(this.boundingRect.left, Math.min(this.boundingRect.right, pageX)),
-              y: Math.max(this.boundingRect.top, Math.min(this.boundingRect.bottom, pageY))
+              x: pageX,
+              y: pageY
             };
           }
         }, {
@@ -377,14 +416,44 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
         }, {
           key: "start",
           value: function start(e, data, element) {
-            this.pageX = data.pointers[0].page.x;
-            this.pageY = data.pointers[0].page.y;
+            var windowHeight = innerHeight;
+            var windowWidth = innerWidth;
+            var scrollLeft = this.scroll.scrollLeft;
+            var scrollTop = this.scroll.scrollTop;
+
+            this.x = data.pointers[0].client.x;
+            this.y = data.pointers[0].client.y;
+            this.sortableRect = this.element.getBoundingClientRect();
             this.scrollRect = this.scroll.getBoundingClientRect();
             this.scrollWidth = this.scroll.scrollWidth;
             this.scrollHeight = this.scroll.scrollHeight;
-            this.boundingRect = this.boundingRect || { left: this.scrollRect.left + 5, top: this.scrollRect.top + 5, right: this.scrollRect.right - 5, bottom: this.scrollRect.bottom - 5 };
-            this.drag.start(element, this.pageX, this.pageY, this.scroll.scrollLeft, this.scroll.scrollTop, this.dragZIndex);
-            this.autoScroll.start(this.axis, this.scrollSpeed, this.scrollSensitivity);
+
+            this.boundingRect = {
+              left: Math.max(0, this.sortableRect.left),
+              top: Math.max(0, this.sortableRect.top),
+              bottom: Math.min(windowHeight, this.sortableRect.bottom),
+              right: Math.min(windowWidth, this.sortableRect.right)
+            };
+
+            this.scrollContainsOffsetParent = this.scroll.contains(element.offsetParent);
+            this.sortableContainsScroll = this.element.contains(this.scroll);
+            this.dragBoundingRect = this.sortableContainsScroll ? {
+              left: 0,
+              top: 0,
+              bottom: this.scrollHeight,
+              right: this.scrollWidth
+            } : this.sortableRect;
+
+            if (this.sortableContainsScroll) {
+              this.scrollMaxPosX = this.scrollWidth - this.scrollRect.width;
+              this.scrollMaxPosY = this.scrollHeight - this.scrollRect.height;
+            } else {
+              this.scrollMaxPosX = this.sortableRect.right - windowWidth + scrollLeft;
+              this.scrollMaxPosY = this.sortableRect.bottom - windowHeight + scrollTop;
+            }
+
+            this.drag.start(element, this.x, this.y, this.scrollContainsOffsetParent, this.sortableContainsScroll, scrollLeft, scrollTop, this.dragZIndex, this.axis, this.dragBoundingRect);
+            this.autoScroll.start(this.scrollSpeed);
             var viewModel = this.getItemViewModel(element);
             this.fromIx = viewModel.ctx.$index;
             this.toIx = -1;
@@ -394,15 +463,15 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
         }, {
           key: "update",
           value: function update(e, data) {
-            var p = data.pointers[0].page;
-            var pageX = this.pageX = p.x;
-            var pageY = this.pageY = p.y;
+            var p = data.pointers[0].client;
+            this.x = p.x;
+            this.y = p.y;
             var scrollLeft = this.scroll.scrollLeft;
             var scrollTop = this.scroll.scrollTop;
 
-            this.drag.update(pageX, pageY, scrollLeft, scrollTop, this.axis);
+            this.drag.update(this.x, this.y, scrollLeft, scrollTop, this.axis, this.dragBoundingRect);
 
-            var _getPoint2 = this.getPoint(pageX, pageY);
+            var _getPoint2 = this.getPoint(p.x, p.y);
 
             var x = _getPoint2.x;
             var y = _getPoint2.y;
@@ -410,7 +479,18 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
             var scrollX = this.autoScroll.active ? scrollLeft : 0;
             var scrollY = this.autoScroll.active ? scrollTop : 0;
             this.tryUpdate(x, y, scrollX, scrollY);
-            this.autoScroll.update(this.scroll, x, y, this.scrollWidth, this.scrollHeight, this.scrollRect);
+
+            var dirX = this.getScrollDirectionX(x, this.boundingRect);
+            var dirY = this.getScrollDirectionY(y, this.boundingRect);
+            var frameCntX = this.getScrollFrames(dirX === -1 ? 0 : this.scrollMaxPosX, scrollLeft);
+            var frameCntY = this.getScrollFrames(dirY === -1 ? 0 : this.scrollMaxPosY, scrollTop);
+            if (dirX === 1 && scrollLeft >= this.scrollMaxPosX || dirX === -1 && scrollLeft === 0) {
+              frameCntX = 0;
+            }
+            if (dirY === 1 && scrollTop >= this.scrollMaxPosY || dirY === -1 && scrollTop === 0) {
+              frameCntY = 0;
+            }
+            this.autoScroll.update(this.scroll, dirX, dirY, frameCntX, frameCntY);
           }
         }, {
           key: "end",
@@ -420,9 +500,7 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
               return; //cancelled
             }
             this.move(this.toIx < this.fromIx ? this.fromIx + 1 : this.fromIx, this.toIx);
-            this.drag.end();
-            this.autoScroll.end();
-            this.removePlaceholder();
+            this.stop();
 
             if (this.fromIx < this.toIx) {
               --this.toIx;
@@ -434,6 +512,11 @@ System.register(["aurelia-pal", "aurelia-templating", "aurelia-dependency-inject
         }, {
           key: "cancel",
           value: function cancel() {
+            this.stop();
+          }
+        }, {
+          key: "stop",
+          value: function stop() {
             this.drag.end();
             this.autoScroll.end();
             this.removePlaceholder();

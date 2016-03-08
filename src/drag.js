@@ -38,41 +38,61 @@ export class Drag {
   getCenterY() {
     return this.rect.top + this.rect.height / 2;
   }
-  start(element, pageX, pageY, scrollLeft, scrollTop, dragZIndex) {
+  start(element, pageX, pageY, scrollContainsOffsetParent, sortableContainsScroll, scrollLeft, scrollTop, dragZIndex, axis, sortableRect) {
     const rect = (this.rect = element.getBoundingClientRect());
-    const offsetParentRect = element.offsetParent.getBoundingClientRect();
 
-    this.startLeft = rect.left - offsetParentRect.left;
-    this.startTop = rect.top - offsetParentRect.top;
-
-    this.offsetX = this.startLeft - pageX - scrollLeft;
-    this.offsetY = this.startTop - pageY - scrollTop;
+    this.startParentLeft = 0;
+    this.startParentTop = 0;
+    if (scrollContainsOffsetParent) {
+      this.startParentLeft = scrollLeft;
+      this.startParentTop = scrollTop;
+    }
+    this.startLeft = rect.left;
+    this.startTop = rect.top;
+    if (sortableContainsScroll) {
+      const offsetParentRect = element.offsetParent.getBoundingClientRect();
+      this.startLeft -= offsetParentRect.left;
+      this.startTop -= offsetParentRect.top;
+    }
+    this.offsetX = this.startParentLeft + this.startLeft - pageX - scrollLeft;
+    this.offsetY = this.startParentTop + this.startTop - pageY - scrollTop;
 
     this.unpin = this.pin(element, rect, dragZIndex);
 
-    this.update(pageX, pageY, scrollLeft, scrollTop);
+    this.update(pageX, pageY, scrollLeft, scrollTop, axis, sortableRect);
   }
-  update(pageX, pageY, scrollLeft, scrollTop, axis) {
-    let left = pageX + this.offsetX + scrollLeft;
-    let top = pageY + this.offsetY + scrollTop;
+  update(x, y, scrollLeft, scrollTop, axis, { left, top, bottom, right }) {
+    x += this.offsetX + scrollLeft;
+    y += this.offsetY + scrollTop;
+
+    if (x < left) {
+      x = left;
+    }
+    if (x > right - this.rect.width) {
+      x = right - this.rect.width;
+    }
+    if (y < top) {
+      y = top;
+    }
+    if (y > bottom - this.rect.height) {
+      y = bottom - this.rect.height;
+    }
 
     switch (axis) {
     case "x":
-      top = this.startTop;
+      y = this.startTop;
       break;
     case "y":
-      left = this.startLeft;
-      break;
-    default:
+      x = this.startLeft;
       break;
     }
 
-    this.element.style.left = left + "px";
-    this.element.style.top = top + "px";
+    this.element.style.left = x + "px";
+    this.element.style.top = y + "px";
   }
   end() {
     if (this.element) {
-      if(typeof this.unpin === "function") {
+      if (typeof this.unpin === "function") {
         this.unpin();
       }
       this.element = null;
