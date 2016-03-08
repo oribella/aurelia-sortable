@@ -89,19 +89,6 @@ If you have a vertical or horizontal list you can lock the sortable axis movemen
 ```
 ###### Default `axis=''` - sets the allowed axis movement.
 
-To be able to constrain the *sortable* bounding rect add:
-```markup
-<!-- Other bindings omitted -->
-<div sortable="bounding-rect.bind: {
-  left: 20,
-  top: 20,
-  right: 20,
-  bottom: 20 }">
-</div>
-```
-This is useful if the list has a padding and you still want to lock the `axis` movement.
-###### Default `boundingRect={ left: 0, top: 0, right: 0, bottom : 0 }`.
-
 To make sure that the dragging of a *sortable item* always is on top of other elements make sure to bind:
 ```markup
 <!-- Other bindings omitted -->
