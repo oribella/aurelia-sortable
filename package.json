@@ -60,6 +60,6 @@
     "aurelia-templating": "^1.0.0-beta.1.1.2",
     "jspm": "^0.16.15",
     "oribella-default-gestures": "^0.4.0",
-    "oribella-dev": "^0.1.25"
+    "oribella-dev": "^0.2.1"
   }
 }
