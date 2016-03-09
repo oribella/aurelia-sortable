@@ -23,8 +23,7 @@ var _drag = require("./drag");
 var _autoScroll = require("./auto-scroll");
 
 var PLACEHOLDER = "__placeholder__";
-
-exports.PLACEHOLDER = PLACEHOLDER;
+var SORTABLE_ITEM = "oa-sortable-item";
 
 var Sortable = (function () {
   var _instanceInitializers = {};
@@ -146,7 +145,7 @@ var Sortable = (function () {
 
     _defineDecoratedPropertyDescriptor(this, "allowMove", _instanceInitializers);
 
-    this.selector = "[sortable-item]";
+    this.selector = "[" + SORTABLE_ITEM + "]";
     this.fromIx = -1;
     this.toIx = -1;
     this.x = 0;
@@ -296,7 +295,7 @@ var Sortable = (function () {
   }, {
     key: "getItemViewModel",
     value: function getItemViewModel(element) {
-      return element.au["sortable-item"].viewModel;
+      return element.au[SORTABLE_ITEM].viewModel;
     }
   }, {
     key: "addPlaceholder",
@@ -520,7 +519,7 @@ var Sortable = (function () {
   var _Sortable = Sortable;
   Sortable = (0, _aureliaDependencyInjection.transient)()(Sortable) || Sortable;
   Sortable = (0, _aureliaDependencyInjection.inject)(_aureliaPal.DOM.Element, _drag.Drag, _autoScroll.AutoScroll)(Sortable) || Sortable;
-  Sortable = (0, _aureliaTemplating.customAttribute)("sortable")(Sortable) || Sortable;
+  Sortable = (0, _aureliaTemplating.customAttribute)("oa-sortable")(Sortable) || Sortable;
   return Sortable;
 })();
 
@@ -550,7 +549,7 @@ var SortableItem = (function () {
   }], null, _instanceInitializers2);
 
   var _SortableItem = SortableItem;
-  SortableItem = (0, _aureliaTemplating.customAttribute)("sortable-item")(SortableItem) || SortableItem;
+  SortableItem = (0, _aureliaTemplating.customAttribute)("oa-sortable-item")(SortableItem) || SortableItem;
   return SortableItem;
 })();
 

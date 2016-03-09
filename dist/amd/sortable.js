@@ -12,8 +12,7 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
   function _defineDecoratedPropertyDescriptor(target, key, descriptors) { var _descriptor = descriptors[key]; if (!_descriptor) return; var descriptor = {}; for (var _key in _descriptor) descriptor[_key] = _descriptor[_key]; descriptor.value = descriptor.initializer ? descriptor.initializer.call(target) : undefined; Object.defineProperty(target, key, descriptor); }
 
   var PLACEHOLDER = "__placeholder__";
-
-  exports.PLACEHOLDER = PLACEHOLDER;
+  var SORTABLE_ITEM = "oa-sortable-item";
 
   var Sortable = (function () {
     var _instanceInitializers = {};
@@ -135,7 +134,7 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
 
       _defineDecoratedPropertyDescriptor(this, "allowMove", _instanceInitializers);
 
-      this.selector = "[sortable-item]";
+      this.selector = "[" + SORTABLE_ITEM + "]";
       this.fromIx = -1;
       this.toIx = -1;
       this.x = 0;
@@ -285,7 +284,7 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
     }, {
       key: "getItemViewModel",
       value: function getItemViewModel(element) {
-        return element.au["sortable-item"].viewModel;
+        return element.au[SORTABLE_ITEM].viewModel;
       }
     }, {
       key: "addPlaceholder",
@@ -509,7 +508,7 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
     var _Sortable = Sortable;
     Sortable = (0, _aureliaDependencyInjection.transient)()(Sortable) || Sortable;
     Sortable = (0, _aureliaDependencyInjection.inject)(_aureliaPal.DOM.Element, _drag.Drag, _autoScroll.AutoScroll)(Sortable) || Sortable;
-    Sortable = (0, _aureliaTemplating.customAttribute)("sortable")(Sortable) || Sortable;
+    Sortable = (0, _aureliaTemplating.customAttribute)("oa-sortable")(Sortable) || Sortable;
     return Sortable;
   })();
 
@@ -539,7 +538,7 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
     }], null, _instanceInitializers2);
 
     var _SortableItem = SortableItem;
-    SortableItem = (0, _aureliaTemplating.customAttribute)("sortable-item")(SortableItem) || SortableItem;
+    SortableItem = (0, _aureliaTemplating.customAttribute)("oa-sortable-item")(SortableItem) || SortableItem;
     return SortableItem;
   })();
 

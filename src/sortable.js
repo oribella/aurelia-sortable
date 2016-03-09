@@ -5,9 +5,10 @@ import {oribella, matchesSelector, STRATEGY_FLAG} from "oribella-default-gesture
 import {Drag} from "./drag";
 import {AutoScroll} from "./auto-scroll";
 
-export const PLACEHOLDER = "__placeholder__";
+const PLACEHOLDER = "__placeholder__";
+const SORTABLE_ITEM = "oa-sortable-item";
 
-@customAttribute("sortable")
+@customAttribute("oa-sortable")
 @inject(DOM.Element, Drag, AutoScroll)
 @transient()
 export class Sortable {
@@ -32,7 +33,7 @@ export class Sortable {
   };
   @bindable allowMove = () => { return true; };
 
-  selector = "[sortable-item]";
+  selector = "[" + SORTABLE_ITEM + "]";
   fromIx = -1;
   toIx = -1;
   x = 0;
@@ -146,7 +147,7 @@ export class Sortable {
     return valid ? element : null;
   }
   getItemViewModel(element) {
-    return element.au["sortable-item"].viewModel;
+    return element.au[SORTABLE_ITEM].viewModel;
   }
   addPlaceholder(toIx, item) {
     let placeholder = Object.create(item, { placeholderClass: { value: this.placeholderClass, writable: true }});
@@ -336,7 +337,7 @@ export class Sortable {
   }
 }
 
-@customAttribute("sortable-item")
+@customAttribute("oa-sortable-item")
 export class SortableItem {
 
   @bindable item = null;
