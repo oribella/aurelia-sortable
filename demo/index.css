@@ -9,14 +9,14 @@ html, body {
   opacity: 0.3;
 }
 
-.features, [sortable] {
+.features, [oa-sortable] {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
 }
 
-.feature, [sortable-item] {
+.feature, [oa-sortable-item] {
   flex: 0 0 1;
   padding: 8px 8px;
   box-sizing: border-box;
@@ -43,7 +43,7 @@ img {
   overflow: hidden;
 }
 
-.sortable-scroll [sortable] {
+.sortable-scroll [oa-sortable] {
   position: relative;
   height: calc(100% - 50px);
   overflow: auto;

@@ -23,6 +23,8 @@ System.config({
 
   map: {
     "aurelia-bootstrapper": "npm:aurelia-bootstrapper@1.0.0-beta.1.1.4",
+    "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0-beta.1.1.5",
+    "aurelia-event-aggregator": "npm:aurelia-event-aggregator@1.0.0-beta.1.1.1",
     "aurelia-fetch-client": "npm:aurelia-fetch-client@1.0.0-beta.1.1.1",
     "aurelia-framework": "npm:aurelia-framework@1.0.0-beta.1.1.4",
     "aurelia-history-browser": "npm:aurelia-history-browser@1.0.0-beta.1.1.4",
@@ -39,7 +41,7 @@ System.config({
     "babel": "npm:babel-core@5.8.35",
     "babel-runtime": "npm:babel-runtime@5.8.35",
     "bootstrap": "github:twbs/bootstrap@3.3.6",
-    "core-js": "npm:core-js@2.1.3",
+    "core-js": "npm:core-js@2.1.4",
     "fetch": "github:github/fetch@0.10.1",
     "font-awesome": "npm:font-awesome@4.5.0",
     "oribella-default-gestures": "npm:oribella-default-gestures@0.4.0",
@@ -76,7 +78,7 @@ System.config({
       "aurelia-logging-console": "npm:aurelia-logging-console@1.0.0-beta.1.1.4",
       "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1.1.1",
       "aurelia-pal-browser": "npm:aurelia-pal-browser@1.0.0-beta.1.1.4",
-      "aurelia-polyfills": "npm:aurelia-polyfills@1.0.0-beta.1.0.1",
+      "aurelia-polyfills": "npm:aurelia-polyfills@1.0.0-beta.1.0.6",
       "aurelia-router": "npm:aurelia-router@1.0.0-beta.1.1.3",
       "aurelia-templating": "npm:aurelia-templating@1.0.0-beta.1.1.4",
       "aurelia-templating-binding": "npm:aurelia-templating-binding@1.0.0-beta.1.1.2",
@@ -129,7 +131,7 @@ System.config({
     "npm:aurelia-pal-browser@1.0.0-beta.1.1.4": {
       "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1.1.1"
     },
-    "npm:aurelia-polyfills@1.0.0-beta.1.0.1": {
+    "npm:aurelia-polyfills@1.0.0-beta.1.0.6": {
       "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1.1.1"
     },
     "npm:aurelia-route-recognizer@1.0.0-beta.1.1.3": {
@@ -183,7 +185,7 @@ System.config({
     "npm:babel-runtime@5.8.35": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:core-js@2.1.3": {
+    "npm:core-js@2.1.4": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2",
@@ -197,7 +199,7 @@ System.config({
     },
     "npm:oribella-default-gestures@0.4.0": {
       "oribella-doubletap": "npm:oribella-doubletap@0.4.0",
-      "oribella-framework": "npm:oribella-framework@0.4.2",
+      "oribella-framework": "npm:oribella-framework@0.4.3",
       "oribella-longtap": "npm:oribella-longtap@0.4.0",
       "oribella-longtap-swipe": "npm:oribella-longtap-swipe@0.4.0",
       "oribella-pinch": "npm:oribella-pinch@0.4.0",
@@ -206,25 +208,25 @@ System.config({
       "oribella-tap": "npm:oribella-tap@0.4.2"
     },
     "npm:oribella-doubletap@0.4.0": {
-      "oribella-framework": "npm:oribella-framework@0.4.2"
+      "oribella-framework": "npm:oribella-framework@0.4.3"
     },
     "npm:oribella-longtap-swipe@0.4.0": {
-      "oribella-framework": "npm:oribella-framework@0.4.2"
+      "oribella-framework": "npm:oribella-framework@0.4.3"
     },
     "npm:oribella-longtap@0.4.0": {
-      "oribella-framework": "npm:oribella-framework@0.4.2"
+      "oribella-framework": "npm:oribella-framework@0.4.3"
     },
     "npm:oribella-pinch@0.4.0": {
-      "oribella-framework": "npm:oribella-framework@0.4.2"
+      "oribella-framework": "npm:oribella-framework@0.4.3"
     },
     "npm:oribella-rotate@0.4.0": {
-      "oribella-framework": "npm:oribella-framework@0.4.2"
+      "oribella-framework": "npm:oribella-framework@0.4.3"
     },
     "npm:oribella-swipe@0.4.1": {
-      "oribella-framework": "npm:oribella-framework@0.4.2"
+      "oribella-framework": "npm:oribella-framework@0.4.3"
     },
     "npm:oribella-tap@0.4.2": {
-      "oribella-framework": "npm:oribella-framework@0.4.2"
+      "oribella-framework": "npm:oribella-framework@0.4.3"
     },
     "npm:path-browserify@0.0.0": {
       "process": "github:jspm/nodelibs-process@0.1.2"

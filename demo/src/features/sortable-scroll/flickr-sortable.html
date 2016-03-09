@@ -2,10 +2,10 @@
   <h2>
     Sortable with element scroll
   </h2>
-  <div sortable="items.bind: images;">
+  <div oa-sortable="items.bind: images;">
       <div class="${image.placeholderClass}"
         repeat.for="image of images"
-        sortable-item="item.bind: image;">
+        oa-sortable-item="item.bind: image;">
         <a class="thumbnail">
           <img draggable="false" src.bind="image.media.m" class="flickr-img" />
         </a>
