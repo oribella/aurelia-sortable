@@ -7,10 +7,10 @@ export function configure(config) {
     .map([{
       settings: {
         title: "Sortable with element scroll",
-        icon: "src/features/sortable-scroll/flickr.svg"
+        icon: "src/features/flickr.svg"
       },
       route: "flickr-sortable-scroll",
-      moduleId: "features/sortable-scroll/flickr-sortable",
+      moduleId: "features/flickr-sortable",
       name: "flickr-sortable-scroll",
       nav: true,
       title: "flickr-sortable-scroll"

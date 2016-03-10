@@ -17,7 +17,9 @@
     "test:browser:ci": "dev-test-browser test/*.spec.js --init-files test/initialize-pal-browser.js --single-run",
     "coverage": "dev-coverage -- test/initialize-pal.js test/*.spec.js",
     "lint": "dev-lint",
-    "dev": "cd demo && dev-watch --no-babel --base-dir '../src' --static-watcher-glob '../src/*.js'"
+    "dev": "cd demo && dev-watch",
+    "bundle": "cd demo && jspm bundle oribella-aurelia-sortable + babel + aurelia-bootstrapper + aurelia-dependency-injection + aurelia-event-aggregator + aurelia-fetch-client + aurelia-framework + aurelia-history-browser + aurelia-http-client + aurelia-loader-default + aurelia-logging-console + aurelia-pal + aurelia-pal-browser + aurelia-router + aurelia-templating + aurelia-templating-binding + aurelia-templating-resources + aurelia-templating-router + fetch + text + oribella-default-gestures  dist/app-bundle.js --inject --minify",
+    "unbundle": "cd demo && jspm unbundle"
   },
   "jspmNodeConversion": false,
   "jspm": {

@@ -12,7 +12,7 @@ System.config({
     "*": "dist/*",
     "github:*": "jspm_packages/github/*",
     "npm:*": "jspm_packages/npm/*",
-    "oribella-aurelia-sortable*": "*"
+    "oribella-aurelia-sortable*": "../src/*"
   },
 
   packages: {

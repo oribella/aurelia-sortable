@@ -7,7 +7,7 @@ export function configure(config) {
     .map([{
       settings: {
         title: "Sortable with document scroll",
-        icon: "src/features/document-scroll/flickr.svg"
+        icon: "src/features/flickr.svg"
       },
       route: "flickr-document-scroll",
       moduleId: "features/document-scroll/flickr-sortable",
