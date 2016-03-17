@@ -3,9 +3,9 @@
     Sortable with element scroll
   </h2>
   <div oa-sortable="items.bind: images;">
-      <div class="${image.placeholderClass}"
-        repeat.for="image of images"
-        oa-sortable-item="item.bind: image;">
+      <div repeat.for="image of images"
+        oa-sortable-item="item.bind: image;"
+        class="${image.sortingClass}">
         <a class="thumbnail">
           <img draggable="false" src.bind="image.media.m" class="flickr-img" />
         </a>

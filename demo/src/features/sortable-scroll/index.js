@@ -10,7 +10,7 @@ export function configure(config) {
         icon: "src/features/flickr.svg"
       },
       route: "flickr-sortable-scroll",
-      moduleId: "features/flickr-sortable",
+      moduleId: "features/sortable-scroll/flickr-sortable",
       name: "flickr-sortable-scroll",
       nav: true,
       title: "flickr-sortable-scroll"

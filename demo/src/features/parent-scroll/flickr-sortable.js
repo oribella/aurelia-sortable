@@ -21,7 +21,6 @@ export class FlickrSortable{
   activate(){
     return this.http.jsonp(this.url).then(response => {
       this.images = response.content.items;
-      this.images = this.images.concat(this.images);
     });
   }
 
