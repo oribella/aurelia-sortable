@@ -22,7 +22,6 @@ var _drag = require("./drag");
 
 var _autoScroll = require("./auto-scroll");
 
-var PLACEHOLDER = "__placeholder__";
 var SORTABLE_ITEM = "oa-sortable-item";
 
 var Sortable = (function () {
@@ -58,10 +57,17 @@ var Sortable = (function () {
     },
     enumerable: true
   }, {
-    key: "placeholderClass",
+    key: "sortingClass",
     decorators: [_aureliaTemplating.bindable],
     initializer: function initializer() {
-      return "placeholder";
+      return "oa-sorting";
+    },
+    enumerable: true
+  }, {
+    key: "draggingClass",
+    decorators: [_aureliaTemplating.bindable],
+    initializer: function initializer() {
+      return "oa-dragging";
     },
     enumerable: true
   }, {
@@ -131,7 +137,9 @@ var Sortable = (function () {
 
     _defineDecoratedPropertyDescriptor(this, "items", _instanceInitializers);
 
-    _defineDecoratedPropertyDescriptor(this, "placeholderClass", _instanceInitializers);
+    _defineDecoratedPropertyDescriptor(this, "sortingClass", _instanceInitializers);
+
+    _defineDecoratedPropertyDescriptor(this, "draggingClass", _instanceInitializers);
 
     _defineDecoratedPropertyDescriptor(this, "axis", _instanceInitializers);
 
@@ -168,6 +176,7 @@ var Sortable = (function () {
       if (typeof scroll === "string") {
         if (scroll === "document") {
           this.scroll = document.scrollingElement || document.documentElement || document.body;
+          this.viewportScroll = true;
           this.removeScroll = this.bindScroll(document, this.onScroll.bind(this));
           return;
         } else {
@@ -214,9 +223,11 @@ var Sortable = (function () {
       if (!this.drag.element) {
         return;
       }
-      var scrollLeft = this.scroll.scrollLeft;
-      var scrollTop = this.scroll.scrollTop;
-      this.drag.update(this.x, this.y, scrollLeft, scrollTop, this.axis, this.dragBoundingRect);
+      var _scroll = this.scroll;
+      var scrollLeft = _scroll.scrollLeft;
+      var scrollTop = _scroll.scrollTop;
+
+      this.drag.update(this.x, this.y, this.viewportScroll, scrollLeft, scrollTop, this.axis, this.dragMinPosX, this.dragMaxPosX, this.dragMinPosY, this.dragMaxPosY);
 
       var _getPoint = this.getPoint(this.x, this.y);
 
@@ -298,31 +309,9 @@ var Sortable = (function () {
       return element.au[SORTABLE_ITEM].viewModel;
     }
   }, {
-    key: "addPlaceholder",
-    value: function addPlaceholder(toIx, item) {
-      var placeholder = Object.create(item, { placeholderClass: { value: this.placeholderClass, writable: true } });
-
-      if (!placeholder.style) {
-        placeholder.style = {};
-      }
-      placeholder.style.width = this.drag.rect.width;
-      placeholder.style.height = this.drag.rect.height;
-
-      this[PLACEHOLDER] = placeholder;
-      this.items.splice(toIx, 0, placeholder);
-    }
-  }, {
-    key: "removePlaceholder",
-    value: function removePlaceholder() {
-      var ix = this.items.indexOf(this[PLACEHOLDER]);
-      if (ix !== -1) {
-        this.items.splice(ix, 1);
-      }
-    }
-  }, {
-    key: "movePlaceholder",
-    value: function movePlaceholder(toIx) {
-      var fromIx = this.items.indexOf(this[PLACEHOLDER]);
+    key: "moveSortingItem",
+    value: function moveSortingItem(toIx) {
+      var fromIx = this.items.indexOf(this.drag.item);
       this.move(fromIx, toIx);
     }
   }, {
@@ -334,9 +323,9 @@ var Sortable = (function () {
     }
   }, {
     key: "tryUpdate",
-    value: function tryUpdate(pageX, pageY, offsetX, offsetY) {
-      var showFn = this.hide(this.drag.element);
-      this.tryMove(pageX, pageY, offsetX, offsetY);
+    value: function tryUpdate(x, y, offsetX, offsetY) {
+      var showFn = this.hide(this.drag.clone);
+      this.tryMove(x, y, offsetX, offsetY);
       showFn();
     }
   }, {
@@ -372,12 +361,12 @@ var Sortable = (function () {
       if (!element) {
         return;
       }
-      var model = this.getItemViewModel(element);
+      var vm = this.getItemViewModel(element);
       this.lastElementFromPointRect = element.getBoundingClientRect();
-      if (!this.allowMove({ item: model.item })) {
+      if (!this.allowMove({ item: vm.item })) {
         return;
       }
-      this.movePlaceholder(model.ctx.$index);
+      this.moveSortingItem(vm.ctx.$index);
     }
   }, {
     key: "getPoint",
@@ -409,14 +398,16 @@ var Sortable = (function () {
   }, {
     key: "start",
     value: function start(e, data, element) {
-      var windowHeight = innerHeight;
-      var windowWidth = innerWidth;
-      var scrollLeft = this.scroll.scrollLeft;
-      var scrollTop = this.scroll.scrollTop;
+      var _scroll2 = this.scroll;
+      var scrollLeft = _scroll2.scrollLeft;
+      var scrollTop = _scroll2.scrollTop;
 
+      this.windowHeight = innerHeight;
+      this.windowWidth = innerWidth;
       this.x = data.pointers[0].client.x;
       this.y = data.pointers[0].client.y;
       this.sortableRect = this.element.getBoundingClientRect();
+
       this.scrollRect = this.scroll.getBoundingClientRect();
       this.scrollWidth = this.scroll.scrollWidth;
       this.scrollHeight = this.scroll.scrollHeight;
@@ -424,45 +415,46 @@ var Sortable = (function () {
       this.boundingRect = {
         left: Math.max(0, this.sortableRect.left),
         top: Math.max(0, this.sortableRect.top),
-        bottom: Math.min(windowHeight, this.sortableRect.bottom),
-        right: Math.min(windowWidth, this.sortableRect.right)
+        bottom: Math.min(this.windowHeight, this.sortableRect.bottom),
+        right: Math.min(this.windowWidth, this.sortableRect.right)
       };
 
-      this.scrollContainsOffsetParent = this.scroll.contains(element.offsetParent);
       this.sortableContainsScroll = this.element.contains(this.scroll);
-      this.dragBoundingRect = this.sortableContainsScroll ? {
-        left: 0,
-        top: 0,
-        bottom: this.scrollHeight,
-        right: this.scrollWidth
-      } : this.sortableRect;
-
       if (this.sortableContainsScroll) {
         this.scrollMaxPosX = this.scrollWidth - this.scrollRect.width;
         this.scrollMaxPosY = this.scrollHeight - this.scrollRect.height;
+        this.dragMinPosX = this.sortableRect.left;
+        this.dragMaxPosX = this.sortableRect.left + this.scrollWidth;
+        this.dragMaxPosY = this.sortableRect.top + this.scrollHeight;
+        this.dragMinPosY = this.sortableRect.top;
       } else {
-        this.scrollMaxPosX = this.sortableRect.right - windowWidth + scrollLeft;
-        this.scrollMaxPosY = this.sortableRect.bottom - windowHeight + scrollTop;
+        this.scrollMaxPosX = this.sortableRect.right - this.windowWidth + (this.viewportScroll ? scrollLeft : 0);
+        this.scrollMaxPosY = this.sortableRect.bottom - this.windowHeight + (this.viewportScroll ? scrollTop : 0);
+        this.dragMinPosX = this.sortableRect.left + scrollLeft;
+        this.dragMaxPosX = this.scrollMaxPosX + this.windowWidth;
+        this.dragMinPosY = this.sortableRect.top + scrollTop;
+        this.dragMaxPosY = this.scrollMaxPosY + this.windowHeight;
       }
 
-      this.drag.start(element, this.x, this.y, this.scrollContainsOffsetParent, this.sortableContainsScroll, scrollLeft, scrollTop, this.dragZIndex, this.axis, this.dragBoundingRect);
-      this.autoScroll.start(this.scrollSpeed);
-      var viewModel = this.getItemViewModel(element);
-      this.fromIx = viewModel.ctx.$index;
+      this.sortingViewModel = this.getItemViewModel(element);
+      this.fromIx = this.sortingViewModel.ctx.$index;
       this.toIx = -1;
-      this.addPlaceholder(this.fromIx, viewModel.item);
+
+      this.drag.start(element, this.sortingViewModel.item, this.x, this.y, this.viewportScroll, scrollLeft, scrollTop, this.dragZIndex, this.axis, this.sortingClass, this.dragMinPosX, this.dragMaxPosX, this.dragMinPosY, this.dragMaxPosY);
+      this.autoScroll.start(this.scrollSpeed);
       this.lastElementFromPointRect = this.drag.rect;
     }
   }, {
     key: "update",
     value: function update(e, data) {
       var p = data.pointers[0].client;
+      var _scroll3 = this.scroll;
+      var scrollLeft = _scroll3.scrollLeft;
+      var scrollTop = _scroll3.scrollTop;
+
       this.x = p.x;
       this.y = p.y;
-      var scrollLeft = this.scroll.scrollLeft;
-      var scrollTop = this.scroll.scrollTop;
-
-      this.drag.update(this.x, this.y, scrollLeft, scrollTop, this.axis, this.dragBoundingRect);
+      this.drag.update(this.x, this.y, this.viewportScroll, scrollLeft, scrollTop, this.axis, this.dragMinPosX, this.dragMaxPosX, this.dragMinPosY, this.dragMaxPosY);
 
       var _getPoint2 = this.getPoint(p.x, p.y);
 
@@ -488,16 +480,10 @@ var Sortable = (function () {
   }, {
     key: "end",
     value: function end() {
-      this.toIx = this.items.indexOf(this[PLACEHOLDER]);
-      if (this.toIx === -1) {
+      if (!this.drag.item) {
         return; //cancelled
       }
-      this.move(this.toIx < this.fromIx ? this.fromIx + 1 : this.fromIx, this.toIx);
       this.stop();
-
-      if (this.fromIx < this.toIx) {
-        --this.toIx;
-      }
       if (this.fromIx !== this.toIx) {
         this.moved({ fromIx: this.fromIx, toIx: this.toIx });
       }
@@ -505,6 +491,7 @@ var Sortable = (function () {
   }, {
     key: "cancel",
     value: function cancel() {
+      this.move(this.sortingViewModel.ctx.$index, this.fromIx);
       this.stop();
     }
   }, {
@@ -512,7 +499,6 @@ var Sortable = (function () {
     value: function stop() {
       this.drag.end();
       this.autoScroll.end();
-      this.removePlaceholder();
     }
   }], null, _instanceInitializers);
 

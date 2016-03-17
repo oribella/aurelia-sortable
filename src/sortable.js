@@ -5,7 +5,6 @@ import {oribella, matchesSelector, STRATEGY_FLAG} from "oribella-default-gesture
 import {Drag} from "./drag";
 import {AutoScroll} from "./auto-scroll";
 
-const PLACEHOLDER = "__placeholder__";
 const SORTABLE_ITEM = "oa-sortable-item";
 
 @customAttribute("oa-sortable")
@@ -17,7 +16,8 @@ export class Sortable {
   @bindable scrollSpeed = 10;
   @bindable scrollSensitivity = 10;
   @bindable items = [];
-  @bindable placeholderClass = "placeholder";
+  @bindable sortingClass = "oa-sorting";
+  @bindable draggingClass = "oa-dragging";
   @bindable axis = "";
   @bindable moved = () => {};
   @bindable dragZIndex = 1;
@@ -54,6 +54,7 @@ export class Sortable {
     if (typeof scroll === "string") {
       if (scroll === "document") {
         this.scroll = document.scrollingElement || document.documentElement || document.body;
+        this.viewportScroll = true;
         this.removeScroll = this.bindScroll(document, this.onScroll.bind(this));
         return;
       } else {
@@ -90,9 +91,17 @@ export class Sortable {
     if (!this.drag.element) {
       return;
     }
-    const scrollLeft = this.scroll.scrollLeft;
-    const scrollTop = this.scroll.scrollTop;
-    this.drag.update(this.x, this.y, scrollLeft, scrollTop, this.axis, this.dragBoundingRect);
+    const { scrollLeft, scrollTop } = this.scroll;
+    this.drag.update(this.x,
+      this.y,
+      this.viewportScroll,
+      scrollLeft,
+      scrollTop,
+      this.axis,
+      this.dragMinPosX,
+      this.dragMaxPosX,
+      this.dragMinPosY,
+      this.dragMaxPosY);
     const { x, y } = this.getPoint(this.x, this.y);
     this.tryMove(x, y, scrollLeft, scrollTop);
   }
@@ -149,26 +158,8 @@ export class Sortable {
   getItemViewModel(element) {
     return element.au[SORTABLE_ITEM].viewModel;
   }
-  addPlaceholder(toIx, item) {
-    let placeholder = Object.create(item, { placeholderClass: { value: this.placeholderClass, writable: true }});
-
-    if (!placeholder.style) {
-      placeholder.style = {};
-    }
-    placeholder.style.width = this.drag.rect.width;
-    placeholder.style.height = this.drag.rect.height;
-
-    this[PLACEHOLDER] = placeholder;
-    this.items.splice(toIx, 0, placeholder);
-  }
-  removePlaceholder() {
-    const ix = this.items.indexOf(this[PLACEHOLDER]);
-    if (ix !== -1) {
-      this.items.splice(ix, 1);
-    }
-  }
-  movePlaceholder(toIx) {
-    const fromIx = this.items.indexOf(this[PLACEHOLDER]);
+  moveSortingItem(toIx) {
+    const fromIx = this.items.indexOf(this.drag.item);
     this.move(fromIx, toIx);
   }
   move(fromIx, toIx) {
@@ -176,9 +167,9 @@ export class Sortable {
       this.items.splice(toIx, 0, this.items.splice(fromIx, 1)[0]);
     }
   }
-  tryUpdate(pageX, pageY, offsetX, offsetY) {
-    const showFn = this.hide(this.drag.element);
-    this.tryMove(pageX, pageY, offsetX, offsetY);
+  tryUpdate(x, y, offsetX, offsetY) {
+    const showFn = this.hide(this.drag.clone);
+    this.tryMove(x, y, offsetX, offsetY);
     showFn();
   }
   pointInside(x, y, rect) {
@@ -210,12 +201,12 @@ export class Sortable {
     if (!element) {
       return;
     }
-    const model = this.getItemViewModel(element);
+    const vm = this.getItemViewModel(element);
     this.lastElementFromPointRect = element.getBoundingClientRect();
-    if (!this.allowMove({ item: model.item })) {
+    if (!this.allowMove({ item: vm.item })) {
       return;
     }
-    this.movePlaceholder(model.ctx.$index);
+    this.moveSortingItem(vm.ctx.$index);
   }
   getPoint(pageX, pageY) {
     switch (this.axis) {
@@ -241,14 +232,14 @@ export class Sortable {
     return false;
   }
   start(e, data, element) {
-    const windowHeight = innerHeight;
-    const windowWidth = innerWidth;
-    const scrollLeft = this.scroll.scrollLeft;
-    const scrollTop = this.scroll.scrollTop;
+    const { scrollLeft, scrollTop } = this.scroll;
 
+    this.windowHeight = innerHeight;
+    this.windowWidth = innerWidth;
     this.x = data.pointers[0].client.x;
     this.y = data.pointers[0].client.y;
     this.sortableRect = this.element.getBoundingClientRect();
+
     this.scrollRect = this.scroll.getBoundingClientRect();
     this.scrollWidth = this.scroll.scrollWidth;
     this.scrollHeight = this.scroll.scrollHeight;
@@ -256,43 +247,61 @@ export class Sortable {
     this.boundingRect = {
       left: Math.max(0, this.sortableRect.left),
       top: Math.max(0, this.sortableRect.top),
-      bottom: Math.min(windowHeight, this.sortableRect.bottom),
-      right: Math.min(windowWidth, this.sortableRect.right)
+      bottom: Math.min(this.windowHeight, this.sortableRect.bottom),
+      right: Math.min(this.windowWidth, this.sortableRect.right)
     };
 
-    this.scrollContainsOffsetParent = this.scroll.contains(element.offsetParent);
     this.sortableContainsScroll = this.element.contains(this.scroll);
-    this.dragBoundingRect = this.sortableContainsScroll ? {
-      left: 0,
-      top: 0,
-      bottom: this.scrollHeight,
-      right: this.scrollWidth
-    } : this.sortableRect;
-
     if (this.sortableContainsScroll) {
       this.scrollMaxPosX = this.scrollWidth - this.scrollRect.width;
       this.scrollMaxPosY = this.scrollHeight - this.scrollRect.height;
+      this.dragMinPosX = this.sortableRect.left;
+      this.dragMaxPosX = this.sortableRect.left + this.scrollWidth;
+      this.dragMaxPosY = this.sortableRect.top + this.scrollHeight;
+      this.dragMinPosY = this.sortableRect.top;
     } else {
-      this.scrollMaxPosX = this.sortableRect.right - windowWidth + scrollLeft;
-      this.scrollMaxPosY = this.sortableRect.bottom - windowHeight + scrollTop;
+      this.scrollMaxPosX = this.sortableRect.right - this.windowWidth + (this.viewportScroll ? scrollLeft : 0);
+      this.scrollMaxPosY = this.sortableRect.bottom - this.windowHeight + (this.viewportScroll ? scrollTop : 0);
+      this.dragMinPosX = this.sortableRect.left + scrollLeft;
+      this.dragMaxPosX = this.scrollMaxPosX + this.windowWidth;
+      this.dragMinPosY = this.sortableRect.top + scrollTop;
+      this.dragMaxPosY = this.scrollMaxPosY + this.windowHeight;
     }
 
-    this.drag.start(element, this.x, this.y, this.scrollContainsOffsetParent, this.sortableContainsScroll, scrollLeft, scrollTop, this.dragZIndex, this.axis, this.dragBoundingRect);
-    this.autoScroll.start(this.scrollSpeed);
-    const viewModel = this.getItemViewModel(element);
-    this.fromIx = viewModel.ctx.$index;
+    this.sortingViewModel = this.getItemViewModel(element);
+    this.fromIx = this.sortingViewModel.ctx.$index;
     this.toIx = -1;
-    this.addPlaceholder(this.fromIx, viewModel.item);
+
+    this.drag.start( element,
+      this.sortingViewModel.item,
+      this.x, this.y,
+      this.viewportScroll,
+      scrollLeft,
+      scrollTop,
+      this.dragZIndex,
+      this.axis, this.sortingClass,
+      this.dragMinPosX,
+      this.dragMaxPosX,
+      this.dragMinPosY,
+      this.dragMaxPosY);
+    this.autoScroll.start(this.scrollSpeed);
     this.lastElementFromPointRect = this.drag.rect;
   }
   update(e, data) {
     const p = data.pointers[0].client;
+    const { scrollLeft, scrollTop } = this.scroll;
     this.x = p.x;
     this.y = p.y;
-    const scrollLeft = this.scroll.scrollLeft;
-    const scrollTop = this.scroll.scrollTop;
-
-    this.drag.update(this.x, this.y, scrollLeft, scrollTop, this.axis, this.dragBoundingRect);
+    this.drag.update(this.x,
+      this.y,
+      this.viewportScroll,
+      scrollLeft,
+      scrollTop,
+      this.axis,
+      this.dragMinPosX,
+      this.dragMaxPosX,
+      this.dragMinPosY,
+      this.dragMaxPosY);
     const { x, y } = this.getPoint(p.x, p.y);
     const scrollX = this.autoScroll.active ? scrollLeft : 0;
     const scrollY = this.autoScroll.active ? scrollTop : 0;
@@ -313,27 +322,21 @@ export class Sortable {
     this.autoScroll.update(this.scroll, dirX, dirY, frameCntX, frameCntY);
   }
   end() {
-    this.toIx = this.items.indexOf(this[PLACEHOLDER]);
-    if (this.toIx === -1) {
+    if (!this.drag.item) {
       return; //cancelled
     }
-    this.move(this.toIx < this.fromIx ? this.fromIx + 1 : this.fromIx, this.toIx);
     this.stop();
-
-    if (this.fromIx < this.toIx) {
-      --this.toIx;
-    }
     if (this.fromIx !== this.toIx) {
       this.moved( { fromIx: this.fromIx, toIx: this.toIx } );
     }
   }
   cancel() {
+    this.move(this.sortingViewModel.ctx.$index, this.fromIx);
     this.stop();
   }
   stop() {
     this.drag.end();
     this.autoScroll.end();
-    this.removePlaceholder();
   }
 }
 

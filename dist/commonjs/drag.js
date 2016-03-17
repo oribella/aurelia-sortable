@@ -23,29 +23,23 @@ var Drag = (function () {
 
   _createClass(Drag, [{
     key: "pin",
-    value: function pin(element, rect, dragZIndex) {
-      this.element = element;
-
-      var style = {};
-      style.position = element.style.position;
-      style.left = element.style.left;
-      style.top = element.style.top;
-      style.width = element.style.width;
-      style.height = element.style.height;
-      style.pointerEvents = element.style.pointerEvents;
-      style.zIndex = element.style.zIndex;
-
-      element.style.position = "absolute";
-      element.style.width = rect.width + "px";
-      element.style.height = rect.height + "px";
-      element.style.pointerEvents = "none";
-      element.style.zIndex = dragZIndex;
-
-      return function () {
-        Object.keys(style).forEach(function (key) {
-          element.style[key] = style[key];
-        });
-      };
+    value: function pin() {
+      this.item.sortingClass = this.sortingClass;
+      this.clone = this.element.cloneNode(true);
+      this.clone.style.position = "absolute";
+      this.clone.style.width = this.rect.width + "px";
+      this.clone.style.height = this.rect.height + "px";
+      this.clone.style.pointerEvents = "none";
+      this.clone.style.margin = 0;
+      this.clone.style.zIndex = this.dragZIndex;
+      document.body.appendChild(this.clone);
+    }
+  }, {
+    key: "unpin",
+    value: function unpin() {
+      this.item.sortingClass = "";
+      document.body.removeChild(this.clone);
+      this.clone = null;
     }
   }, {
     key: "getCenterX",
@@ -59,51 +53,45 @@ var Drag = (function () {
     }
   }, {
     key: "start",
-    value: function start(element, pageX, pageY, scrollContainsOffsetParent, sortableContainsScroll, scrollLeft, scrollTop, dragZIndex, axis, sortableRect) {
+    value: function start(element, item, x, y, viewportScroll, scrollLeft, scrollTop, dragZIndex, axis, sortingClass, minPosX, maxPosX, minPosY, maxPosY) {
+      this.element = element;
+      this.item = item;
+      this.sortingClass = sortingClass;
+      this.dragZIndex = dragZIndex;
       var rect = this.rect = element.getBoundingClientRect();
 
-      this.startParentLeft = 0;
-      this.startParentTop = 0;
-      if (scrollContainsOffsetParent) {
-        this.startParentLeft = scrollLeft;
-        this.startParentTop = scrollTop;
-      }
       this.startLeft = rect.left;
       this.startTop = rect.top;
-      if (sortableContainsScroll) {
-        var offsetParentRect = element.offsetParent.getBoundingClientRect();
-        this.startLeft -= offsetParentRect.left;
-        this.startTop -= offsetParentRect.top;
-      }
-      this.offsetX = this.startParentLeft + this.startLeft - pageX - scrollLeft;
-      this.offsetY = this.startParentTop + this.startTop - pageY - scrollTop;
 
-      this.unpin = this.pin(element, rect, dragZIndex);
+      this.offsetX = this.startLeft - x;
+      this.offsetY = this.startTop - y;
 
-      this.update(pageX, pageY, scrollLeft, scrollTop, axis, sortableRect);
+      this.pin();
+
+      this.update(x, y, viewportScroll, scrollLeft, scrollTop, axis, minPosX, maxPosX, minPosY, maxPosY);
     }
   }, {
     key: "update",
-    value: function update(x, y, scrollLeft, scrollTop, axis, _ref) {
-      var left = _ref.left;
-      var top = _ref.top;
-      var bottom = _ref.bottom;
-      var right = _ref.right;
+    value: function update(x, y, viewportScroll, scrollLeft, scrollTop, axis, minPosX, maxPosX, minPosY, maxPosY) {
+      x += this.offsetX;
+      y += this.offsetY;
+      if (viewportScroll) {
+        x += scrollLeft;
+        y += scrollTop;
+      }
 
-      x += this.offsetX + scrollLeft;
-      y += this.offsetY + scrollTop;
-
-      if (x < left) {
-        x = left;
+      if (x < minPosX) {
+        x = minPosX;
       }
-      if (x > right - this.rect.width) {
-        x = right - this.rect.width;
+      if (x > maxPosX - this.rect.width) {
+        x = maxPosX - this.rect.width;
       }
-      if (y < top) {
-        y = top;
+      console.log(y, scrollTop, minPosY, maxPosY);
+      if (y < minPosY) {
+        y = minPosY;
       }
-      if (y > bottom - this.rect.height) {
-        y = bottom - this.rect.height;
+      if (y > maxPosY - this.rect.height) {
+        y = maxPosY - this.rect.height;
       }
 
       switch (axis) {
@@ -115,18 +103,18 @@ var Drag = (function () {
           break;
       }
 
-      this.element.style.left = x + "px";
-      this.element.style.top = y + "px";
+      this.clone.style.left = x + "px";
+      this.clone.style.top = y + "px";
     }
   }, {
     key: "end",
     value: function end() {
-      if (this.element) {
-        if (typeof this.unpin === "function") {
-          this.unpin();
-        }
-        this.element = null;
+      if (this.element === null) {
+        return;
       }
+      this.unpin();
+      this.element = null;
+      this.item = null;
     }
   }]);
 
