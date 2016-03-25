@@ -1,12 +1,12 @@
-var path = require( "path" );
-var AureliaWebpackPlugin = require( "aurelia-webpack-plugin" );
+var path = require("path");
+var HtmlWebpackPlugin = require("html-webpack-plugin");
+var AureliaWebpackPlugin = require("aurelia-webpack-plugin");
+var pkg = require("../package.json");
+
 var root = path.resolve( __dirname, "../" );
+var outputFileTemplateSuffix = "-" + pkg.version;
 
 module.exports = {
-  devServer: {
-    host: "localhost",
-    port: 9000
-  },
   entry: {
     main: [
       path.resolve( root, "demo", "src", "main" )
@@ -14,12 +14,14 @@ module.exports = {
   },
   output: {
     path: path.resolve( __dirname, "dist" ),
-    filename: "bundle.js"
+    filename: "[name]" + outputFileTemplateSuffix + ".js",
+    chunkFilename: "[id]" + outputFileTemplateSuffix + ".js"
   },
   resolve: {
     alias: {
       "oribella-aurelia-sortable": path.resolve( root, "src" )
-    }
+    },
+    extensions: ["", ".js"]
   },
   modulesDirectories: ["node_modules", "src"],
   plugins: [
@@ -32,6 +34,11 @@ module.exports = {
       contextMap: {
         "oribella-aurelia-sortable": path.resolve( root, "src", "index" )
       }
+    }),
+    new HtmlWebpackPlugin({
+      title: "Oribella Aurelia sortable - " + pkg.version,
+      template: "index.prod.html",
+      filename: "index.html"
     })
   ],
   module: {

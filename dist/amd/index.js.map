@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/index.js"],"names":[],"mappings":";;;;;;UAAgB;AAAT,WAAS,SAAT,CAAmB,MAAnB,EAA2B;AAChC,WAAO,eAAP,CAAuB,YAAvB,EADgC;GAA3B","file":"index.js","sourcesContent":["export function configure(config) {\n  config.globalResources(\"./sortable\");\n}\n"]}

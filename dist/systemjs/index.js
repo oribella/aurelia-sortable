@@ -1,14 +1,15 @@
-System.register([], function (_export) {
-  "use strict";
+"use strict";
 
-  _export("configure", configure);
-
-  function configure(config) {
-    config.globalResources("./sortable");
-  }
-
+System.register([], function (_export, _context) {
   return {
     setters: [],
-    execute: function () {}
+    execute: function () {
+      function configure(config) {
+        config.globalResources("./sortable");
+      }
+
+      _export("configure", configure);
+    }
   };
 });
+//# sourceMappingURL=index.js.map
