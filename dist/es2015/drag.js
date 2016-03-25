@@ -1,20 +1,9 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Drag = undefined;
-
 var _dec, _class;
 
-var _aureliaDependencyInjection = require("aurelia-dependency-injection");
+import { transient } from "aurelia-dependency-injection";
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Drag = exports.Drag = (_dec = (0, _aureliaDependencyInjection.transient)(), _dec(_class = function () {
-  function Drag() {
-    _classCallCheck(this, Drag);
-
+export let Drag = (_dec = transient(), _dec(_class = class Drag {
+  constructor() {
     this.startLeft = 0;
     this.startTop = 0;
     this.rect = { left: 0, top: 0, width: 0, height: 0 };
@@ -22,7 +11,7 @@ var Drag = exports.Drag = (_dec = (0, _aureliaDependencyInjection.transient)(), 
     this.offsetY = 0;
   }
 
-  Drag.prototype.pin = function pin() {
+  pin() {
     this.item.sortingClass = this.sortingClass;
     this.clone = this.element.cloneNode(true);
     this.clone.style.position = "absolute";
@@ -32,28 +21,24 @@ var Drag = exports.Drag = (_dec = (0, _aureliaDependencyInjection.transient)(), 
     this.clone.style.margin = 0;
     this.clone.style.zIndex = this.dragZIndex;
     document.body.appendChild(this.clone);
-  };
-
-  Drag.prototype.unpin = function unpin() {
+  }
+  unpin() {
     this.item.sortingClass = "";
     document.body.removeChild(this.clone);
     this.clone = null;
-  };
-
-  Drag.prototype.getCenterX = function getCenterX() {
+  }
+  getCenterX() {
     return this.rect.left + this.rect.width / 2;
-  };
-
-  Drag.prototype.getCenterY = function getCenterY() {
+  }
+  getCenterY() {
     return this.rect.top + this.rect.height / 2;
-  };
-
-  Drag.prototype.start = function start(element, item, x, y, viewportScroll, scrollLeft, scrollTop, dragZIndex, axis, sortingClass, minPosX, maxPosX, minPosY, maxPosY) {
+  }
+  start(element, item, x, y, viewportScroll, scrollLeft, scrollTop, dragZIndex, axis, sortingClass, minPosX, maxPosX, minPosY, maxPosY) {
     this.element = element;
     this.item = item;
     this.sortingClass = sortingClass;
     this.dragZIndex = dragZIndex;
-    var rect = this.rect = element.getBoundingClientRect();
+    const rect = this.rect = element.getBoundingClientRect();
 
     this.startLeft = rect.left;
     this.startTop = rect.top;
@@ -64,9 +49,8 @@ var Drag = exports.Drag = (_dec = (0, _aureliaDependencyInjection.transient)(), 
     this.pin();
 
     this.update(x, y, viewportScroll, scrollLeft, scrollTop, axis, minPosX, maxPosX, minPosY, maxPosY);
-  };
-
-  Drag.prototype.update = function update(x, y, viewportScroll, scrollLeft, scrollTop, axis, minPosX, maxPosX, minPosY, maxPosY) {
+  }
+  update(x, y, viewportScroll, scrollLeft, scrollTop, axis, minPosX, maxPosX, minPosY, maxPosY) {
     x += this.offsetX;
     y += this.offsetY;
     if (viewportScroll) {
@@ -99,17 +83,14 @@ var Drag = exports.Drag = (_dec = (0, _aureliaDependencyInjection.transient)(), 
 
     this.clone.style.left = x + "px";
     this.clone.style.top = y + "px";
-  };
-
-  Drag.prototype.end = function end() {
+  }
+  end() {
     if (this.element === null) {
       return;
     }
     this.unpin();
     this.element = null;
     this.item = null;
-  };
-
-  return Drag;
-}()) || _class);
+  }
+}) || _class);
 //# sourceMappingURL=drag.js.map

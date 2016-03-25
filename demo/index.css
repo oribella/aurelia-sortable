@@ -5,7 +5,7 @@ html, body {
   font-size: 13px;
 }
 
-.placeholder {
+.oa-sorting {
   opacity: 0.3;
 }
 
@@ -45,18 +45,25 @@ img {
 
 .sortable-scroll [oa-sortable] {
   position: relative;
-  height: calc(100% - 50px);
+  height: calc(100% - 100px);
   overflow: auto;
   -webkit-overflow-scrolling: touch;
 }
 
+.parent-scroll,
+.parent-scroll body {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
 .parent-scroll .page-host {
-  position: absolute;
+  position: relative;
   left: 0;
   right: 0;
   top: 0px;
   bottom: 0;
   overflow: auto;
+  height: 100%;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -73,4 +80,8 @@ img {
   padding: 8px 8px;
   box-sizing: border-box;
   max-width: 216px;
+}
+
+.flickr-background {
+  background: url("flickr.svg");
 }
