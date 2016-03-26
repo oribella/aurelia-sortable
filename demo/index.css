@@ -81,7 +81,3 @@ img {
   box-sizing: border-box;
   max-width: 216px;
 }
-
-.flickr-background {
-  background: url("flickr.svg");
-}

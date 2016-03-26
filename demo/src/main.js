@@ -9,6 +9,7 @@ bootstrap( aurelia => {
     .feature("features/document-scroll")
     .feature("features/parent-scroll")
     .feature("features/sortable-scroll")
+    .feature("features/mdl")
     .plugin("oribella-aurelia-sortable");
 
   aurelia.start().then(a => a.setRoot("app", document.body));
