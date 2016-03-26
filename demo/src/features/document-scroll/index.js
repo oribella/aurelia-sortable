@@ -1,4 +1,5 @@
 import {AppRouter, RouterConfiguration} from "aurelia-router";
+import flickrIcon from "../../../flickr.svg";
 
 export function configure(config) {
   const router = config.container.get(AppRouter);
@@ -7,7 +8,7 @@ export function configure(config) {
     .map([{
       settings: {
         title: "Sortable with document scroll",
-        icon: "./flickr.svg"
+        icon: flickrIcon
       },
       route: "flickr-document-scroll",
       moduleId: "features/document-scroll/flickr-sortable",
