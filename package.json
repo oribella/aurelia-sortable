@@ -20,7 +20,7 @@
     "dev": "cd demo && webpack-dev-server --config webpack.config.js --hot --inline --progress --devtool eval",
     "demo:build": "cd demo && webpack --config webpack.config.js --progress --profile",
     "demo:prod": "cd demo && webpack -p --config webpack.prod.config.js --progress --devtool source-map",
-    "demo:deploy": "git subtree push --prefix demo/dist origin gh-pages"
+    "demo:deploy": "git subtree split --prefix demo/dist -b gh-pages && git push origin gh-pages:gh-pages"
   },
   "jspm": {
     "registry": "npm",
