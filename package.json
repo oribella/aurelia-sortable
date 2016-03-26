@@ -24,7 +24,7 @@
   "jspm": {
     "registry": "npm",
     "jspmPackage": true,
-    "main": "oribella-aurelia-sortable",
+    "main": "index",
     "format": "amd",
     "directories": {
       "lib": "dist/amd"
