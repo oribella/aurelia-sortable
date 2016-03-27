@@ -2,7 +2,7 @@
   <div mdl="grid" oa-sortable="items.bind: images; scroll.bind: 'document'">
       <div repeat.for="image of images"
           oa-sortable-item="item.bind: image"
-          class="mdl-cell mdl-card dash-card mdl-shadow--3dp">
+          class="${image.sortingClass} mdl-cell mdl-card dash-card mdl-shadow--3dp">
         <div class="mdl-card__value mdl-card--expand">
           <img draggable="false" src.bind="image.media.m" />
         </div>

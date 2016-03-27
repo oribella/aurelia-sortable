@@ -17,7 +17,7 @@
     "test:browser:ci": "dev-test-browser test/*.spec.js --init-files test/initialize-pal-browser.js --single-run",
     "coverage": "dev-coverage -- test/initialize-pal.js test/*.spec.js",
     "lint": "dev-lint",
-    "dev": "cd demo && webpack-dev-server --config webpack.config.js --hot --inline --progress --devtool eval",
+    "dev": "cd demo && webpack-dev-server --config webpack.config.js --hot --inline --progress --devtool cheap-module-eval-source-map",
     "demo:build": "cd demo && webpack --config webpack.config.js --progress --profile",
     "demo:prod": "cd demo && webpack -p --config webpack.prod.config.js --progress --devtool source-map",
     "demo:deploy": "git subtree split --prefix demo/dist -b gh-pages && git push origin gh-pages:gh-pages"
