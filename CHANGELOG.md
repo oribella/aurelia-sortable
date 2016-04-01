@@ -1,6 +1,38 @@
-<a name="0.6.0"></a>
-# 0.6.0 (2016-03-03)
+<a name="0.7.0"></a>
+# 0.7.0 (2016-04-01)
 
+
+### Bug Fixes
+
+* **package:** update `jspm` `main` file ([12aac4b](https://github.com/oribella/aurelia-sortable/commit/12aac4b))
+* **sortable:** rename to `oa-sortable`, `oa-sortable-item` ([1c841d2](https://github.com/oribella/aurelia-sortable/commit/1c841d2)), closes [#10](https://github.com/oribella/aurelia-sortable/issues/10)
+
+### Features
+
+* **document-scroll:** handle `document`scrolling, `parent` scrolling and `sortable` scrolling ([b9f2ead](https://github.com/oribella/aurelia-sortable/commit/b9f2ead)), closes [#12](https://github.com/oribella/aurelia-sortable/issues/12)
+* **drag:** add drag element to `viewport` ([502a5ef](https://github.com/oribella/aurelia-sortable/commit/502a5ef))
+
+
+### BREAKING CHANGES
+
+* drag: `placeholder` not longer exist. If you we using `placeholderClass` before you should use `sortingClass` instead.
+* sortable: 
+* document-scroll: Removed bindable `boundingRect`
+
+
+
+<a name="0.6.0"></a>
+# [0.6.0](https://github.com/oribella/aurelia-sortable/compare/52fe314...v0.6.0) (2016-03-03)
+
+
+### Chores
+
+* update dependencies ([52fe314](https://github.com/oribella/aurelia-sortable/commit/52fe314))
+
+
+### BREAKING CHANGES
+
+* 
 
 
 
@@ -115,6 +147,15 @@
 ### Bug Fixes
 
 * **sortable:** add `options.strategy` ([ac0ca0a](https://github.com/oribella/aurelia-sortable/commit/ac0ca0a))
+
+### Chores
+
+* update to latest Aurelia dependencies ([362b735](https://github.com/oribella/aurelia-sortable/commit/362b735))
+
+
+### BREAKING CHANGES
+
+* s how to access Aurelia APIs. However it's not a breaking change from aurelia-sortable point of view
 
 
 
