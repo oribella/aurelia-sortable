@@ -11,6 +11,10 @@ Install via JSPM
 ```javascript
 jspm install npm:oribella-aurelia-sortable
 ```
+or NPM
+```javascript
+npm install oribella-aurelia-sortable
+```
 
 Load the plugin
 
@@ -37,13 +41,21 @@ To get started you need to bind the *sortable*, *sortable-item* attributes in co
 ```
 This will enable the plugin to keep track of and move around the items.
 
-However you might want to add a class to the `placeholder` that is moved around. Add a binding:
+However you might want to add a class to the `element` that is currently moved around. Add a binding:
 ```markup
 <!-- Other bindings omitted -->
-<div sortable="placeholder-class.bind: 'some-fancy-placeholder'">
+<div sortable="sorting-class.bind: 'some-fancy-placeholder'">
 </div>
 ```
-###### Default `placeholderClass='placeholder'`
+###### Default `sortingClass='oa-sorting'`
+
+It could then be used in the `sortable-item` like this:
+```markup
+<!-- Other bindings omitted -->
+<div sortable-item="item.bind: image" class="${image.sortingClass}">
+</div>
+```
+
 If you have variable dimensions on the `sortable-item` you can add a binding so the `placeholder` gets the same size as the dragging element by:
 ```markup
 <!-- Other bindings omitted -->
@@ -51,22 +63,13 @@ If you have variable dimensions on the `sortable-item` you can add a binding so 
 </div>
 ```
 
-
-It could then be used in the `sortable-item` like this:
-```markup
-<!-- Other bindings omitted -->
-<div sortable-item="item.bind: image" class="${image.placeholderClass}">
-</div>
-```
-
-If the `sortable` *custom attribute* is in an area that is scrollable you have to bind either a `selector` or an `Element`:
+If the `sortable` *custom attribute* is in an area that is scrollable you have to bind either a `selector` or an `Element` or `document`:
 ```markup
 <!-- Other bindings omitted -->
 <div sortable="scroll.bind: '.page-host'">
 </div>
 ```
 ###### Default `scroll=sortable`
->N.B It must be an instance of Element. So it can't be `window`/`document` but `body` is fine
 
 so it can auto scroll when needed. If you want you may even do a manual scroll when it's auto scrolling or combine them by first auto scrolling then manual scrolling and it should still behave as intended. If you are not happy with the sensitivity or scroll speed for the auto scroll you can set it with below bindings:
 ```
