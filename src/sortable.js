@@ -160,6 +160,7 @@ export class Sortable {
   }
   moveSortingItem(toIx) {
     const fromIx = this.items.indexOf(this.drag.item);
+    this.toIx = toIx;
     this.move(fromIx, toIx);
   }
   move(fromIx, toIx) {
