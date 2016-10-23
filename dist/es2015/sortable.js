@@ -195,6 +195,7 @@ export let Sortable = (_dec = customAttribute("oa-sortable"), _dec2 = inject(DOM
   }
   moveSortingItem(toIx) {
     const fromIx = this.items.indexOf(this.drag.item);
+    this.toIx = toIx;
     this.move(fromIx, toIx);
   }
   move(fromIx, toIx) {

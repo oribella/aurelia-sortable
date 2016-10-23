@@ -1,6 +1,8 @@
 "use strict";
 
 System.register(["aurelia-dependency-injection"], function (_export, _context) {
+  "use strict";
+
   var transient, _dec, _class, AutoScroll;
 
   function _classCallCheck(instance, Constructor) {
@@ -24,7 +26,7 @@ System.register(["aurelia-dependency-injection"], function (_export, _context) {
         }
 
         AutoScroll.prototype.start = function start() {
-          var speed = arguments.length <= 0 || arguments[0] === undefined ? 10 : arguments[0];
+          var speed = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
 
           this.speed = speed;
         };
@@ -77,7 +79,7 @@ System.register(["aurelia-dependency-injection"], function (_export, _context) {
         };
 
         AutoScroll.prototype.end = function end() {
-          var cAF = arguments.length <= 0 || arguments[0] === undefined ? cancelAnimationFrame : arguments[0];
+          var cAF = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : cancelAnimationFrame;
 
           cAF(this.rAFId);
           this.active = false;

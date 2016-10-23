@@ -21,7 +21,7 @@ var AutoScroll = exports.AutoScroll = (_dec = (0, _aureliaDependencyInjection.tr
   }
 
   AutoScroll.prototype.start = function start() {
-    var speed = arguments.length <= 0 || arguments[0] === undefined ? 10 : arguments[0];
+    var speed = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
 
     this.speed = speed;
   };
@@ -74,7 +74,7 @@ var AutoScroll = exports.AutoScroll = (_dec = (0, _aureliaDependencyInjection.tr
   };
 
   AutoScroll.prototype.end = function end() {
-    var cAF = arguments.length <= 0 || arguments[0] === undefined ? cancelAnimationFrame : arguments[0];
+    var cAF = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : cancelAnimationFrame;
 
     cAF(this.rAFId);
     this.active = false;

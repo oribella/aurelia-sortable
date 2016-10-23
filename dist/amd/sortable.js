@@ -213,7 +213,7 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
     };
 
     Sortable.prototype.closest = function closest(element, selector) {
-      var rootElement = arguments.length <= 2 || arguments[2] === undefined ? document : arguments[2];
+      var rootElement = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : document;
 
       var valid = false;
       while (!valid && element !== null && element !== rootElement && element !== document) {
@@ -232,6 +232,7 @@ define(["exports", "aurelia-pal", "aurelia-templating", "aurelia-dependency-inje
 
     Sortable.prototype.moveSortingItem = function moveSortingItem(toIx) {
       var fromIx = this.items.indexOf(this.drag.item);
+      this.toIx = toIx;
       this.move(fromIx, toIx);
     };
 
