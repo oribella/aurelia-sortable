@@ -6,12 +6,26 @@ Sortable plugin for *Aurelia* powered by *Oribella*
 
 ## Installation
 
-Install via JSPM
+### with JSPM
 
 ```javascript
-jspm install npm:oribella-aurelia-sortable
+jspm install aurelia-sortablejs
 ```
-or NPM
+
+Load the plugin
+
+```javascript
+export function configure(aurelia) {
+  aurelia.use
+    .standardConfiguration()
+    .developmentLogging()
+    .plugin("aurelia-sortablejs");
+
+  aurelia.start().then(a => a.setRoot());
+}
+```
+
+### with NPM
 ```javascript
 npm install oribella-aurelia-sortable
 ```
@@ -36,7 +50,7 @@ export function configure(aurelia) {
 To get started you need to bind the *sortable*, *sortable-item* attributes in conjunction with the *repeat* attribute.
 ```markup
 <div sortable="items.bind: images">
-  <div repeat.for="image of images" sortable-item="item.bind image"></div>
+  <div repeat.for="image of images" sortable-item="item.bind: image"></div>
 </div>
 ```
 This will enable the plugin to keep track of and move around the items.
