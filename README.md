@@ -35,8 +35,8 @@ export function configure(aurelia) {
 
 To get started you need to bind the *sortable*, *sortable-item* attributes in conjunction with the *repeat* attribute.
 ```markup
-<div sortable="items.bind: images">
-  <div repeat.for="image of images" sortable-item="item.bind image"></div>
+<div oa-sortable="items.bind: images">
+  <div repeat.for="image of images" oa-sortable-item="item.bind: image"></div>
 </div>
 ```
 This will enable the plugin to keep track of and move around the items.
@@ -44,7 +44,7 @@ This will enable the plugin to keep track of and move around the items.
 However you might want to add a class to the `element` that is currently moved around. Add a binding:
 ```markup
 <!-- Other bindings omitted -->
-<div sortable="sorting-class.bind: 'some-fancy-placeholder'">
+<div oa-sortable="sorting-class.bind: 'some-fancy-placeholder'">
 </div>
 ```
 ###### Default `sortingClass='oa-sorting'`
@@ -52,21 +52,21 @@ However you might want to add a class to the `element` that is currently moved a
 It could then be used in the `sortable-item` like this:
 ```markup
 <!-- Other bindings omitted -->
-<div sortable-item="item.bind: image" class="${image.sortingClass}">
+<div oa-sortable-item="item.bind: image" class="${image.sortingClass}">
 </div>
 ```
 
 If you have variable dimensions on the `sortable-item` you can add a binding so the `placeholder` gets the same size as the dragging element by:
 ```markup
 <!-- Other bindings omitted -->
-<div sortable-item="css.bind: item.style;">
+<div oa-sortable-item="css.bind: item.style;">
 </div>
 ```
 
 If the `sortable` *custom attribute* is in an area that is scrollable you have to bind either a `selector` or an `Element` or `document`:
 ```markup
 <!-- Other bindings omitted -->
-<div sortable="scroll.bind: '.page-host'">
+<div oa-sortable="scroll.bind: '.page-host'">
 </div>
 ```
 ###### Default `scroll=sortable`
@@ -74,7 +74,7 @@ If the `sortable` *custom attribute* is in an area that is scrollable you have t
 so it can auto scroll when needed. If you want you may even do a manual scroll when it's auto scrolling or combine them by first auto scrolling then manual scrolling and it should still behave as intended. If you are not happy with the sensitivity or scroll speed for the auto scroll you can set it with below bindings:
 ```
 <!-- Other bindings omitted -->
-<div sortable="scroll-sensitivity.bind: 20; scroll-speed.bind: 20">
+<div oa-sortable="scroll-sensitivity.bind: 20; scroll-speed.bind: 20">
 </div>
 ```
 ###### Default `scrollSpeed=10` - how many pixels it will scroll for each frame
@@ -84,10 +84,10 @@ If you have a vertical or horizontal list you can lock the sortable axis movemen
 ```
 <!-- Other bindings omitted -->
 <!-- Lock to horizontal movement -->
-<div sortable="axis: 'x'">
+<div oa-sortable="axis: 'x'">
 </div>
 <!-- Lock to vertical movement -->
-<div sortable="axis: 'y'">
+<div oa-sortable="axis: 'y'">
 </div>
 ```
 ###### Default `axis=''` - sets the allowed axis movement.
@@ -95,7 +95,7 @@ If you have a vertical or horizontal list you can lock the sortable axis movemen
 To make sure that the dragging of a *sortable item* always is on top of other elements make sure to bind:
 ```markup
 <!-- Other bindings omitted -->
-<div sortable="drag-z-index.bind: 120">
+<div oa-sortable="drag-z-index.bind: 120">
 </div>
 ```
 ###### Default `dragZIndex=1` - z-index of the dragging *sortable item*.
@@ -103,7 +103,7 @@ To make sure that the dragging of a *sortable item* always is on top of other el
 To be able to have a *sortable* where you might be editing the *sortable items* you can control this by:
 ```
 <!-- Other bindings omitted -->
-<div sortable="disallowed-drag-tag-names.bind: 'DIV'">
+<div oa-sortable="disallowed-drag-tag-names.bind: 'DIV'">
 </div>
 ```
 ###### Default `disallowedDragTagNames=['INPUT', 'SELECT', 'TEXTAREA']` - element tags that disallows start dragging.
@@ -111,7 +111,7 @@ To be able to have a *sortable* where you might be editing the *sortable items* 
 If that is insufficient:
 ```markup
 <!-- Other bindings omitted -->
-<div sortable="allow-drag.call: allowDrag($event);">
+<div oa-sortable="allow-drag.call: allowDrag($event);">
 </div>
 ```
 ###### Default `allowDrag`
@@ -135,7 +135,7 @@ where `$event` has `event` and `item` properties.
 Control whether a *sortable item* is allowed to move:
 ```markup
 <!-- Other bindings omitted -->
-<div sortable="allow-move.call: allowMove($event);">
+<div oa-sortable="allow-move.call: allowMove($event);">
 </div>
 ```
 ###### Default `allowMove`
@@ -149,7 +149,7 @@ where `$event` has an `item` property.
 If you need it you can also bind `moved` which will be called after an item has been sorted
 ```markup
 <!-- Other bindings omitted -->
-<div sortable="moved.call: moved($event);">
+<div oa-sortable="moved.call: moved($event);">
 </div>
 ```
 where `$event` has `fromIx` and `toIx` properties.
