@@ -162,6 +162,7 @@ export class Sortable {
     const fromIx = this.items.indexOf(this.drag.item);
     this.toIx = toIx;
     this.move(fromIx, toIx);
+    this.toIx = toIx;
   }
   move(fromIx, toIx) {
     if (fromIx !== -1 && toIx !== -1 && fromIx !== toIx) {
