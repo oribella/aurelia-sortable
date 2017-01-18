@@ -1,0 +1,5 @@
+node_modules
+dist
+typings
+coverage
+.nyc_output
