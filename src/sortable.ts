@@ -40,6 +40,7 @@ export class Sortable {
   }
   @bindable public allowMove = () => { return true; };
 
+  private scrollListener: Element | Document;
   private removeListener: () => void;
   private downClientPoint: Point = new Point(0, 0);
   private currentClientPoint: Point = new Point(0, 0);
@@ -58,14 +59,16 @@ export class Sortable {
 
   public activate() {
     this.removeListener = oribella.on(Swipe, this.element, this as any);
-    this.scroll = utils.ensureScroll(this.scroll, this.element);
-    this.scroll.addEventListener('scroll', this as any, false);
+    const { scrollElement, scrollListener } = utils.ensureScroll(this.scroll, this.element);
+    this.scroll = scrollElement;
+    this.scrollListener = scrollListener;
+    this.scrollListener.addEventListener('scroll', this as any, false);
   }
   public deactivate() {
     if (typeof this.removeListener === 'function') {
       this.removeListener();
     }
-    (this.scroll as Element).removeEventListener('scroll', this as any, false);
+    this.scrollListener.removeEventListener('scroll', this as any, false);
   }
   public handleEvent() {
     utils.updateClone(this.clone, this.currentClientPoint, this.scroll as Element);

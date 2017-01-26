@@ -56,7 +56,7 @@ export const utils = {
   },
   moveSortingItem(items: any[], item: any, toIx: number) {
     const fromIx = items.indexOf(item);
-    this.move(items, fromIx, toIx);
+    utils.move(items, fromIx, toIx);
   },
   move(items: any[], fromIx: number, toIx: number) {
     if (fromIx !== -1 && toIx !== -1 && fromIx !== toIx) {
@@ -74,7 +74,7 @@ export const utils = {
     if (!element) {
       return null;
     }
-    element = this.closest(element, selector, sortableElement) as Element;
+    element = utils.closest(element, selector, sortableElement) as Element;
     if (!element) {
       return null;
     }
@@ -82,9 +82,9 @@ export const utils = {
   },
   canThrottle(lastElementFromPointRect: ClientRect, x: number, y: number, offsetX: number, offsetY: number) {
     return lastElementFromPointRect &&
-      this.pointInside(x + offsetX, y + offsetY, lastElementFromPointRect);
+      utils.pointInside(x + offsetX, y + offsetY, lastElementFromPointRect);
   },
-  addClone(clone: Clone, target: HTMLElement, client: Point, dragZIndex: number, scrollOffset: ScrollOffset) {
+  addClone(clone: Clone, target: HTMLElement, client: Point, dragZIndex: number, { scrollLeft, scrollTop }: ScrollOffset) {
     const targetRect = target.getBoundingClientRect();
     clone.viewModel = utils.getViewModel(target as SortableItemElement);
     clone.element = target.cloneNode(true) as HTMLElement;
@@ -94,20 +94,20 @@ export const utils = {
     clone.element.style.pointerEvents = 'none';
     clone.element.style.margin = 0 + '';
     clone.element.style.zIndex = dragZIndex + '';
-    clone.position.x = targetRect.left + scrollOffset.scrollLeft;
-    clone.position.y = targetRect.top + scrollOffset.scrollTop;
-    clone.offset.x = clone.position.x - client.x - scrollOffset.scrollLeft;
-    clone.offset.y = clone.position.y - client.y - scrollOffset.scrollTop;
+    clone.position.x = targetRect.left + scrollLeft;
+    clone.position.y = targetRect.top + scrollTop;
+    clone.offset.x = clone.position.x - client.x - scrollLeft;
+    clone.offset.y = clone.position.y - client.y - scrollTop;
     clone.element.style.left = clone.position.x + 'px';
     clone.element.style.top = clone.position.y + 'px';
     clone.parent.appendChild(clone.element);
   },
-  updateClone(clone: Clone, currentClientPoint: Point, scrollOffset: ScrollOffset) {
+  updateClone(clone: Clone, currentClientPoint: Point, { scrollLeft, scrollTop }: ScrollOffset) {
     if (!clone.element) {
       return;
     }
-    clone.position.x = currentClientPoint.x + clone.offset.x + scrollOffset.scrollLeft;
-    clone.position.y = currentClientPoint.y + clone.offset.y + scrollOffset.scrollTop;
+    clone.position.x = currentClientPoint.x + clone.offset.x + scrollLeft;
+    clone.position.y = currentClientPoint.y + clone.offset.y + scrollTop;
     clone.element.style.left = clone.position.x + 'px';
     clone.element.style.top = clone.position.y + 'px';
   },
@@ -119,16 +119,19 @@ export const utils = {
     clone.element = null;
     clone.viewModel = null;
   },
-  ensureScroll(scroll: string | Element, sortableElement: Element): Element {
+  ensureScroll(scroll: string | Element, sortableElement: Element): { scrollElement: Element, scrollListener: Element | Document } {
     let scrollElement = sortableElement;
+    let scrollListener: Element | Document = sortableElement;
     if (typeof scroll === 'string') {
       if (scroll === 'document') {
         scrollElement = document.scrollingElement || document.documentElement || document.body;
+        scrollListener = document;
       } else {
-        scrollElement = utils.closest(this.element, scroll, window.document) as Element;
+        scrollElement = utils.closest(sortableElement, scroll, window.document) as Element;
+        scrollListener = scrollElement;
       }
     }
-    return scrollElement;
+    return { scrollElement, scrollListener };
   },
   getScrollData() {
 
