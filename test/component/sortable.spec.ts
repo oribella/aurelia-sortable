@@ -7,21 +7,30 @@ import { jsdom } from 'jsdom';
 describe('Sortable', () => {
   let component: any;
   const allowedDragSelectors: string[] = ['.drag-handle'];
+  const groups = [{}];
   const bindings = {
-    items: [{}],
+    groups,
     allowedDragSelectors
   };
   const template = `
-<ul oa-sortable="
-  scroll.bind: 'document';
-  items.bind: items;
+<ul oa-sortable="items.bind: groups;
   allowed-drag-selectors.bind: allowedDragSelectors">
-    <li
-      oa-sortable-item="item.bind: item;"
-      repeat.for="item of items"
-      draggable="false">
-    </li>
-  </ul>
+  <li
+    repeat.for="group of groups"
+    oa-sortable-item="item.bind: group;"
+    draggable="false">
+    <div>` +
+    '${group.name}' + `
+      <ul oa-sortable="items.bind: group.items;">
+        <li
+          repeat.for="item of group.items"
+          oa-sortable-item="item.bind: item;"
+          draggable="false">
+          <div>` + '${item.name}' + `</div>
+      </ul>
+    </div>
+  </li>
+</ul>
 `;
   const html = `
     <html>
@@ -52,7 +61,7 @@ describe('Sortable', () => {
   });
 
   it('should have bindable items', async() => {
-    expect(component.viewModel.items).to.equal(bindings.items);
+    expect(component.viewModel.items).to.equal(bindings.groups);
   });
 
   it('should handle allow selector', () => {

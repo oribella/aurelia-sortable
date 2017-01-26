@@ -1,5 +1,6 @@
 import { FrameworkConfiguration } from 'aurelia-framework';
+import { PLATFORM } from 'aurelia-pal';
 
 export function configure(config: FrameworkConfiguration) {
-  config.globalResources('./sortable');
+  config.globalResources(PLATFORM.moduleName('./sortable'));
 }
