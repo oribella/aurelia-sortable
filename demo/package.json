@@ -22,6 +22,6 @@
     "oribella-framework": "^0.7.0"
   },
   "scripts": {
-    "web": "webpack-dev-server --hot --inline"
+    "dev": "webpack-dev-server"
   }
 }

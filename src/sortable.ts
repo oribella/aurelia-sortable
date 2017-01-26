@@ -14,7 +14,7 @@ const SORTABLE_ITEM_ATTR = `[${SORTABLE_ITEM}]`;
 @inject(DOM.Element, OptionalParent.of(Sortable))
 export class Sortable {
   @bindable public items: any = [];
-  @bindable public scroll = 'document';
+  @bindable public scroll: string | Element = 'document';
   @bindable public scrollSpeed = 10;
   @bindable public scrollSensitivity = 10;
   @bindable public sortingClass = 'oa-sorting';
@@ -58,16 +58,17 @@ export class Sortable {
 
   public activate() {
     this.removeListener = oribella.on(Swipe, this.element, this as any);
-    document.addEventListener('scroll', this as any, false);
+    this.scroll = utils.ensureScroll(this.scroll, this.element);
+    this.scroll.addEventListener('scroll', this as any, false);
   }
   public deactivate() {
     if (typeof this.removeListener === 'function') {
       this.removeListener();
     }
-    document.removeEventListener('scroll', this as any, false);
+    (this.scroll as Element).removeEventListener('scroll', this as any, false);
   }
   public handleEvent() {
-    utils.updateClone(this.clone, this.currentClientPoint);
+    utils.updateClone(this.clone, this.currentClientPoint, this.scroll as Element);
   }
   public attached() {
     this.activate();
@@ -90,11 +91,11 @@ export class Sortable {
     return RETURN_FLAG.REMOVE;
   }
   public start(_: Event, { pointers: [{}]}: Data, target: HTMLElement) {
-    utils.addClone(this.clone, target, this.downClientPoint, this.dragZIndex);
+    utils.addClone(this.clone, target, this.downClientPoint, this.dragZIndex, this.scroll as Element);
   }
   public update(_: Event, { pointers: [{ client }]}: Data, __: Element) {
     this.currentClientPoint = client;
-    utils.updateClone(this.clone, this.currentClientPoint);
+    utils.updateClone(this.clone, this.currentClientPoint, this.scroll as Element);
   }
   public end() {
     this.stop();

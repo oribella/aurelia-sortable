@@ -1,60 +1,57 @@
-import {transient} from 'aurelia-dependency-injection';
+import { transient } from 'aurelia-dependency-injection';
+import { ScrollData } from './utils';
 
 @transient()
 export class AutoScroll {
   private rAFId: number = -1;
-  private speed: number = 10;
   private active = false;
 
-  public start(speed: number = 10) {
-    this.speed = speed;
-  }
-  public update(element: Element, dirX: number, dirY: number, frameCntX: number, frameCntY: number) {
+  public activate({ element, direction, frames, speed }: ScrollData) {
     if (this.active) {
-      if (dirX === 0 && dirY === 0) {
-        cancelAnimationFrame(this.rAFId);
+      if (direction.x === 0 && direction.y === 0) {
+        window.cancelAnimationFrame(this.rAFId);
         this.active = false;
       }
       return;
     }
-    if (dirX === 0 && dirY === 0) {
+    if (direction.x === 0 && direction.y === 0) {
       return;
     }
 
-    if (frameCntX === 0 && frameCntY === 0) {
+    if (frames.x === 0 && frames.y === 0) {
       return;
     }
 
-    const scrollDeltaX = dirX * this.speed;
-    const scrollDeltaY = dirY * this.speed;
+    const scrollDeltaX = direction.x * speed;
+    const scrollDeltaY = direction.y * speed;
 
     const autoScroll = () => {
 
-      if ( !this.active ) {
+      if (!this.active) {
         return;
       }
-      if (frameCntX > 0) {
+      if (frames.x > 0) {
         element.scrollLeft += scrollDeltaX;
       }
-      if (frameCntY > 0) {
+      if (frames.y > 0) {
         element.scrollTop += scrollDeltaY;
       }
 
-      --frameCntX;
-      --frameCntY;
-      if (frameCntX <= 0 && frameCntY <= 0) {
+      --frames.x;
+      --frames.y;
+      if (frames.x <= 0 && frames.y <= 0) {
         this.active = false;
         return;
       }
 
-      this.rAFId = requestAnimationFrame(autoScroll);
+      this.rAFId = window.requestAnimationFrame(autoScroll);
     };
 
     this.active = true;
     autoScroll();
   }
-  public end(cAF: (id: number) => void) {
-    cAF(this.rAFId);
+  public end() {
+    window.cancelAnimationFrame(this.rAFId);
     this.active = false;
   }
 }

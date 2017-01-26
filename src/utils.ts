@@ -4,6 +4,25 @@ import { SortableItem } from './sortable';
 export type SortableItemElement = HTMLElement & { au: { [index: string]: { viewModel: SortableItem } } };
 const SORTABLE_ITEM = 'oa-sortable-item';
 
+export interface ScrollOffset {
+  scrollLeft: number;
+  scrollTop: number;
+}
+export interface ScrollDirection {
+  x: number;
+  y: number;
+}
+export interface ScrollFrames {
+  x: number;
+  y: number;
+}
+export interface ScrollData {
+  element: Element;
+  direction: ScrollDirection;
+  frames: ScrollFrames;
+  speed: number;
+};
+
 export interface Clone {
   parent: HTMLElement;
   viewModel: SortableItem | null;
@@ -65,11 +84,8 @@ export const utils = {
     return lastElementFromPointRect &&
       this.pointInside(x + offsetX, y + offsetY, lastElementFromPointRect);
   },
-  addClone(clone: Clone, target: HTMLElement, client: Point, dragZIndex: number) {
+  addClone(clone: Clone, target: HTMLElement, client: Point, dragZIndex: number, scrollOffset: ScrollOffset) {
     const targetRect = target.getBoundingClientRect();
-    const bodyRect = document.body.getBoundingClientRect();
-    const bodyOffsetX = bodyRect.left + window.pageXOffset;
-    const bodyOffsetY = bodyRect.top + window.pageYOffset;
     clone.viewModel = utils.getViewModel(target as SortableItemElement);
     clone.element = target.cloneNode(true) as HTMLElement;
     clone.element.style.position = 'absolute';
@@ -78,20 +94,20 @@ export const utils = {
     clone.element.style.pointerEvents = 'none';
     clone.element.style.margin = 0 + '';
     clone.element.style.zIndex = dragZIndex + '';
-    clone.position.x = targetRect.left + window.pageXOffset - bodyOffsetX;
-    clone.position.y = targetRect.top + window.pageYOffset - bodyOffsetY;
-    clone.offset.x = clone.position.x - client.x - window.pageXOffset;
-    clone.offset.y = clone.position.y - client.y - window.pageYOffset;
+    clone.position.x = targetRect.left + scrollOffset.scrollLeft;
+    clone.position.y = targetRect.top + scrollOffset.scrollTop;
+    clone.offset.x = clone.position.x - client.x - scrollOffset.scrollLeft;
+    clone.offset.y = clone.position.y - client.y - scrollOffset.scrollTop;
     clone.element.style.left = clone.position.x + 'px';
     clone.element.style.top = clone.position.y + 'px';
     clone.parent.appendChild(clone.element);
   },
-  updateClone(clone: Clone, currentClientPoint: Point) {
+  updateClone(clone: Clone, currentClientPoint: Point, scrollOffset: ScrollOffset) {
     if (!clone.element) {
       return;
     }
-    clone.position.x = currentClientPoint.x + clone.offset.x + window.pageXOffset;
-    clone.position.y = currentClientPoint.y + clone.offset.y + window.pageYOffset;
+    clone.position.x = currentClientPoint.x + clone.offset.x + scrollOffset.scrollLeft;
+    clone.position.y = currentClientPoint.y + clone.offset.y + scrollOffset.scrollTop;
     clone.element.style.left = clone.position.x + 'px';
     clone.element.style.top = clone.position.y + 'px';
   },
@@ -102,5 +118,19 @@ export const utils = {
     clone.parent.removeChild(clone.element);
     clone.element = null;
     clone.viewModel = null;
+  },
+  ensureScroll(scroll: string | Element, sortableElement: Element): Element {
+    let scrollElement = sortableElement;
+    if (typeof scroll === 'string') {
+      if (scroll === 'document') {
+        scrollElement = document.scrollingElement || document.documentElement || document.body;
+      } else {
+        scrollElement = utils.closest(this.element, scroll, window.document) as Element;
+      }
+    }
+    return scrollElement;
+  },
+  getScrollData() {
+
   }
 };
