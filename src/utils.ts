@@ -1,27 +1,55 @@
 import { Point, matchesSelector } from 'oribella-framework';
-import { SortableItem } from './sortable';
+import { Sortable, SortableItem } from './sortable';
 
 export type SortableItemElement = HTMLElement & { au: { [index: string]: { viewModel: SortableItem } } };
 const SORTABLE_ITEM = 'oa-sortable-item';
+
+export enum AxisFlag {
+  x = 1,
+  y = 2,
+  xy = 3
+}
+export interface WindowDimension {
+  innerWidth: number;
+  innerHeight: number;
+}
+export interface Rect {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+  width: number;
+  height: number;
+}
 
 export interface ScrollOffset {
   scrollLeft: number;
   scrollTop: number;
 }
+export interface ScrollRect {
+  scrollLeft: number;
+  scrollTop: number;
+  scrollWidth: number;
+  scrollHeight: number;
+}
 export interface ScrollDirection {
   x: number;
   y: number;
+}
+export interface ScrollDimension {
+  scrollWidth: number;
+  scrollHeight: number;
 }
 export interface ScrollFrames {
   x: number;
   y: number;
 }
 export interface ScrollData {
-  element: Element;
-  direction: ScrollDirection;
-  frames: ScrollFrames;
-  speed: number;
-};
+  scrollElement: Element;
+  scrollDirection: ScrollDirection;
+  scrollFrames: ScrollFrames;
+  scrollSpeed: number;
+}
 
 export interface Clone {
   parent: HTMLElement;
@@ -29,15 +57,20 @@ export interface Clone {
   element: HTMLElement | null;
   offset: Point;
   position: Point;
+  width: number;
+  height: number;
+  display: string | null;
 };
 
 export const utils = {
-  hide(element: HTMLElement) {
-    const display = element.style.display;
+  hideClone(clone: Clone) {
+    const element = clone.element as HTMLElement;
+    clone.display = element.style.display;
     element.style.display = 'none';
-    return () => {
-      element.style.display = display;
-    };
+  },
+  showClone(clone: Clone) {
+    const element = clone.element as HTMLElement;
+    element.style.display = clone.display;
   },
   closest(node: Node | null, selector: string, rootNode: Node) {
     let valid = false;
@@ -45,31 +78,44 @@ export const utils = {
       node !== document) {
       valid = matchesSelector(node, selector);
       if (valid) {
-        break;
+        return node;
       }
       node = node.parentNode;
     }
-    return valid ? node : null;
+    return null;
   },
   getViewModel(element: SortableItemElement): SortableItem {
     return element.au[SORTABLE_ITEM].viewModel;
   },
-  moveSortingItem(items: any[], item: any, toIx: number) {
-    const fromIx = items.indexOf(item);
-    utils.move(items, fromIx, toIx);
-  },
-  move(items: any[], fromIx: number, toIx: number) {
-    if (fromIx !== -1 && toIx !== -1 && fromIx !== toIx) {
-      items.splice(toIx, 0, items.splice(fromIx, 1)[0]);
+  moveItem(fromSortable: Sortable, toVM: SortableItem): boolean {
+    const fromVM = fromSortable.clone.viewModel;
+    if (!fromVM) {
+      return false;
     }
+    const toItem = toVM.item;
+    const fromItem = fromVM.item;
+    if (toItem === fromItem) {
+      return false;
+    }
+    if ((fromVM.typeFlag & toVM.typeFlag) === 0) {
+      return false;
+    }
+
+    const fromItems = fromSortable.items;
+    const fromIx = fromItems.indexOf(fromItem);
+    const toItems = toVM.parentList.items;
+    const toIx = toItems.indexOf(toItem);
+    const removedFromItem = fromItems.splice(fromIx, 1)[0];
+    toItems.splice(toIx, 0, removedFromItem);
+    return true;
   },
-  pointInside(x: number, y: number, rect: { top: number, right: number, bottom: number, left: number }) {
-    return x >= rect.left &&
-      x <= rect.right &&
-      y >= rect.top &&
-      y <= rect.bottom;
+  pointInside({ top, right, bottom, left }: Rect, {x, y }: Point) {
+    return x >= left &&
+      x <= right &&
+      y >= top &&
+      y <= bottom;
   },
-  elementFromPoint(x: number, y: number, selector: string, sortableElement: Element) {
+  elementFromPoint({ x, y }: Point, selector: string, sortableElement: Element) {
     let element = document.elementFromPoint(x, y);
     if (!element) {
       return null;
@@ -80,12 +126,14 @@ export const utils = {
     }
     return element;
   },
-  canThrottle(lastElementFromPointRect: ClientRect, x: number, y: number, offsetX: number, offsetY: number) {
+  canThrottle(lastElementFromPointRect: Rect, { x, y }: Point, { scrollLeft, scrollTop }: ScrollOffset) {
     return lastElementFromPointRect &&
-      utils.pointInside(x + offsetX, y + offsetY, lastElementFromPointRect);
+      utils.pointInside(lastElementFromPointRect, { x: x + scrollLeft, y: y + scrollTop } as Point);
   },
   addClone(clone: Clone, target: HTMLElement, client: Point, dragZIndex: number, { scrollLeft, scrollTop }: ScrollOffset) {
     const targetRect = target.getBoundingClientRect();
+    clone.width = targetRect.width;
+    clone.height = targetRect.height;
     clone.viewModel = utils.getViewModel(target as SortableItemElement);
     clone.element = target.cloneNode(true) as HTMLElement;
     clone.element.style.position = 'absolute';
@@ -102,12 +150,18 @@ export const utils = {
     clone.element.style.top = clone.position.y + 'px';
     clone.parent.appendChild(clone.element);
   },
-  updateClone(clone: Clone, currentClientPoint: Point, { scrollLeft, scrollTop }: ScrollOffset) {
+  updateClone(clone: Clone, currentClientPoint: Point, { scrollLeft, scrollTop, scrollWidth, scrollHeight }: ScrollRect, axisBitFlag: number) {
     if (!clone.element) {
       return;
     }
-    clone.position.x = currentClientPoint.x + clone.offset.x + scrollLeft;
-    clone.position.y = currentClientPoint.y + clone.offset.y + scrollTop;
+    if (axisBitFlag & AxisFlag.x) {
+      clone.position.x = currentClientPoint.x + clone.offset.x + scrollLeft;
+    }
+    if (axisBitFlag & AxisFlag.y) {
+      clone.position.y = currentClientPoint.y + clone.offset.y + scrollTop;
+    }
+
+    utils.ensureCloneBoundaries(clone, { scrollWidth, scrollHeight });
     clone.element.style.left = clone.position.x + 'px';
     clone.element.style.top = clone.position.y + 'px';
   },
@@ -118,6 +172,20 @@ export const utils = {
     clone.parent.removeChild(clone.element);
     clone.element = null;
     clone.viewModel = null;
+  },
+  ensureCloneBoundaries(clone: Clone, { scrollWidth, scrollHeight}: ScrollDimension) {
+    if (clone.position.x <= 0) {
+      clone.position.x = 0;
+    }
+    if (clone.position.x + clone.width >= scrollWidth) {
+      clone.position.x = scrollWidth - clone.width;
+    }
+    if (clone.position.y <= 0) {
+      clone.position.y = 0;
+    }
+    if (clone.position.y + clone.height >= scrollHeight) {
+      clone.position.y = scrollHeight - clone.height;
+    }
   },
   ensureScroll(scroll: string | Element, sortableElement: Element): { scrollElement: Element, scrollListener: Element | Document } {
     let scrollElement = sortableElement;
@@ -133,7 +201,68 @@ export const utils = {
     }
     return { scrollElement, scrollListener };
   },
-  getScrollData() {
-
+  getBoundaryRect(/*sortableRect: Rect*/): Rect {
+    return {
+      left: 0, // Math.max(0, sortableRect.left),
+      top: 0, // Math.max(0, sortableRect.top),
+      right: window.innerWidth, // Math.min(window.innerWidth, sortableRect.right),
+      bottom: window.innerHeight, // Math.min(window.innerHeight, sortableRect.bottom),
+      get width() {
+        return this.right - this.left;
+      },
+      get height() {
+        return this.bottom - this.top;
+      }
+    };
+  },
+  getScrollDirection(axisBitFlag: number, scrollSensitivity: number, { x, y }: Point, { left, top, right, bottom }: Rect): ScrollDirection {
+    const direction: ScrollDirection = { x: 0, y: 0 };
+    if (x >= right - scrollSensitivity) {
+      direction.x = 1;
+    } else if (x <= left - scrollSensitivity) {
+      direction.x = -1;
+    }
+    if (y >= bottom - scrollSensitivity) {
+      direction.y = 1;
+    } else if (y <= top - scrollSensitivity) {
+      direction.y = -1;
+    }
+    if (axisBitFlag & AxisFlag.x) {
+      direction.y = 0;
+    }
+    if (axisBitFlag & AxisFlag.y) {
+      direction.x = 0;
+    }
+    return direction;
+  },
+  getScrollMaxPos(sortableElement: Element, sortableRect: Rect, scrollElement: Element, { scrollLeft, scrollTop, scrollWidth, scrollHeight }: ScrollRect, scrollRect: Rect, { innerWidth, innerHeight }: WindowDimension): Point {
+    if (sortableElement.contains(scrollElement)) {
+      return new Point(scrollWidth - scrollRect.width, scrollHeight - scrollRect.height);
+    } else {
+      return new Point(sortableRect.right + scrollLeft - innerWidth, sortableRect.bottom + scrollTop - innerHeight);
+    }
+  },
+  getScrollFrames(direction: ScrollDirection, maxPos: Point, { scrollLeft, scrollTop }: ScrollOffset, scrollSpeed: number): ScrollFrames {
+    let x = Math.max(0, Math.ceil(Math.abs(maxPos.x - scrollLeft) / scrollSpeed));
+    let y = Math.max(0, Math.ceil(Math.abs(maxPos.y - scrollTop) / scrollSpeed));
+    if (direction.x === 1 && scrollLeft >= maxPos.x ||
+      direction.x === -1 && scrollLeft === 0) {
+      x = 0;
+    }
+    if (direction.y === 1 && scrollTop >= maxPos.y ||
+      direction.y === -1 && scrollTop === 0) {
+      y = 0;
+    }
+    return new Point(x, y);
+  },
+  ensureAxisFlag(axis: string): AxisFlag {
+    switch (axis) {
+      case 'x':
+        return AxisFlag.x;
+      case 'y':
+        return AxisFlag.y;
+      default:
+        return AxisFlag.xy;
+    }
   }
 };

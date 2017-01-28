@@ -6,40 +6,40 @@ export class AutoScroll {
   private rAFId: number = -1;
   private active = false;
 
-  public activate({ element, direction, frames, speed }: ScrollData) {
+  public activate({ scrollElement, scrollDirection, scrollFrames, scrollSpeed }: ScrollData) {
     if (this.active) {
-      if (direction.x === 0 && direction.y === 0) {
+      if (scrollDirection.x === 0 && scrollDirection.y === 0) {
         window.cancelAnimationFrame(this.rAFId);
         this.active = false;
       }
       return;
     }
-    if (direction.x === 0 && direction.y === 0) {
+    if (scrollDirection.x === 0 && scrollDirection.y === 0) {
       return;
     }
 
-    if (frames.x === 0 && frames.y === 0) {
+    if (scrollFrames.x === 0 && scrollFrames.y === 0) {
       return;
     }
 
-    const scrollDeltaX = direction.x * speed;
-    const scrollDeltaY = direction.y * speed;
+    const scrollDeltaX = scrollDirection.x * scrollSpeed;
+    const scrollDeltaY = scrollDirection.y * scrollSpeed;
 
     const autoScroll = () => {
 
       if (!this.active) {
         return;
       }
-      if (frames.x > 0) {
-        element.scrollLeft += scrollDeltaX;
+      if (scrollFrames.x > 0) {
+        scrollElement.scrollLeft += scrollDeltaX;
       }
-      if (frames.y > 0) {
-        element.scrollTop += scrollDeltaY;
+      if (scrollFrames.y > 0) {
+        scrollElement.scrollTop += scrollDeltaY;
       }
 
-      --frames.x;
-      --frames.y;
-      if (frames.x <= 0 && frames.y <= 0) {
+      --scrollFrames.x;
+      --scrollFrames.y;
+      if (scrollFrames.x <= 0 && scrollFrames.y <= 0) {
         this.active = false;
         return;
       }
@@ -50,7 +50,7 @@ export class AutoScroll {
     this.active = true;
     autoScroll();
   }
-  public end() {
+  public deactivate() {
     window.cancelAnimationFrame(this.rAFId);
     this.active = false;
   }
