@@ -24,8 +24,8 @@ export interface Rect {
 }
 
 export interface ScrollOffset {
-  scrollLeft: number;
-  scrollTop: number;
+  pageXOffset: number;
+  pageYOffset: number;
 }
 export interface ScrollRect {
   scrollLeft: number;
@@ -135,12 +135,21 @@ export const utils = {
     }
     return element;
   },
-  canThrottle(lastElementFromPointRect: Rect, { x, y }: Point, { scrollLeft, scrollTop }: ScrollOffset) {
+  canThrottle(lastElementFromPointRect: Rect, { x, y }: Point, { pageXOffset, pageYOffset }: ScrollOffset) {
     return lastElementFromPointRect &&
-      utils.pointInside(lastElementFromPointRect, { x: x + scrollLeft, y: y + scrollTop } as Point);
+      utils.pointInside(lastElementFromPointRect, { x: x + pageXOffset, y: y + pageYOffset } as Point);
   },
-  addClone(clone: Clone, target: HTMLElement, client: Point, dragZIndex: number, { scrollLeft, scrollTop }: ScrollOffset) {
+  addClone(clone: Clone, sortableElement: HTMLElement, scrollElement: Element, target: HTMLElement, client: Point, dragZIndex: number, { pageXOffset, pageYOffset }: ScrollOffset) {
     const targetRect = target.getBoundingClientRect();
+    const offset = { left: 0, top: 0 };
+    if (sortableElement.contains(scrollElement)) {
+      while (sortableElement.offsetParent) {
+        const offsetParentRect = sortableElement.offsetParent.getBoundingClientRect();
+        offset.left += offsetParentRect.left;
+        offset.top += offsetParentRect.top;
+        sortableElement = sortableElement.offsetParent as HTMLElement;
+      }
+    }
     clone.width = targetRect.width;
     clone.height = targetRect.height;
     clone.viewModel = utils.getViewModel(target as SortableItemElement);
@@ -151,26 +160,26 @@ export const utils = {
     clone.element.style.pointerEvents = 'none';
     clone.element.style.margin = 0 + '';
     clone.element.style.zIndex = dragZIndex + '';
-    clone.position.x = targetRect.left + scrollLeft;
-    clone.position.y = targetRect.top + scrollTop;
-    clone.offset.x = clone.position.x - client.x - scrollLeft;
-    clone.offset.y = clone.position.y - client.y - scrollTop;
+    clone.position.x = targetRect.left + pageXOffset - offset.left;
+    clone.position.y = targetRect.top + pageYOffset - offset.top;
+    clone.offset.x = clone.position.x - client.x - pageXOffset;
+    clone.offset.y = clone.position.y - client.y - pageYOffset;
     clone.element.style.left = clone.position.x + 'px';
     clone.element.style.top = clone.position.y + 'px';
     clone.parent.appendChild(clone.element);
   },
-  updateClone(clone: Clone, currentClientPoint: Point, { scrollLeft, scrollTop, scrollWidth, scrollHeight }: ScrollRect, axisBitFlag: number) {
+  updateClone(clone: Clone, currentClientPoint: Point, { pageXOffset, pageYOffset }: ScrollOffset, axisBitFlag: number) {
     if (!clone.element) {
       return;
     }
     if (axisBitFlag & AxisFlag.x) {
-      clone.position.x = currentClientPoint.x + clone.offset.x + scrollLeft;
+      clone.position.x = currentClientPoint.x + clone.offset.x + pageXOffset;
     }
     if (axisBitFlag & AxisFlag.y) {
-      clone.position.y = currentClientPoint.y + clone.offset.y + scrollTop;
+      clone.position.y = currentClientPoint.y + clone.offset.y + pageYOffset;
     }
 
-    utils.ensureCloneBoundaries(clone, { scrollWidth, scrollHeight });
+    utils.ensureCloneBoundaries(clone);
     clone.element.style.left = clone.position.x + 'px';
     clone.element.style.top = clone.position.y + 'px';
   },
@@ -182,19 +191,19 @@ export const utils = {
     clone.element = null;
     clone.viewModel = null;
   },
-  ensureCloneBoundaries(clone: Clone, { scrollWidth, scrollHeight}: ScrollDimension) {
+  ensureCloneBoundaries(clone: Clone/*, { scrollWidth, scrollHeight}: ScrollDimension*/) {
     if (clone.position.x <= 0) {
       clone.position.x = 0;
     }
-    if (clone.position.x + clone.width >= scrollWidth) {
-      clone.position.x = scrollWidth - clone.width;
-    }
+    // if (clone.position.x + clone.width >= scrollWidth) {
+    //   clone.position.x = scrollWidth - clone.width;
+    // }
     if (clone.position.y <= 0) {
       clone.position.y = 0;
     }
-    if (clone.position.y + clone.height >= scrollHeight) {
-      clone.position.y = scrollHeight - clone.height;
-    }
+    // if (clone.position.y + clone.height >= scrollHeight) {
+    //   clone.position.y = scrollHeight - clone.height;
+    // }
   },
   ensureScroll(scroll: string | Element, sortableElement: Element): { scrollElement: Element, scrollListener: Element | Document } {
     let scrollElement = sortableElement;
@@ -251,15 +260,15 @@ export const utils = {
       return new Point(sortableRect.right + scrollLeft - innerWidth, sortableRect.bottom + scrollTop - innerHeight);
     }
   },
-  getScrollFrames(direction: ScrollDirection, maxPos: Point, { scrollLeft, scrollTop }: ScrollOffset, scrollSpeed: number): ScrollFrames {
-    let x = Math.max(0, Math.ceil(Math.abs(maxPos.x - scrollLeft) / scrollSpeed));
-    let y = Math.max(0, Math.ceil(Math.abs(maxPos.y - scrollTop) / scrollSpeed));
-    if (direction.x === 1 && scrollLeft >= maxPos.x ||
-      direction.x === -1 && scrollLeft === 0) {
+  getScrollFrames(direction: ScrollDirection, maxPos: Point, { pageXOffset, pageYOffset }: ScrollOffset, scrollSpeed: number): ScrollFrames {
+    let x = Math.max(0, Math.ceil(Math.abs(maxPos.x - pageXOffset) / scrollSpeed));
+    let y = Math.max(0, Math.ceil(Math.abs(maxPos.y - pageYOffset) / scrollSpeed));
+    if (direction.x === 1 && pageXOffset >= maxPos.x ||
+      direction.x === -1 && pageXOffset === 0) {
       x = 0;
     }
-    if (direction.y === 1 && scrollTop >= maxPos.y ||
-      direction.y === -1 && scrollTop === 0) {
+    if (direction.y === 1 && pageYOffset >= maxPos.y ||
+      direction.y === -1 && pageYOffset === 0) {
       y = 0;
     }
     return new Point(x, y);
