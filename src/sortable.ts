@@ -3,13 +3,13 @@ import { customAttribute, bindable } from 'aurelia-templating';
 import { inject } from 'aurelia-dependency-injection';
 import { oribella, Swipe, Data, matchesSelector, RETURN_FLAG, Point } from 'oribella';
 import { OptionalParent } from './optional-parent';
-import { utils, SortableItemElement, Clone, Rect, ScrollOffset } from './utils';
+import { utils, SortableItemElement, SortableElement, Clone, Rect, ScrollOffset } from './utils';
 import { AutoScroll } from './auto-scroll';
 
-const SORTABLE = 'oa-sortable';
-const SORTABLE_ATTR = `[${SORTABLE}]`;
-const SORTABLE_ITEM = 'oa-sortable-item';
-const SORTABLE_ITEM_ATTR = `[${SORTABLE_ITEM}]`;
+export const SORTABLE = 'oa-sortable';
+export const SORTABLE_ATTR = `[${SORTABLE}]`;
+export const SORTABLE_ITEM = 'oa-sortable-item';
+export const SORTABLE_ITEM_ATTR = `[${SORTABLE_ITEM}]`;
 
 @customAttribute(SORTABLE)
 @inject(DOM.Element, OptionalParent.of(Sortable), AutoScroll)
@@ -53,17 +53,19 @@ export class Sortable {
     position: new Point(0, 0),
     width: 0,
     height: 0,
-    display: null
+    display: null,
+    currentSortable: this
   };
   private boundaryRect: Rect;
   private sortableRect: Rect;
   private scrollRect: Rect;
   private axisFlag: number = 0;
   private lastElementFromPointRect: Rect;
+  public sortableDepth: number = -1;
   public selector: string = SORTABLE_ITEM_ATTR;
 
-  constructor(public element: Element, public parentList: Sortable, private autoScroll: AutoScroll) {
-    this.parentList = parentList || this;
+  constructor(public element: Element, public parentSortable: Sortable, private autoScroll: AutoScroll) {
+    this.sortableDepth = utils.getSortableDepth(this);
   }
 
   public activate() {
@@ -112,7 +114,10 @@ export class Sortable {
     if (!this.allowMove({ item })) {
       return;
     }
-    if (utils.moveItem(this, vm)) {
+    if (utils.moveItem(this.clone, vm)) {
+      if (this.clone.currentSortable !== this) {
+        return;
+      }
       this.lastElementFromPointRect = element.getBoundingClientRect();
     }
   }
@@ -162,9 +167,16 @@ export class Sortable {
 }
 
 @customAttribute(SORTABLE_ITEM)
-@inject(OptionalParent.of(Sortable))
+@inject(DOM.Element, OptionalParent.of(Sortable))
 export class SortableItem {
   @bindable public item: any = null;
   @bindable public typeFlag: number = 1;
-  constructor(public parentList: Sortable) { }
+  public childSortable: Sortable;
+  constructor(public element: Element, public parentSortable: Sortable) { }
+  public attached() {
+    const child = this.element.querySelector(SORTABLE_ATTR);
+    if (child) {
+      this.childSortable = (child as SortableElement).au[SORTABLE].viewModel;
+    }
+  }
 }

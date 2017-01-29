@@ -2,6 +2,7 @@ import { Point, matchesSelector } from 'oribella-framework';
 import { Sortable, SortableItem } from './sortable';
 
 export type SortableItemElement = HTMLElement & { au: { [index: string]: { viewModel: SortableItem } } };
+export type SortableElement = HTMLElement & { au: { [index: string]: { viewModel: Sortable } } };
 const SORTABLE_ITEM = 'oa-sortable-item';
 
 export enum AxisFlag {
@@ -60,6 +61,7 @@ export interface Clone {
   width: number;
   height: number;
   display: string | null;
+  currentSortable: Sortable;
 };
 
 export const utils = {
@@ -73,11 +75,8 @@ export const utils = {
     element.style.display = clone.display;
   },
   closest(node: Node | null, selector: string, rootNode: Node) {
-    let valid = false;
-    while (!valid && node !== null && node !== rootNode &&
-      node !== document) {
-      valid = matchesSelector(node, selector);
-      if (valid) {
+    while (node && node !== rootNode && node !== document) {
+      if (matchesSelector(node, selector)) {
         return node;
       }
       node = node.parentNode;
@@ -87,26 +86,36 @@ export const utils = {
   getViewModel(element: SortableItemElement): SortableItem {
     return element.au[SORTABLE_ITEM].viewModel;
   },
-  moveItem(fromSortable: Sortable, toVM: SortableItem): boolean {
-    const fromVM = fromSortable.clone.viewModel;
+  moveItem(clone: Clone, toVM: SortableItem): boolean {
+    const fromSortable = clone.currentSortable;
+    let toSortable = toVM.parentSortable;
+    const fromVM = clone.viewModel;
     if (!fromVM) {
       return false;
     }
-    const toItem = toVM.item;
     const fromItem = fromVM.item;
-    if (toItem === fromItem) {
-      return false;
-    }
+    const toItem = toVM.item;
     if ((fromVM.typeFlag & toVM.typeFlag) === 0) {
       return false;
     }
-
+    if (fromSortable.sortableDepth !== toSortable.sortableDepth) {
+      if (fromSortable.sortableDepth !== toVM.childSortable.sortableDepth) {
+        return false;
+      }
+      toSortable = toVM.childSortable;
+    }
     const fromItems = fromSortable.items;
     const fromIx = fromItems.indexOf(fromItem);
-    const toItems = toVM.parentList.items;
-    const toIx = toItems.indexOf(toItem);
+    const toItems = toSortable.items;
+    let toIx = toItems.indexOf(toItem);
+    if (toIx === -1) {
+      toIx = 0;
+    }
     const removedFromItem = fromItems.splice(fromIx, 1)[0];
     toItems.splice(toIx, 0, removedFromItem);
+    if (fromItems.indexOf(fromItem) === -1) {
+      clone.currentSortable = toSortable;
+    }
     return true;
   },
   pointInside({ top, right, bottom, left }: Rect, {x, y }: Point) {
@@ -227,10 +236,10 @@ export const utils = {
     } else if (y <= top - scrollSensitivity) {
       direction.y = -1;
     }
-    if (axisBitFlag & AxisFlag.x) {
+    if ((axisBitFlag & AxisFlag.xy) === 0 && axisBitFlag & AxisFlag.x) {
       direction.y = 0;
     }
-    if (axisBitFlag & AxisFlag.y) {
+    if ((axisBitFlag & AxisFlag.xy) === 0 && axisBitFlag & AxisFlag.y) {
       direction.x = 0;
     }
     return direction;
@@ -264,5 +273,13 @@ export const utils = {
       default:
         return AxisFlag.xy;
     }
+  },
+  getSortableDepth(sortable: Sortable) {
+    let depth = 0;
+    while (sortable.parentSortable) {
+      ++depth;
+      sortable = sortable.parentSortable;
+    }
+    return depth;
   }
 };
