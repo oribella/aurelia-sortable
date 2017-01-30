@@ -1,15 +1,32 @@
 <template>
+  <style>
+    ul {
+      padding: 8px;
+      margin: 0;
+      list-style: none;
+    }
+    li {
+      box-sizing: border-box;
+      list-style: none;
+    }
+    li div {
+      margin: 8px 0px;
+      border: 1px solid #999;
+      line-height: 5rem;
+      text-align: center;
+    }
+  </style>
   <ul oa-sortable="items.bind: groups;">
     <li
       repeat.for="group of groups"
-      oa-sortable-item="item.bind: group;"
+      oa-sortable-item="item.bind: group; type.bind: group.type"
       draggable="false">
       <div>
       ${group.name}
-        <ul oa-sortable="items.bind: group.items;">
+        <ul oa-sortable="items.bind: group.items; type.bind: group.type">
           <li
             repeat.for="item of group.items"
-            oa-sortable-item="item.bind: item;"
+            oa-sortable-item="item.bind: item; type.bind: item.type"
             draggable="false">
             <div>${item.name}</div>
         </ul>

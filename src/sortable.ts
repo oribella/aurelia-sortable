@@ -40,6 +40,8 @@ export class Sortable {
     return true;
   }
   @bindable public allowMove = (_: { item: SortableItemElement }) => { return true; };
+  @bindable public type: string = '1';
+  public typeFlag: number;
 
   private scrollListener: Element | Document;
   private removeListener: () => void;
@@ -91,6 +93,7 @@ export class Sortable {
   }
   public bind() {
     this.axisFlag = utils.ensureAxisFlag(this.axis);
+    this.typeFlag = utils.ensureTypeFlag(this.type);
   }
   private tryScroll(client: Point) {
     const scrollElement = this.scroll as Element;
@@ -171,7 +174,8 @@ export class Sortable {
 @inject(DOM.Element, OptionalParent.of(Sortable))
 export class SortableItem {
   @bindable public item: any = null;
-  @bindable public typeFlag: number = 1;
+  @bindable public type: string = '1';
+  public typeFlag: number;
   public childSortable: Sortable;
   constructor(public element: Element, public parentSortable: Sortable) { }
   public attached() {
@@ -179,5 +183,8 @@ export class SortableItem {
     if (child) {
       this.childSortable = (child as SortableElement).au[SORTABLE].viewModel;
     }
+  }
+  public bind() {
+    this.typeFlag = utils.ensureTypeFlag(this.type);
   }
 }

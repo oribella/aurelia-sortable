@@ -95,14 +95,14 @@ export const utils = {
     }
     const fromItem = fromVM.item;
     const toItem = toVM.item;
-    if ((fromVM.typeFlag & toVM.typeFlag) === 0) {
-      return false;
-    }
     if (fromSortable.sortableDepth !== toSortable.sortableDepth) {
       if (fromSortable.sortableDepth !== toVM.childSortable.sortableDepth) {
         return false;
       }
       toSortable = toVM.childSortable;
+    }
+    if ((fromVM.typeFlag & toSortable.typeFlag) === 0) {
+      return false;
     }
     const fromItems = fromSortable.items;
     const fromIx = fromItems.indexOf(fromItem);
@@ -282,6 +282,9 @@ export const utils = {
       default:
         return AxisFlag.xy;
     }
+  },
+  ensureTypeFlag(type: string): number {
+    return parseInt(type, 10);
   },
   getSortableDepth(sortable: Sortable) {
     let depth = 0;
