@@ -23,9 +23,13 @@ export interface Rect {
   height: number;
 }
 
-export interface ScrollOffset {
+export interface PageScrollOffset {
   pageXOffset: number;
   pageYOffset: number;
+}
+export interface ScrollOffset {
+  scrollLeft: number;
+  scrollTop: number;
 }
 export interface ScrollRect {
   scrollLeft: number;
@@ -86,7 +90,7 @@ export const utils = {
   getViewModel(element: SortableItemElement): SortableItem {
     return element.au[SORTABLE_ITEM].viewModel;
   },
-  moveItem(clone: Clone, toVM: SortableItem): boolean {
+  move(clone: Clone, toVM: SortableItem): boolean {
     const fromSortable = clone.currentSortable;
     let toSortable = toVM.parentSortable;
     const fromVM = clone.viewModel;
@@ -118,7 +122,7 @@ export const utils = {
     }
     return true;
   },
-  pointInside({ top, right, bottom, left }: Rect, {x, y }: Point) {
+  pointInside({ top, right, bottom, left }: Rect, { x, y }: Point) {
     return x >= left &&
       x <= right &&
       y >= top &&
@@ -135,11 +139,11 @@ export const utils = {
     }
     return element;
   },
-  canThrottle(lastElementFromPointRect: Rect, { x, y }: Point, { pageXOffset, pageYOffset }: ScrollOffset) {
+  canThrottle(lastElementFromPointRect: Rect, { x, y }: Point, { pageXOffset, pageYOffset }: PageScrollOffset) {
     return lastElementFromPointRect &&
       utils.pointInside(lastElementFromPointRect, { x: x + pageXOffset, y: y + pageYOffset } as Point);
   },
-  addClone(clone: Clone, sortableElement: HTMLElement, scrollElement: Element, target: HTMLElement, client: Point, dragZIndex: number, { pageXOffset, pageYOffset }: ScrollOffset) {
+  addClone(clone: Clone, sortableElement: HTMLElement, scrollElement: Element, target: HTMLElement, client: Point, dragZIndex: number, { pageXOffset, pageYOffset }: PageScrollOffset) {
     const targetRect = target.getBoundingClientRect();
     const offset = { left: 0, top: 0 };
     if (sortableElement.contains(scrollElement)) {
@@ -168,7 +172,7 @@ export const utils = {
     clone.element.style.top = clone.position.y + 'px';
     clone.parent.appendChild(clone.element);
   },
-  updateClone(clone: Clone, currentClientPoint: Point, { pageXOffset, pageYOffset }: ScrollOffset, axisBitFlag: number) {
+  updateClone(clone: Clone, currentClientPoint: Point, { pageXOffset, pageYOffset }: PageScrollOffset, axisBitFlag: number) {
     if (!clone.element) {
       return;
     }
@@ -179,7 +183,6 @@ export const utils = {
       clone.position.y = currentClientPoint.y + clone.offset.y + pageYOffset;
     }
 
-    utils.ensureCloneBoundaries(clone);
     clone.element.style.left = clone.position.x + 'px';
     clone.element.style.top = clone.position.y + 'px';
   },
@@ -190,20 +193,6 @@ export const utils = {
     clone.parent.removeChild(clone.element);
     clone.element = null;
     clone.viewModel = null;
-  },
-  ensureCloneBoundaries(clone: Clone/*, { scrollWidth, scrollHeight}: ScrollDimension*/) {
-    if (clone.position.x <= 0) {
-      clone.position.x = 0;
-    }
-    // if (clone.position.x + clone.width >= scrollWidth) {
-    //   clone.position.x = scrollWidth - clone.width;
-    // }
-    if (clone.position.y <= 0) {
-      clone.position.y = 0;
-    }
-    // if (clone.position.y + clone.height >= scrollHeight) {
-    //   clone.position.y = scrollHeight - clone.height;
-    // }
   },
   ensureScroll(scroll: string | Element, sortableElement: Element): { scrollElement: Element, scrollListener: Element | Document } {
     let scrollElement = sortableElement;
@@ -219,12 +208,12 @@ export const utils = {
     }
     return { scrollElement, scrollListener };
   },
-  getBoundaryRect(/*sortableRect: Rect*/): Rect {
+  getBoundaryRect({ left, top, right, bottom }: Rect, { innerWidth, innerHeight}: WindowDimension): Rect {
     return {
-      left: 0, // Math.max(0, sortableRect.left),
-      top: 0, // Math.max(0, sortableRect.top),
-      right: window.innerWidth, // Math.min(window.innerWidth, sortableRect.right),
-      bottom: window.innerHeight, // Math.min(window.innerHeight, sortableRect.bottom),
+      left: Math.max(0, left),
+      top: Math.max(0, top),
+      right: Math.min(innerWidth, right),
+      bottom: Math.min(innerHeight, bottom),
       get width() {
         return this.right - this.left;
       },
@@ -260,15 +249,15 @@ export const utils = {
       return new Point(sortableRect.right + scrollLeft - innerWidth, sortableRect.bottom + scrollTop - innerHeight);
     }
   },
-  getScrollFrames(direction: ScrollDirection, maxPos: Point, { pageXOffset, pageYOffset }: ScrollOffset, scrollSpeed: number): ScrollFrames {
-    let x = Math.max(0, Math.ceil(Math.abs(maxPos.x - pageXOffset) / scrollSpeed));
-    let y = Math.max(0, Math.ceil(Math.abs(maxPos.y - pageYOffset) / scrollSpeed));
-    if (direction.x === 1 && pageXOffset >= maxPos.x ||
-      direction.x === -1 && pageXOffset === 0) {
+  getScrollFrames(direction: ScrollDirection, maxPos: Point, { scrollLeft, scrollTop }: ScrollOffset, scrollSpeed: number): ScrollFrames {
+    let x = Math.max(0, Math.ceil(Math.abs(maxPos.x - scrollLeft) / scrollSpeed));
+    let y = Math.max(0, Math.ceil(Math.abs(maxPos.y - scrollTop) / scrollSpeed));
+    if (direction.x === 1 && scrollLeft >= maxPos.x ||
+      direction.x === -1 && scrollLeft === 0) {
       x = 0;
     }
-    if (direction.y === 1 && pageYOffset >= maxPos.y ||
-      direction.y === -1 && pageYOffset === 0) {
+    if (direction.y === 1 && scrollTop >= maxPos.y ||
+      direction.y === -1 && scrollTop === 0) {
       y = 0;
     }
     return new Point(x, y);

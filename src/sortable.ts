@@ -3,7 +3,7 @@ import { customAttribute, bindable } from 'aurelia-templating';
 import { inject } from 'aurelia-dependency-injection';
 import { oribella, Swipe, Data, matchesSelector, RETURN_FLAG, Point } from 'oribella';
 import { OptionalParent } from './optional-parent';
-import { utils, SortableItemElement, SortableElement, Clone, Rect, ScrollOffset } from './utils';
+import { utils, SortableItemElement, SortableElement, Clone, Rect, PageScrollOffset } from './utils';
 import { AutoScroll } from './auto-scroll';
 
 export const SORTABLE = 'oa-sortable';
@@ -101,10 +101,10 @@ export class Sortable {
     const scrollSpeed = this.scrollSpeed;
     const scrollMaxPos = utils.getScrollMaxPos(this.element, this.sortableRect, scrollElement, { scrollLeft, scrollTop, scrollWidth, scrollHeight }, this.scrollRect, window);
     const scrollDirection = utils.getScrollDirection(this.axisFlag, this.scrollSensitivity, client, this.boundaryRect);
-    const scrollFrames = utils.getScrollFrames(scrollDirection, scrollMaxPos, { pageXOffset, pageYOffset }, scrollSpeed);
+    const scrollFrames = utils.getScrollFrames(scrollDirection, scrollMaxPos, { scrollLeft, scrollTop }, scrollSpeed);
     this.autoScroll.activate({ scrollElement, scrollDirection, scrollFrames, scrollSpeed });
   }
-  private tryMove(point: Point, scrollOffset: ScrollOffset) {
+  private tryMove(point: Point, scrollOffset: PageScrollOffset) {
     if (utils.canThrottle(this.lastElementFromPointRect, point, scrollOffset)) {
       return;
     }
@@ -117,7 +117,7 @@ export class Sortable {
     if (!this.allowMove({ item })) {
       return;
     }
-    if (utils.moveItem(this.clone, vm)) {
+    if (utils.move(this.clone, vm)) {
       if (this.clone.currentSortable !== this) {
         this.lastElementFromPointRect = { left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0 };
         return;
@@ -125,7 +125,7 @@ export class Sortable {
       this.lastElementFromPointRect = element.getBoundingClientRect();
     }
   }
-  private trySort(point: Point, scrollOffset: ScrollOffset) {
+  private trySort(point: Point, scrollOffset: PageScrollOffset) {
     utils.hideClone(this.clone);
     this.tryMove(point, scrollOffset);
     utils.showClone(this.clone);
@@ -149,7 +149,7 @@ export class Sortable {
   }
   public start(_: Event, { pointers: [{ client }]}: Data, target: HTMLElement) {
     utils.addClone(this.clone, this.element as HTMLElement, this.scroll as Element, target, this.downClientPoint, this.dragZIndex, window);
-    this.boundaryRect = utils.getBoundaryRect(/*this.sortableRect*/);
+    this.boundaryRect = utils.getBoundaryRect(this.sortableRect, window);
     this.tryScroll(client);
   }
   public update(_: Event, { pointers: [{ client }]}: Data, __: Element) {
