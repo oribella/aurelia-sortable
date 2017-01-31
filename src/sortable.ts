@@ -59,8 +59,8 @@ export class Sortable {
     currentSortable: this
   };
   private boundaryRect: Rect;
-  private sortableRect: Rect;
   private scrollRect: Rect;
+  private rootSortableRect: Rect;
   private axisFlag: number = 0;
   private lastElementFromPointRect: Rect;
   public sortableDepth: number = -1;
@@ -99,7 +99,7 @@ export class Sortable {
     const scrollElement = this.scroll as Element;
     const { scrollLeft, scrollTop, scrollWidth, scrollHeight } = scrollElement;
     const scrollSpeed = this.scrollSpeed;
-    const scrollMaxPos = utils.getScrollMaxPos(this.element, this.sortableRect, scrollElement, { scrollLeft, scrollTop, scrollWidth, scrollHeight }, this.scrollRect, window);
+    const scrollMaxPos = utils.getScrollMaxPos(this.element, this.rootSortableRect, scrollElement, { scrollLeft, scrollTop, scrollWidth, scrollHeight }, this.scrollRect, window);
     const scrollDirection = utils.getScrollDirection(this.axisFlag, this.scrollSensitivity, client, this.boundaryRect);
     scrollMaxPos.x = scrollDirection.x === -1 ? 0 : scrollMaxPos.x;
     scrollMaxPos.y = scrollDirection.y === -1 ? 0 : scrollMaxPos.y;
@@ -142,8 +142,8 @@ export class Sortable {
     if (this.allowDrag({ event, item })) {
       event.preventDefault();
       this.downClientPoint = client;
-      this.sortableRect = this.element.getBoundingClientRect();
       this.scrollRect = (this.scroll as Element).getBoundingClientRect();
+      this.rootSortableRect = (utils.getRootSortable(this)).element.getBoundingClientRect();
       this.lastElementFromPointRect = element.getBoundingClientRect();
       return RETURN_FLAG.IDLE;
     }
@@ -151,7 +151,7 @@ export class Sortable {
   }
   public start(_: Event, { pointers: [{ client }]}: Data, target: HTMLElement) {
     utils.addClone(this.clone, this.element as HTMLElement, this.scroll as Element, target, this.downClientPoint, this.dragZIndex, window);
-    this.boundaryRect = utils.getBoundaryRect(this.sortableRect, window);
+    this.boundaryRect = utils.getBoundaryRect(this.rootSortableRect, window);
     this.tryScroll(client);
   }
   public update(_: Event, { pointers: [{ client }]}: Data, __: Element) {

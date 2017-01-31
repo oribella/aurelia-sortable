@@ -282,5 +282,11 @@ export const utils = {
       sortable = sortable.parentSortable;
     }
     return depth;
+  },
+  getRootSortable(sortable: Sortable) {
+    while (sortable.parentSortable) {
+      sortable = sortable.parentSortable;
+    }
+    return sortable;
   }
 };
