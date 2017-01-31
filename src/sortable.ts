@@ -101,6 +101,8 @@ export class Sortable {
     const scrollSpeed = this.scrollSpeed;
     const scrollMaxPos = utils.getScrollMaxPos(this.element, this.sortableRect, scrollElement, { scrollLeft, scrollTop, scrollWidth, scrollHeight }, this.scrollRect, window);
     const scrollDirection = utils.getScrollDirection(this.axisFlag, this.scrollSensitivity, client, this.boundaryRect);
+    scrollMaxPos.x = scrollDirection.x === -1 ? 0 : scrollMaxPos.x;
+    scrollMaxPos.y = scrollDirection.y === -1 ? 0 : scrollMaxPos.y;
     const scrollFrames = utils.getScrollFrames(scrollDirection, scrollMaxPos, { scrollLeft, scrollTop }, scrollSpeed);
     this.autoScroll.activate({ scrollElement, scrollDirection, scrollFrames, scrollSpeed });
   }
