@@ -109,7 +109,7 @@ export class Sortable {
     if (utils.canThrottle(this.lastElementFromPointRect, point, scrollOffset)) {
       return;
     }
-    const element = utils.elementFromPoint(point, this.selector, this.element);
+    const element = utils.elementFromPoint(point, this.selector, this.element, this.dragClone, this.axisFlag);
     if (!element) {
       return;
     }

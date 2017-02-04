@@ -136,7 +136,13 @@ export const utils = {
       y >= top &&
       y <= bottom;
   },
-  elementFromPoint({ x, y }: Point, selector: string, sortableElement: Element) {
+  elementFromPoint({ x, y }: Point, selector: string, sortableElement: Element, dragClone: DragClone, axisFlag: AxisFlag) {
+    if (axisFlag === AxisFlag.x) {
+      y = (dragClone.position.y + dragClone.height) / 2;
+    }
+    if (axisFlag === AxisFlag.y) {
+      x = (dragClone.position.x + dragClone.width) / 2;
+    }
     let element = document.elementFromPoint(x, y);
     if (!element) {
       return null;
@@ -180,14 +186,14 @@ export const utils = {
     dragClone.element.style.top = dragClone.position.y + 'px';
     dragClone.parent.appendChild(dragClone.element);
   },
-  updateDragClone(dragClone: DragClone, currentClientPoint: Point, { pageXOffset, pageYOffset }: PageScrollOffset, axisBitFlag: number) {
+  updateDragClone(dragClone: DragClone, currentClientPoint: Point, { pageXOffset, pageYOffset }: PageScrollOffset, axisFlag: number) {
     if (!dragClone.element) {
       return;
     }
-    if (axisBitFlag & AxisFlag.x) {
+    if (axisFlag & AxisFlag.x) {
       dragClone.position.x = currentClientPoint.x + dragClone.offset.x + pageXOffset;
     }
-    if (axisBitFlag & AxisFlag.y) {
+    if (axisFlag & AxisFlag.y) {
       dragClone.position.y = currentClientPoint.y + dragClone.offset.y + pageYOffset;
     }
 
@@ -230,7 +236,7 @@ export const utils = {
       }
     };
   },
-  getScrollDirection(axisBitFlag: number, scrollSensitivity: number, { x, y }: Point, { left, top, right, bottom }: Rect): ScrollDirection {
+  getScrollDirection(axisFlag: number, scrollSensitivity: number, { x, y }: Point, { left, top, right, bottom }: Rect): ScrollDirection {
     const direction: ScrollDirection = { x: 0, y: 0 };
     if (x >= right - scrollSensitivity) {
       direction.x = 1;
@@ -242,10 +248,10 @@ export const utils = {
     } else if (y <= top - scrollSensitivity) {
       direction.y = -1;
     }
-    if ((axisBitFlag & AxisFlag.xy) === 0 && axisBitFlag & AxisFlag.x) {
+    if (axisFlag === AxisFlag.x) {
       direction.y = 0;
     }
-    if ((axisBitFlag & AxisFlag.xy) === 0 && axisBitFlag & AxisFlag.y) {
+    if (axisFlag === AxisFlag.y) {
       direction.x = 0;
     }
     return direction;
