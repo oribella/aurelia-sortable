@@ -1,5 +1,5 @@
 import { Point, matchesSelector } from 'oribella-framework';
-import { Sortable, SortableItem } from './sortable';
+import { Sortable, SortableItem, SORTABLE, SORTABLE_ATTR } from './sortable';
 
 export type SortableItemElement = HTMLElement & { au: { [index: string]: { viewModel: SortableItem } } };
 export type SortableElement = HTMLElement & { au: { [index: string]: { viewModel: Sortable } } };
@@ -9,6 +9,11 @@ export enum AxisFlag {
   x = 1,
   y = 2,
   xy = 3
+}
+export enum LockedFlag {
+  from = 1,
+  to = 2,
+  fromto = 3
 }
 export interface WindowDimension {
   innerWidth: number;
@@ -56,7 +61,7 @@ export interface ScrollData {
   scrollSpeed: number;
 }
 
-export interface Clone {
+export interface DragClone {
   parent: HTMLElement;
   viewModel: SortableItem | null;
   element: HTMLElement | null;
@@ -69,14 +74,14 @@ export interface Clone {
 };
 
 export const utils = {
-  hideClone(clone: Clone) {
-    const element = clone.element as HTMLElement;
-    clone.display = element.style.display;
+  hideDragClone(dragClone: DragClone) {
+    const element = dragClone.element as HTMLElement;
+    dragClone.display = element.style.display;
     element.style.display = 'none';
   },
-  showClone(clone: Clone) {
-    const element = clone.element as HTMLElement;
-    element.style.display = clone.display;
+  showDragClone(dragClone: DragClone) {
+    const element = dragClone.element as HTMLElement;
+    element.style.display = dragClone.display;
   },
   closest(node: Node | null, selector: string, rootNode: Node) {
     while (node && node !== rootNode && node !== document) {
@@ -90,16 +95,19 @@ export const utils = {
   getViewModel(element: SortableItemElement): SortableItem {
     return element.au[SORTABLE_ITEM].viewModel;
   },
-  move(clone: Clone, toVM: SortableItem): boolean {
-    const fromSortable = clone.currentSortable;
+  move(dragClone: DragClone, toVM: SortableItem): boolean {
+    const fromSortable = dragClone.currentSortable;
     let toSortable = toVM.parentSortable;
-    const fromVM = clone.viewModel;
+    const fromVM = dragClone.viewModel;
     if (!fromVM) {
+      return false;
+    }
+    if (typeof toVM.lockedFlag === 'number' && (toVM.lockedFlag & LockedFlag.to) !== 0) {
       return false;
     }
     const fromItem = fromVM.item;
     const toItem = toVM.item;
-    if (fromSortable.sortableDepth !== toSortable.sortableDepth) {
+    if (toVM.childSortable && fromSortable.sortableDepth !== toSortable.sortableDepth) {
       if (fromSortable.sortableDepth !== toVM.childSortable.sortableDepth) {
         return false;
       }
@@ -118,7 +126,7 @@ export const utils = {
     const removedFromItem = fromItems.splice(fromIx, 1)[0];
     toItems.splice(toIx, 0, removedFromItem);
     if (fromItems.indexOf(fromItem) === -1) {
-      clone.currentSortable = toSortable;
+      dragClone.currentSortable = toSortable;
     }
     return true;
   },
@@ -143,7 +151,7 @@ export const utils = {
     return lastElementFromPointRect &&
       utils.pointInside(lastElementFromPointRect, { x: x + pageXOffset, y: y + pageYOffset } as Point);
   },
-  addClone(clone: Clone, sortableElement: HTMLElement, scrollElement: Element, target: HTMLElement, client: Point, dragZIndex: number, { pageXOffset, pageYOffset }: PageScrollOffset) {
+  addDragClone(dragClone: DragClone, sortableElement: HTMLElement, scrollElement: Element, target: HTMLElement, client: Point, dragZIndex: number, { pageXOffset, pageYOffset }: PageScrollOffset) {
     const targetRect = target.getBoundingClientRect();
     const offset = { left: 0, top: 0 };
     if (sortableElement.contains(scrollElement)) {
@@ -154,45 +162,45 @@ export const utils = {
         sortableElement = sortableElement.offsetParent as HTMLElement;
       }
     }
-    clone.width = targetRect.width;
-    clone.height = targetRect.height;
-    clone.viewModel = utils.getViewModel(target as SortableItemElement);
-    clone.element = target.cloneNode(true) as HTMLElement;
-    clone.element.style.position = 'absolute';
-    clone.element.style.width = targetRect.width + 'px';
-    clone.element.style.height = targetRect.height + 'px';
-    clone.element.style.pointerEvents = 'none';
-    clone.element.style.margin = 0 + '';
-    clone.element.style.zIndex = dragZIndex + '';
-    clone.position.x = targetRect.left + pageXOffset - offset.left;
-    clone.position.y = targetRect.top + pageYOffset - offset.top;
-    clone.offset.x = clone.position.x - client.x - pageXOffset;
-    clone.offset.y = clone.position.y - client.y - pageYOffset;
-    clone.element.style.left = clone.position.x + 'px';
-    clone.element.style.top = clone.position.y + 'px';
-    clone.parent.appendChild(clone.element);
+    dragClone.width = targetRect.width;
+    dragClone.height = targetRect.height;
+    dragClone.viewModel = utils.getViewModel(target as SortableItemElement);
+    dragClone.element = target.cloneNode(true) as HTMLElement;
+    dragClone.element.style.position = 'absolute';
+    dragClone.element.style.width = targetRect.width + 'px';
+    dragClone.element.style.height = targetRect.height + 'px';
+    dragClone.element.style.pointerEvents = 'none';
+    dragClone.element.style.margin = 0 + '';
+    dragClone.element.style.zIndex = dragZIndex + '';
+    dragClone.position.x = targetRect.left + pageXOffset - offset.left;
+    dragClone.position.y = targetRect.top + pageYOffset - offset.top;
+    dragClone.offset.x = dragClone.position.x - client.x - pageXOffset;
+    dragClone.offset.y = dragClone.position.y - client.y - pageYOffset;
+    dragClone.element.style.left = dragClone.position.x + 'px';
+    dragClone.element.style.top = dragClone.position.y + 'px';
+    dragClone.parent.appendChild(dragClone.element);
   },
-  updateClone(clone: Clone, currentClientPoint: Point, { pageXOffset, pageYOffset }: PageScrollOffset, axisBitFlag: number) {
-    if (!clone.element) {
+  updateDragClone(dragClone: DragClone, currentClientPoint: Point, { pageXOffset, pageYOffset }: PageScrollOffset, axisBitFlag: number) {
+    if (!dragClone.element) {
       return;
     }
     if (axisBitFlag & AxisFlag.x) {
-      clone.position.x = currentClientPoint.x + clone.offset.x + pageXOffset;
+      dragClone.position.x = currentClientPoint.x + dragClone.offset.x + pageXOffset;
     }
     if (axisBitFlag & AxisFlag.y) {
-      clone.position.y = currentClientPoint.y + clone.offset.y + pageYOffset;
+      dragClone.position.y = currentClientPoint.y + dragClone.offset.y + pageYOffset;
     }
 
-    clone.element.style.left = clone.position.x + 'px';
-    clone.element.style.top = clone.position.y + 'px';
+    dragClone.element.style.left = dragClone.position.x + 'px';
+    dragClone.element.style.top = dragClone.position.y + 'px';
   },
-  removeClone(clone: Clone) {
-    if (!clone.element) {
+  removeDragClone(dragClone: DragClone) {
+    if (!dragClone.element) {
       return;
     }
-    clone.parent.removeChild(clone.element);
-    clone.element = null;
-    clone.viewModel = null;
+    dragClone.parent.removeChild(dragClone.element);
+    dragClone.element = null;
+    dragClone.viewModel = null;
   },
   ensureScroll(scroll: string | Element, sortableElement: Element): { scrollElement: Element, scrollListener: Element | Document } {
     let scrollElement = sortableElement;
@@ -288,5 +296,9 @@ export const utils = {
       sortable = sortable.parentSortable;
     }
     return sortable;
+  },
+  getChildSortables(rootSortable: Sortable) {
+    const elements = rootSortable.element.querySelectorAll(`${SORTABLE_ATTR}`);
+    return Array.from(elements).map((e) => (e as SortableElement).au[SORTABLE].viewModel);
   }
 };

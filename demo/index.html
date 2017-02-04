@@ -2,7 +2,13 @@
 <html>
   <head>
    <meta charset="utf-8">
+   <link rel="stylesheet" href="https://unpkg.com/leonardo-ui@1.0.2/dist/leonardo-ui.min.css" type="text/css"/>
    <style type="text/css">
+    @font-face {
+      font-family: "LUI icons";
+      src: url(https://unpkg.com/leonardo-ui@1.0.2/dist/lui-icons.woff) format('woff'),
+        url(https://unpkg.com/leonardo-ui@1.0.2/dist/lui-icons.ttf) format('truetype');
+    }
     html, body {
       padding: 8px;
       margin: 0;
@@ -10,9 +16,85 @@
     * {
       user-select: none;
     }
+    .groups {
+      width: 248px;
+      margin: 0 auto;
+    }
+    .group-container {
+      padding: 4px 0px;
+    }
+    .group {
+      width: 100%;
+      padding: 4px;
+    }
+    .lui-list .lui-list__header.lui-disabled {
+      color: rgba(89,89,89,.3);
+      background-color: transparent;
+    }
+    .locked-text {
+      font-size: 10px;
+    }
+    li {
+      list-style: none;
+    }
+    .locked:hover, .trigger-locked {
+      -webkit-animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+              animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+      -webkit-transform: translate3d(0, 0, 0);
+              transform: translate3d(0, 0, 0);
+      -webkit-backface-visibility: hidden;
+              backface-visibility: hidden;
+      -webkit-perspective: 1000px;
+              perspective: 1000px;
+    }
+
+    @-webkit-keyframes shake {
+      10%, 90% {
+        -webkit-transform: translate3d(-1px, 0, 0);
+                transform: translate3d(-1px, 0, 0);
+      }
+
+      20%, 80% {
+        -webkit-transform: translate3d(2px, 0, 0);
+                transform: translate3d(2px, 0, 0);
+      }
+
+      30%, 50%, 70% {
+        -webkit-transform: translate3d(-4px, 0, 0);
+                transform: translate3d(-4px, 0, 0);
+      }
+
+      40%, 60% {
+        -webkit-transform: translate3d(4px, 0, 0);
+                transform: translate3d(4px, 0, 0);
+      }
+    }
+
+    @keyframes shake {
+      10%, 90% {
+        -webkit-transform: translate3d(-1px, 0, 0);
+                transform: translate3d(-1px, 0, 0);
+      }
+
+      20%, 80% {
+        -webkit-transform: translate3d(2px, 0, 0);
+                transform: translate3d(2px, 0, 0);
+      }
+
+      30%, 50%, 70% {
+        -webkit-transform: translate3d(-4px, 0, 0);
+                transform: translate3d(-4px, 0, 0);
+      }
+
+      40%, 60% {
+        -webkit-transform: translate3d(4px, 0, 0);
+                transform: translate3d(4px, 0, 0);
+      }
+    }
    </style>
   </head>
   <body aurelia-app="main">
     <script src="dist/main.js"></script>
+    <script src="https://unpkg.com/leonardo-ui@1.0.2/dist/leonardo-ui.js"></script>
   </body>
 </html>

@@ -3,7 +3,7 @@ import { customAttribute, bindable } from 'aurelia-templating';
 import { inject } from 'aurelia-dependency-injection';
 import { oribella, Swipe, Data, matchesSelector, RETURN_FLAG, Point } from 'oribella';
 import { OptionalParent } from './optional-parent';
-import { utils, SortableItemElement, SortableElement, Clone, Rect, PageScrollOffset } from './utils';
+import { utils, SortableItemElement, SortableElement, DragClone, Rect, PageScrollOffset, AxisFlag, LockedFlag } from './utils';
 import { AutoScroll } from './auto-scroll';
 
 export const SORTABLE = 'oa-sortable';
@@ -16,15 +16,15 @@ export const SORTABLE_ITEM_ATTR = `[${SORTABLE_ITEM}]`;
 export class Sortable {
   @bindable public items: any = [];
   @bindable public scroll: string | Element = 'document';
-  @bindable public scrollSpeed = 10;
-  @bindable public scrollSensitivity = 10;
-  @bindable public sortingClass = 'oa-sorting';
-  @bindable public draggingClass = 'oa-dragging';
-  @bindable public dragZIndex = 1;
-  @bindable public axis = '';
-  @bindable public moved = () => { };
-  @bindable public disallowedDragSelectors = ['INPUT', 'SELECT', 'TEXTAREA'];
-  @bindable public allowedDragSelectors = [];
+  @bindable public scrollSpeed: number = 10;
+  @bindable public scrollSensitivity: number = 10;
+  @bindable public axisFlag: number = AxisFlag.xy;
+  @bindable public moved: () => void = () => { };
+  @bindable public dragClass: string = 'oa-drag';
+  @bindable public dragZIndex: number = 1;
+  @bindable public disallowedDragSelectors: string[] = ['INPUT', 'SELECT', 'TEXTAREA'];
+  @bindable public allowedDragSelector: string = '';
+  @bindable public allowedDragSelectors: string[] = [];
   @bindable public allowDrag = ({ event }: { event: Event, item: SortableItem }) => {
     const target = (event.target as HTMLElement);
     if (this.allowedDragSelectors.length &&
@@ -40,14 +40,9 @@ export class Sortable {
     return true;
   }
   @bindable public allowMove = (_: { item: SortableItemElement }) => { return true; };
-  @bindable public type: string = '1';
-  public typeFlag: number;
+  @bindable public typeFlag: number = 1;
 
-  private scrollListener: Element | Document;
-  private removeListener: () => void;
-  private downClientPoint: Point = new Point(0, 0);
-  private currentClientPoint: Point = new Point(0, 0);
-  public clone: Clone = {
+  public dragClone: DragClone = {
     parent: window.document.body,
     viewModel: null,
     element: null,
@@ -58,13 +53,21 @@ export class Sortable {
     display: null,
     currentSortable: this
   };
+  public sortableDepth: number = -1;
+  public isDisabled: boolean = false;
+  public selector: string = SORTABLE_ITEM_ATTR;
+
+
+  private scrollListener: Element | Document;
+  private removeListener: () => void;
+  private downClientPoint: Point = new Point(0, 0);
+  private currentClientPoint: Point = new Point(0, 0);
   private boundaryRect: Rect;
   private scrollRect: Rect;
+  private rootSortable: Sortable;
   private rootSortableRect: Rect;
-  private axisFlag: number = 0;
+  private childSortables: Sortable[];
   private lastElementFromPointRect: Rect;
-  public sortableDepth: number = -1;
-  public selector: string = SORTABLE_ITEM_ATTR;
 
   constructor(public element: Element, public parentSortable: Sortable, private autoScroll: AutoScroll) {
     this.sortableDepth = utils.getSortableDepth(this);
@@ -82,7 +85,7 @@ export class Sortable {
     this.scrollListener.removeEventListener('scroll', this as any, false);
   }
   public handleEvent() {
-    utils.updateClone(this.clone, this.currentClientPoint, window, this.axisFlag);
+    utils.updateDragClone(this.dragClone, this.currentClientPoint, window, this.axisFlag);
     this.tryMove(this.currentClientPoint, window);
   }
   public attached() {
@@ -90,10 +93,6 @@ export class Sortable {
   }
   public detached() {
     this.deactivate();
-  }
-  public bind() {
-    this.axisFlag = utils.ensureAxisFlag(this.axis);
-    this.typeFlag = utils.ensureTypeFlag(this.type);
   }
   private tryScroll(client: Point) {
     const scrollElement = this.scroll as Element;
@@ -119,8 +118,8 @@ export class Sortable {
     if (!this.allowMove({ item })) {
       return;
     }
-    if (utils.move(this.clone, vm)) {
-      if (this.clone.currentSortable !== this) {
+    if (utils.move(this.dragClone, vm)) {
+      if (this.dragClone.currentSortable !== this) {
         this.lastElementFromPointRect = { left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0 };
         return;
       }
@@ -128,35 +127,48 @@ export class Sortable {
     }
   }
   private trySort(point: Point, scrollOffset: PageScrollOffset) {
-    utils.hideClone(this.clone);
+    utils.hideDragClone(this.dragClone);
     this.tryMove(point, scrollOffset);
-    utils.showClone(this.clone);
+    utils.showDragClone(this.dragClone);
+  }
+  private isLockedFrom(fromVM: SortableItem): boolean {
+    return typeof fromVM.lockedFlag === 'number' && (fromVM.lockedFlag & LockedFlag.from) !== 0;
+  }
+  private isClosestSortable(target: Node): boolean {
+    const closest = utils.closest(target, SORTABLE_ATTR, window.document);
+    return closest === this.element;
+  }
+  private initDragState(client: Point, element: Element, fromVM: SortableItem) {
+    this.downClientPoint = client;
+    this.scrollRect = (this.scroll as Element).getBoundingClientRect();
+    this.rootSortable = utils.getRootSortable(this);
+    this.rootSortableRect = this.rootSortable.element.getBoundingClientRect();
+    this.childSortables = utils.getChildSortables(this.rootSortable);
+    this.childSortables.forEach((s) => s.isDisabled = (this.sortableDepth !== s.sortableDepth || (fromVM.typeFlag & s.typeFlag) === 0));
+    this.boundaryRect = utils.getBoundaryRect(this.rootSortableRect, window);
+    this.lastElementFromPointRect = element.getBoundingClientRect();
+    this.dragClone.currentSortable = this;
   }
   public down(event: Event, { pointers: [{ client }]}: Data, element: Element) {
-    const target = event.target as Node;
-    const closest = utils.closest(target, SORTABLE_ATTR, window.document);
-    if (closest !== this.element) {
+    if (!this.isClosestSortable(event.target as Node)) {
       return RETURN_FLAG.REMOVE;
     }
-    const item = utils.getViewModel(element as SortableItemElement).item;
-    if (this.allowDrag({ event, item })) {
+    const fromVM = utils.getViewModel(element as SortableItemElement);
+    const item = fromVM.item;
+    if (!this.isLockedFrom(fromVM) && this.allowDrag({ event, item })) {
       event.preventDefault();
-      this.downClientPoint = client;
-      this.scrollRect = (this.scroll as Element).getBoundingClientRect();
-      this.rootSortableRect = (utils.getRootSortable(this)).element.getBoundingClientRect();
-      this.lastElementFromPointRect = element.getBoundingClientRect();
+      this.initDragState(client, element, fromVM);
       return RETURN_FLAG.IDLE;
     }
     return RETURN_FLAG.REMOVE;
   }
   public start(_: Event, { pointers: [{ client }]}: Data, target: HTMLElement) {
-    utils.addClone(this.clone, this.element as HTMLElement, this.scroll as Element, target, this.downClientPoint, this.dragZIndex, window);
-    this.boundaryRect = utils.getBoundaryRect(this.rootSortableRect, window);
+    utils.addDragClone(this.dragClone, this.element as HTMLElement, this.scroll as Element, target, this.downClientPoint, this.dragZIndex, window);
     this.tryScroll(client);
   }
   public update(_: Event, { pointers: [{ client }]}: Data, __: Element) {
     this.currentClientPoint = client;
-    utils.updateClone(this.clone, client, window, this.axisFlag);
+    utils.updateDragClone(this.dragClone, client, window, this.axisFlag);
     this.trySort(client, window);
     this.tryScroll(client);
   }
@@ -167,8 +179,9 @@ export class Sortable {
     this.stop();
   }
   public stop() {
-    utils.removeClone(this.clone);
+    utils.removeDragClone(this.dragClone);
     this.autoScroll.deactivate();
+    this.childSortables.forEach((s) => s.isDisabled = false);
   }
 }
 
@@ -176,8 +189,8 @@ export class Sortable {
 @inject(DOM.Element, OptionalParent.of(Sortable))
 export class SortableItem {
   @bindable public item: any = null;
-  @bindable public type: string = '1';
-  public typeFlag: number;
+  @bindable public typeFlag: number = 1;
+  @bindable public lockedFlag: number = 0;
   public childSortable: Sortable;
   constructor(public element: Element, public parentSortable: Sortable) { }
   public attached() {
@@ -186,7 +199,10 @@ export class SortableItem {
       this.childSortable = (child as SortableElement).au[SORTABLE].viewModel;
     }
   }
-  public bind() {
-    this.typeFlag = utils.ensureTypeFlag(this.type);
+  get lockedFrom() {
+    return (this.lockedFlag & LockedFlag.from) !== 0;
+  }
+  get lockedTo() {
+    return (this.lockedFlag & LockedFlag.to) !== 0;
   }
 }
