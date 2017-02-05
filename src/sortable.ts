@@ -1,5 +1,6 @@
 import { DOM } from 'aurelia-pal';
 import { customAttribute, bindable } from 'aurelia-templating';
+import { Repeat } from 'aurelia-templating-resources';
 import { inject } from 'aurelia-dependency-injection';
 import { oribella, Swipe, Data, matchesSelector, RETURN_FLAG, Point } from 'oribella';
 import { OptionalParent } from './optional-parent';
@@ -10,6 +11,15 @@ export const SORTABLE = 'oa-sortable';
 export const SORTABLE_ATTR = `[${SORTABLE}]`;
 export const SORTABLE_ITEM = 'oa-sortable-item';
 export const SORTABLE_ITEM_ATTR = `[${SORTABLE_ITEM}]`;
+
+declare module 'aurelia-templating-resources' {
+  export interface Repeat {
+    viewFactory: {
+      isCaching: boolean;
+      setCacheSize: (first: string, second: boolean) => void;
+    };
+  }
+}
 
 @customAttribute(SORTABLE)
 @inject(DOM.Element, OptionalParent.of(Sortable), AutoScroll)
@@ -56,7 +66,6 @@ export class Sortable {
   public sortableDepth: number = -1;
   public isDisabled: boolean = false;
   public selector: string = SORTABLE_ITEM_ATTR;
-
 
   private scrollListener: Element | Document;
   private removeListener: () => void;
@@ -186,13 +195,17 @@ export class Sortable {
 }
 
 @customAttribute(SORTABLE_ITEM)
-@inject(DOM.Element, OptionalParent.of(Sortable))
+@inject(DOM.Element, OptionalParent.of(Sortable), Repeat)
 export class SortableItem {
   @bindable public item: any = null;
   @bindable public typeFlag: number = 1;
   @bindable public lockedFlag: number = 0;
   public childSortable: Sortable;
-  constructor(public element: Element, public parentSortable: Sortable) { }
+  constructor(public element: Element, public parentSortable: Sortable, repeat: Repeat) {
+    if (!repeat.viewFactory.isCaching) {
+      repeat.viewFactory.setCacheSize('*', true);
+    }
+  }
   public attached() {
     const child = this.element.querySelector(SORTABLE_ATTR);
     if (child) {
