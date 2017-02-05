@@ -138,10 +138,10 @@ export const utils = {
   },
   elementFromPoint({ x, y }: Point, selector: string, sortableElement: Element, dragClone: DragClone, axisFlag: AxisFlag) {
     if (axisFlag === AxisFlag.x) {
-      y = (dragClone.position.y + dragClone.height) / 2;
+      y = dragClone.position.y + dragClone.height / 2;
     }
     if (axisFlag === AxisFlag.y) {
-      x = (dragClone.position.x + dragClone.width) / 2;
+      x = dragClone.position.x + dragClone.width / 2;
     }
     let element = document.elementFromPoint(x, y);
     if (!element) {
