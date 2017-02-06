@@ -6,14 +6,19 @@ export type SortableElement = HTMLElement & { au: { [index: string]: { viewModel
 const SORTABLE_ITEM = 'oa-sortable-item';
 
 export enum AxisFlag {
-  x = 1,
-  y = 2,
-  xy = 3
+  X = 1,
+  Y = 2,
+  XY = 3
 }
 export enum LockedFlag {
-  from = 1,
-  to = 2,
-  fromto = 3
+  From = 1,
+  To = 2,
+  FromTo = 3
+}
+export enum MoveFlag {
+  Invalid = 0,
+  Valid = 1,
+  ValidNewList = 2
 }
 export interface WindowDimension {
   innerWidth: number;
@@ -70,7 +75,6 @@ export interface DragClone {
   width: number;
   height: number;
   display: string | null;
-  currentSortable: Sortable;
 };
 
 export const utils = {
@@ -95,26 +99,28 @@ export const utils = {
   getViewModel(element: SortableItemElement): SortableItem {
     return element.au[SORTABLE_ITEM].viewModel;
   },
-  move(dragClone: DragClone, toVM: SortableItem): boolean {
-    const fromSortable = dragClone.currentSortable;
-    let toSortable = toVM.parentSortable;
+  move(dragClone: DragClone, toVM: SortableItem): number {
+    let changedToSortable = false;
     const fromVM = dragClone.viewModel;
     if (!fromVM) {
-      return false;
+      return MoveFlag.Invalid;
     }
-    if (typeof toVM.lockedFlag === 'number' && (toVM.lockedFlag & LockedFlag.to) !== 0) {
-      return false;
+    if (typeof toVM.lockedFlag === 'number' && (toVM.lockedFlag & LockedFlag.To) !== 0) {
+      return MoveFlag.Invalid;
     }
+    const fromSortable = fromVM.parentSortable;
+    let toSortable = toVM.parentSortable;
     const fromItem = fromVM.item;
     const toItem = toVM.item;
     if (toVM.childSortable && fromSortable.sortableDepth !== toSortable.sortableDepth) {
       if (fromSortable.sortableDepth !== toVM.childSortable.sortableDepth) {
-        return false;
+        return MoveFlag.Invalid;
       }
       toSortable = toVM.childSortable;
+      changedToSortable = true;
     }
     if ((fromVM.typeFlag & toSortable.typeFlag) === 0) {
-      return false;
+      return MoveFlag.Invalid;
     }
     const fromItems = fromSortable.items;
     const fromIx = fromItems.indexOf(fromItem);
@@ -125,10 +131,11 @@ export const utils = {
     }
     const removedFromItem = fromItems.splice(fromIx, 1)[0];
     toItems.splice(toIx, 0, removedFromItem);
-    if (fromItems.indexOf(fromItem) === -1) {
-      dragClone.currentSortable = toSortable;
+    if (changedToSortable) {
+      fromVM.parentSortable = toSortable;
+      return MoveFlag.ValidNewList;
     }
-    return true;
+    return MoveFlag.Valid;
   },
   pointInside({ top, right, bottom, left }: Rect, { x, y }: Point) {
     return x >= left &&
@@ -137,10 +144,10 @@ export const utils = {
       y <= bottom;
   },
   elementFromPoint({ x, y }: Point, selector: string, sortableElement: Element, dragClone: DragClone, axisFlag: AxisFlag) {
-    if (axisFlag === AxisFlag.x) {
+    if (axisFlag === AxisFlag.X) {
       y = dragClone.position.y + dragClone.height / 2;
     }
-    if (axisFlag === AxisFlag.y) {
+    if (axisFlag === AxisFlag.Y) {
       x = dragClone.position.x + dragClone.width / 2;
     }
     let element = document.elementFromPoint(x, y);
@@ -190,10 +197,10 @@ export const utils = {
     if (!dragClone.element) {
       return;
     }
-    if (axisFlag & AxisFlag.x) {
+    if (axisFlag & AxisFlag.X) {
       dragClone.position.x = currentClientPoint.x + dragClone.offset.x + pageXOffset;
     }
-    if (axisFlag & AxisFlag.y) {
+    if (axisFlag & AxisFlag.Y) {
       dragClone.position.y = currentClientPoint.y + dragClone.offset.y + pageYOffset;
     }
 
@@ -248,10 +255,10 @@ export const utils = {
     } else if (y <= top - scrollSensitivity) {
       direction.y = -1;
     }
-    if (axisFlag === AxisFlag.x) {
+    if (axisFlag === AxisFlag.X) {
       direction.y = 0;
     }
-    if (axisFlag === AxisFlag.y) {
+    if (axisFlag === AxisFlag.Y) {
       direction.x = 0;
     }
     return direction;
@@ -279,11 +286,11 @@ export const utils = {
   ensureAxisFlag(axis: string): AxisFlag {
     switch (axis) {
       case 'x':
-        return AxisFlag.x;
+        return AxisFlag.X;
       case 'y':
-        return AxisFlag.y;
+        return AxisFlag.Y;
       default:
-        return AxisFlag.xy;
+        return AxisFlag.XY;
     }
   },
   ensureTypeFlag(type: string): number {
