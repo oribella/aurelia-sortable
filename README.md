@@ -23,7 +23,7 @@ npm run test
 ## Developing
 
 ```shell
-cd demo && npm run dev;
+npm run dev;
 ```
 
 ## Visual Studio Code

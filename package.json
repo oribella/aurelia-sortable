@@ -22,7 +22,8 @@
     "es2015": "npm run compile -- --module es2015 --outDir dist/es2015 --target es2015",
     "build": "npm-run-all -n clean --parallel commonjs amd system es2015",
     "build:demo": "npm run clean:demo && cd demo && npm run build",
-    "deploy:demo": "git subtree split --prefix demo/dist -b gh-pages && git push origin gh-pages:gh-pages"
+    "deploy:demo": "git subtree split --prefix demo/dist -b gh-pages && git push origin gh-pages:gh-pages",
+    "dev": "cd demo && npm run dev"
   },
   "author": "Christoffer Åström",
   "license": "MIT",
