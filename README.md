@@ -6,7 +6,7 @@
 
 Sortable plugin for *Aurelia* powered by *Oribella*
 
-## [Usage](./docs/usage.md)
+## [Usage](./docs/usage.md#installation)
 
 ## Building
 
