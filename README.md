@@ -28,7 +28,7 @@ cd demo && npm run dev;
 
 ## Visual Studio Code
 
-### Test
+### Tests
 ```shell
   ctrl + alt + t
 ```
