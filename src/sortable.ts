@@ -37,6 +37,10 @@ export class Sortable {
   @bindable public allowedDragSelectors: string[] = [];
   @bindable public allowDrag = ({ event }: { event: Event, item: SortableItem }) => {
     const target = (event.target as HTMLElement);
+    if (this.allowedDragSelector &&
+      !matchesSelector(target, this.allowedDragSelector)) {
+      return false;
+    }
     if (this.allowedDragSelectors.length &&
       this.allowedDragSelectors.filter((selector) => matchesSelector(target, selector)).length === 0) {
       return false;
@@ -49,7 +53,6 @@ export class Sortable {
     }
     return true;
   }
-  @bindable public allowMove = (_: { item: SortableItemElement }) => { return true; };
   @bindable public typeFlag: number = 1;
 
   public dragClone: DragClone = {
@@ -122,10 +125,6 @@ export class Sortable {
       return;
     }
     const vm = utils.getViewModel(element as SortableItemElement);
-    const item = vm.item;
-    if (!this.allowMove({ item })) {
-      return;
-    }
     const moveFlag = utils.move(this.dragClone, vm);
     if (moveFlag === MoveFlag.Valid) {
       this.lastElementFromPointRect = element.getBoundingClientRect();
@@ -178,12 +177,6 @@ export class Sortable {
     utils.updateDragClone(this.dragClone, client, window, this.axisFlag);
     this.trySort(client, window);
     this.tryScroll(client);
-  }
-  public end() {
-    this.stop();
-  }
-  public cancel() {
-    this.stop();
   }
   public stop() {
     utils.removeDragClone(this.dragClone);

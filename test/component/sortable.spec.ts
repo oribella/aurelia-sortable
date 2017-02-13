@@ -47,7 +47,7 @@ describe('Sortable', () => {
   let document: Document;
   let target: Element;
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     document = jsdom(html);
     target = document.querySelector('.target') as Element;
     if (!target) {
@@ -60,7 +60,7 @@ describe('Sortable', () => {
     await component.create(bootstrap);
   });
 
-  it('should have bindable items', async() => {
+  it('should have bindable items', async () => {
     expect(component.viewModel.items).to.equal(bindings.groups);
   });
 

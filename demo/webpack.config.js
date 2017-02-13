@@ -1,12 +1,14 @@
 const path = require('path');
 const { AureliaPlugin, ModuleDependenciesPlugin } = require('aurelia-webpack-plugin');
-
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const extractCSS = new ExtractTextPlugin('styles/[name].css');
 module.exports = {
   entry: { 'main': 'aurelia-bootstrapper' },
 
   output: {
     path: path.resolve(__dirname, 'dist'),
-    publicPath: 'dist',
     filename: '[name].js',
     chunkFilename: '[name].js'
   },
@@ -24,11 +26,31 @@ module.exports = {
     rules: [
       { test: /\.ts$/, use: [{ loader: 'awesome-typescript-loader' }] },
       { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
-      { test: /\.html$/i, use: 'html-loader' }
+      { test: /\.html$/i, use: 'html-loader' },
+      {
+        test: /\.css$/i, loader: extractCSS.extract({
+          fallback: 'style-loader',
+          use: [
+            { loader: 'css-loader', options: { importLoaders: 1 } },
+            'postcss-loader'
+          ]
+        })
+      }
     ]
   },
 
   plugins: [
+    extractCSS,
+    new CompressionPlugin({
+      asset: "[path].gz[query]",
+      algorithm: "gzip",
+      test: /\.js$|\.map$/,
+      threshold: 10240,
+      minRatio: 0.8
+    }),
+    new HtmlWebpackPlugin({
+      template: 'index.html'
+    }),
     new AureliaPlugin(),
     new ModuleDependenciesPlugin({
       'aurelia-bootstrapper': [
