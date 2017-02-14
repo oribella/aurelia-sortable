@@ -90,6 +90,7 @@ img {
 .container {
   max-width: 940px;
   margin: 0 auto;
+  padding: 4px;
 }
 
 .container > div {
@@ -234,3 +235,22 @@ li {
   }
 }
 
+table {
+  max-width: 80%;
+  margin: 0 auto;
+  border-collapse: collapse;
+}
+tr {
+  width: 196px;
+  border: 1px solid #ccc;
+}
+
+td {
+  text-align: center;
+  line-height: 2rem;
+  padding: 8px;
+
+  & img {
+    vertical-align: middle;
+  }
+}

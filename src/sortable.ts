@@ -1,7 +1,7 @@
 import { DOM } from 'aurelia-pal';
 import { customAttribute, bindable } from 'aurelia-templating';
 import { Repeat } from 'aurelia-templating-resources';
-import { inject, transient } from 'aurelia-dependency-injection';
+import { inject } from 'aurelia-dependency-injection';
 import { oribella, Swipe, Data, matchesSelector, RETURN_FLAG, Point } from 'oribella';
 import { OptionalParent } from './optional-parent';
 import { utils, SortableItemElement, SortableElement, DragClone, Rect, PageScrollOffset, AxisFlag, LockedFlag, MoveFlag } from './utils';
@@ -28,7 +28,7 @@ export class Sortable {
   @bindable public scroll: string | Element = 'document';
   @bindable public scrollSpeed: number = 10;
   @bindable public scrollSensitivity: number = 10;
-  @bindable public axisFlag: string = AxisFlag.XY;
+  @bindable public axis: string = AxisFlag.XY;
   @bindable public moved: () => void = () => { };
   @bindable public dragClass: string = 'oa-drag';
   @bindable public dragZIndex: number = 1;
@@ -96,7 +96,7 @@ export class Sortable {
     this.scrollListener.removeEventListener('scroll', this as any, false);
   }
   public handleEvent() {
-    utils.updateDragClone(this.dragClone, this.currentClientPoint, window, this.axisFlag);
+    utils.updateDragClone(this.dragClone, this.currentClientPoint, window, this.axis);
     this.tryMove(this.currentClientPoint, window);
   }
   public attached() {
@@ -110,7 +110,7 @@ export class Sortable {
     const { scrollLeft, scrollTop, scrollWidth, scrollHeight } = scrollElement;
     const scrollSpeed = this.scrollSpeed;
     const scrollMaxPos = utils.getScrollMaxPos(this.element, this.rootSortableRect, scrollElement, { scrollLeft, scrollTop, scrollWidth, scrollHeight }, this.scrollRect, window);
-    const scrollDirection = utils.getScrollDirection(this.axisFlag, this.scrollSensitivity, client, this.boundaryRect);
+    const scrollDirection = utils.getScrollDirection(this.axis, this.scrollSensitivity, client, this.boundaryRect);
     scrollMaxPos.x = scrollDirection.x === -1 ? 0 : scrollMaxPos.x;
     scrollMaxPos.y = scrollDirection.y === -1 ? 0 : scrollMaxPos.y;
     const scrollFrames = utils.getScrollFrames(scrollDirection, scrollMaxPos, { scrollLeft, scrollTop }, scrollSpeed);
@@ -120,7 +120,7 @@ export class Sortable {
     if (utils.canThrottle(this.lastElementFromPointRect, point, scrollOffset)) {
       return;
     }
-    const element = utils.elementFromPoint(point, this.selector, this.element, this.dragClone, this.axisFlag);
+    const element = utils.elementFromPoint(point, this.selector, this.element, this.dragClone, this.axis);
     if (!element) {
       return;
     }
@@ -174,7 +174,7 @@ export class Sortable {
   }
   public update(_: Event, { pointers: [{ client }] }: Data, __: Element) {
     this.currentClientPoint = client;
-    utils.updateDragClone(this.dragClone, client, window, this.axisFlag);
+    utils.updateDragClone(this.dragClone, client, window, this.axis);
     this.trySort(client, window);
     this.tryScroll(client);
   }

@@ -1,13 +1,17 @@
 <template>
-  <ul class="lui-list groups"
-    oa-sortable="items.bind: items; allowed-drag-selector.bind: '.lui-icon--handle'; axis-flag.bind: 'y'">
-    <li class="lui-list__item"
-      repeat.for="item of items"
+  <table>
+    <tbody oa-sortable="items.bind: items; axis.bind: 'y'">
+    <tr
       oa-sortable-item="item.bind: item;"
+      repeat.for="item of items"
       draggable="false">
-      <span class="lui-list__aside  lui-icon lui-icon--small lui-icon--handle"></span>
-      <span class="lui-list__text">${item.name}</span>
-    </li>
-  </ul>
+      <td>
+        <span><img src="${item.img}"/></span>
+      </td>
+      <td>
+        <div>${item.name}</div>
+      </td>
+    </tr>
+  </tbody>
+  </table>
 </template>
-
