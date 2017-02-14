@@ -4,7 +4,7 @@ import { Sortable, SortableItem, SORTABLE, SORTABLE_ITEM, SORTABLE_ATTR } from '
 export type SortableItemElement = HTMLElement & { au: { [index: string]: { viewModel: SortableItem } } };
 export type SortableElement = HTMLElement & { au: { [index: string]: { viewModel: Sortable } } };
 
-export interface AxisFlag {}
+export interface AxisFlag { }
 export const AxisFlag = {
   X: 'x' as 'x',
   Y: 'y' as 'y',
@@ -129,7 +129,10 @@ export const utils = {
       toSortable = toVM.childSortable;
       changedToSortable = true;
     }
-    if ((fromVM.typeFlag & toSortable.typeFlag) === 0) {
+    if (fromVM.parentSortable !== toSortable && (fromVM.typeFlag & toSortable.typeFlag) === 0) {
+      return MoveFlag.Invalid;
+    }
+    if (fromSortable.sortableDepth !== toSortable.sortableDepth) {
       return MoveFlag.Invalid;
     }
     const fromItems = fromSortable.items;
@@ -239,7 +242,7 @@ export const utils = {
     }
     return { scrollElement, scrollListener };
   },
-  getBoundaryRect({ left, top, right, bottom }: Rect, { innerWidth, innerHeight}: WindowDimension): Rect {
+  getBoundaryRect({ left, top, right, bottom }: Rect, { innerWidth, innerHeight }: WindowDimension): Rect {
     return {
       left: Math.max(0, left),
       top: Math.max(0, top),
