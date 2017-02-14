@@ -9,7 +9,7 @@ export const AxisFlag = {
   X: 'x' as 'x',
   Y: 'y' as 'y',
   XY: '' as ''
-}
+};
 
 export enum LockedFlag {
   From = 1,

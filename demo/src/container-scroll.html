@@ -1,22 +1,12 @@
 <template>
-  <style>
-    html, body, router-view, .page, .container {
-      position: relative;
-      height: 100%;
-      overflow: hidden;
-    }
-    .container-scroll {
-      position: relative;
-      height: 100%;
-      overflow: auto;
-    }
-  </style>
-  <ul oa-sortable="scroll: ul; items.bind: items; axis: y" class="container-scroll">
-    <li
+  <ul class="lui-list groups"
+    oa-sortable="items.bind: items; allowed-drag-selector.bind: '.lui-icon--handle'; axis-flag.bind: 'y'">
+    <li class="lui-list__item"
       repeat.for="item of items"
       oa-sortable-item="item.bind: item;"
       draggable="false">
-      ${item.text}
+      <span class="lui-list__aside  lui-icon lui-icon--small lui-icon--handle"></span>
+      <span class="lui-list__text">${item.name}</span>
     </li>
   </ul>
 </template>

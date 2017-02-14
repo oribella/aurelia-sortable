@@ -78,7 +78,7 @@ img {
 }
 
 .header-logo img {
-  height: 48px;
+  height: 32px;
 }
 
 .header-logo span {
@@ -91,21 +91,6 @@ img {
   max-width: 940px;
   margin: 0 auto;
   padding: 20px 20px 50px 20px;
-
-  & .container-scroll, & .page-scroll {
-      padding: 0;
-      margin: 0;
-      list-style: none;
-
-      & li {
-        box-sizing: border-box;
-        margin: 4px 0px;
-        border: 1px solid #999;
-        line-height: 2rem;
-        text-align: center;
-        list-style: none;
-      }
-    }
 }
 
 .container > div {

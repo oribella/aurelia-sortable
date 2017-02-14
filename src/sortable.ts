@@ -1,7 +1,7 @@
 import { DOM } from 'aurelia-pal';
 import { customAttribute, bindable } from 'aurelia-templating';
 import { Repeat } from 'aurelia-templating-resources';
-import { inject } from 'aurelia-dependency-injection';
+import { inject, transient } from 'aurelia-dependency-injection';
 import { oribella, Swipe, Data, matchesSelector, RETURN_FLAG, Point } from 'oribella';
 import { OptionalParent } from './optional-parent';
 import { utils, SortableItemElement, SortableElement, DragClone, Rect, PageScrollOffset, AxisFlag, LockedFlag, MoveFlag } from './utils';
@@ -16,7 +16,7 @@ declare module 'aurelia-templating-resources' {
   export interface Repeat {
     viewFactory: {
       isCaching: boolean;
-      setCacheSize: (first: string, second: boolean) => void;
+      setCacheSize: (first: number | string, second: boolean) => void;
     };
   }
 }
@@ -192,7 +192,10 @@ export class SortableItem {
   @bindable public typeFlag: number = 1;
   @bindable public lockedFlag: number = 0;
   public childSortable: Sortable;
+  private repeat: Repeat;
+
   constructor(public element: Element, public parentSortable: Sortable, repeat: Repeat) {
+    this.repeat = repeat;
     if (!repeat.viewFactory.isCaching) {
       repeat.viewFactory.setCacheSize('*', true);
     }
@@ -202,6 +205,9 @@ export class SortableItem {
     if (child) {
       this.childSortable = (child as SortableElement).au[SORTABLE].viewModel;
     }
+  }
+  public detached() {
+    this.repeat.viewFactory.setCacheSize(0, false);
   }
   get lockedFrom() {
     return (this.lockedFlag & LockedFlag.From) !== 0;
