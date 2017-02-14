@@ -7,6 +7,11 @@
             alt="" />
           <span>Oribella Aurelia Sortable</span>
         </a>
+        <ul class="lui-tabset">
+          <li repeat.for="row of router.navigation" click.delegate="router.navigateToRoute(row.config.name)" class="lui-tab ${row.isActive ? 'lui-active' : ''}">
+            <span class="lui-tab__text">${row.config.title}</span>
+          </li>
+        </ul>
         <div class="header-links">
           <a class="header-logo" href="https://github.com/oribella/aurelia-sortable">
             <img src="http://octodex.github.com/images/original.png" alt="Github" />
@@ -15,13 +20,6 @@
         </div>
       </div>
     </div>
-    <!--<ul class="lui-tabset">
-      <li repeat.for="row of router.navigation"
-        click.delegate="router.navigateToRoute(row.config.route)"
-        class="lui-tab">
-        <span class="lui-tab__text">${row.title}</span>
-      </li>
-    </ul>-->
     <div class="container">
       <router-view></router-view>
     </div>

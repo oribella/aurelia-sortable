@@ -1,29 +1,33 @@
 import { Point, matchesSelector } from 'oribella-framework';
-import { Sortable, SortableItem, SORTABLE, SORTABLE_ATTR } from './sortable';
+import { Sortable, SortableItem, SORTABLE, SORTABLE_ITEM, SORTABLE_ATTR } from './sortable';
 
 export type SortableItemElement = HTMLElement & { au: { [index: string]: { viewModel: SortableItem } } };
 export type SortableElement = HTMLElement & { au: { [index: string]: { viewModel: Sortable } } };
-const SORTABLE_ITEM = 'oa-sortable-item';
 
-export enum AxisFlag {
-  X = 1,
-  Y = 2,
-  XY = 3
+export interface AxisFlag {}
+export const AxisFlag = {
+  X: 'x' as 'x',
+  Y: 'y' as 'y',
+  XY: '' as ''
 }
+
 export enum LockedFlag {
   From = 1,
   To = 2,
   FromTo = 3
 }
+
 export enum MoveFlag {
   Invalid = 0,
   Valid = 1,
   ValidNewList = 2
 }
+
 export interface WindowDimension {
   innerWidth: number;
   innerHeight: number;
 }
+
 export interface Rect {
   left: number;
   top: number;
@@ -37,28 +41,34 @@ export interface PageScrollOffset {
   pageXOffset: number;
   pageYOffset: number;
 }
+
 export interface ScrollOffset {
   scrollLeft: number;
   scrollTop: number;
 }
+
 export interface ScrollRect {
   scrollLeft: number;
   scrollTop: number;
   scrollWidth: number;
   scrollHeight: number;
 }
+
 export interface ScrollDirection {
   x: number;
   y: number;
 }
+
 export interface ScrollDimension {
   scrollWidth: number;
   scrollHeight: number;
 }
+
 export interface ScrollFrames {
   x: number;
   y: number;
 }
+
 export interface ScrollData {
   scrollElement: Element;
   scrollDirection: ScrollDirection;
@@ -193,14 +203,14 @@ export const utils = {
     dragClone.element.style.top = dragClone.position.y + 'px';
     dragClone.parent.appendChild(dragClone.element);
   },
-  updateDragClone(dragClone: DragClone, currentClientPoint: Point, { pageXOffset, pageYOffset }: PageScrollOffset, axisFlag: number) {
+  updateDragClone(dragClone: DragClone, currentClientPoint: Point, { pageXOffset, pageYOffset }: PageScrollOffset, axisFlag: string) {
     if (!dragClone.element) {
       return;
     }
-    if (axisFlag & AxisFlag.X) {
+    if (axisFlag === AxisFlag.X || axisFlag === AxisFlag.XY) {
       dragClone.position.x = currentClientPoint.x + dragClone.offset.x + pageXOffset;
     }
-    if (axisFlag & AxisFlag.Y) {
+    if (axisFlag === AxisFlag.Y || axisFlag === AxisFlag.XY) {
       dragClone.position.y = currentClientPoint.y + dragClone.offset.y + pageYOffset;
     }
 
@@ -243,7 +253,7 @@ export const utils = {
       }
     };
   },
-  getScrollDirection(axisFlag: number, scrollSensitivity: number, { x, y }: Point, { left, top, right, bottom }: Rect): ScrollDirection {
+  getScrollDirection(axisFlag: string, scrollSensitivity: number, { x, y }: Point, { left, top, right, bottom }: Rect): ScrollDirection {
     const direction: ScrollDirection = { x: 0, y: 0 };
     if (x >= right - scrollSensitivity) {
       direction.x = 1;
@@ -282,19 +292,6 @@ export const utils = {
       y = 0;
     }
     return new Point(x, y);
-  },
-  ensureAxisFlag(axis: string): AxisFlag {
-    switch (axis) {
-      case 'x':
-        return AxisFlag.X;
-      case 'y':
-        return AxisFlag.Y;
-      default:
-        return AxisFlag.XY;
-    }
-  },
-  ensureTypeFlag(type: string): number {
-    return parseInt(type, 10);
   },
   getSortableDepth(sortable: Sortable) {
     let depth = 0;

@@ -28,7 +28,7 @@ export class Sortable {
   @bindable public scroll: string | Element = 'document';
   @bindable public scrollSpeed: number = 10;
   @bindable public scrollSensitivity: number = 10;
-  @bindable public axisFlag: number = AxisFlag.XY;
+  @bindable public axisFlag: string = AxisFlag.XY;
   @bindable public moved: () => void = () => { };
   @bindable public dragClass: string = 'oa-drag';
   @bindable public dragZIndex: number = 1;
