@@ -155,7 +155,7 @@ export class Sortable {
     this.boundaryRect = utils.getBoundaryRect(this.rootSortableRect, window);
     this.lastElementFromPointRect = element.getBoundingClientRect();
   }
-  public down(event: Event, { pointers: [{ client }]}: Data, element: Element) {
+  public down(event: Event, { pointers: [{ client }] }: Data, element: Element) {
     if (!this.isClosestSortable(event.target as Node)) {
       return RETURN_FLAG.REMOVE;
     }
@@ -168,11 +168,11 @@ export class Sortable {
     }
     return RETURN_FLAG.REMOVE;
   }
-  public start(_: Event, { pointers: [{ client }]}: Data, target: HTMLElement) {
+  public start(_: Event, { pointers: [{ client }] }: Data, target: HTMLElement) {
     utils.addDragClone(this.dragClone, this.element as HTMLElement, this.scroll as Element, target, this.downClientPoint, this.dragZIndex, window);
     this.tryScroll(client);
   }
-  public update(_: Event, { pointers: [{ client }]}: Data, __: Element) {
+  public update(_: Event, { pointers: [{ client }] }: Data, __: Element) {
     this.currentClientPoint = client;
     utils.updateDragClone(this.dragClone, client, window, this.axisFlag);
     this.trySort(client, window);
@@ -186,28 +186,30 @@ export class Sortable {
 }
 
 @customAttribute(SORTABLE_ITEM)
-@inject(DOM.Element, OptionalParent.of(Sortable), Repeat)
+@inject(DOM.Element, Repeat)
 export class SortableItem {
   @bindable public item: any = null;
   @bindable public typeFlag: number = 1;
   @bindable public lockedFlag: number = 0;
-  public childSortable: Sortable;
-  private repeat: Repeat;
+  public parentSortable: Sortable | null;
+  public childSortable: Sortable | null;
 
-  constructor(public element: Element, public parentSortable: Sortable, repeat: Repeat) {
-    this.repeat = repeat;
+  constructor(public element: Element, repeat: Repeat) {
     if (!repeat.viewFactory.isCaching) {
       repeat.viewFactory.setCacheSize('*', true);
     }
   }
-  public attached() {
-    const child = this.element.querySelector(SORTABLE_ATTR);
-    if (child) {
-      this.childSortable = (child as SortableElement).au[SORTABLE].viewModel;
-    }
+  private getParentSortable(): Sortable | null {
+    const parent = utils.closest((this.element as Node).parentNode, SORTABLE_ATTR, window.document);
+    return parent && (parent as SortableElement).au[SORTABLE].viewModel;
   }
-  public detached() {
-    this.repeat.viewFactory.setCacheSize(0, false);
+  private getChildSortable(): Sortable | null {
+    const child = this.element.querySelector(SORTABLE_ATTR);
+    return child && (child as SortableElement).au[SORTABLE].viewModel;
+  }
+  public attached() {
+    this.parentSortable = this.getParentSortable();
+    this.childSortable = this.getChildSortable();
   }
   get lockedFrom() {
     return (this.lockedFlag & LockedFlag.From) !== 0;
