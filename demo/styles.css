@@ -90,7 +90,6 @@ img {
 .container {
   max-width: 940px;
   margin: 0 auto;
-  padding: 20px 20px 50px 20px;
 }
 
 .container > div {

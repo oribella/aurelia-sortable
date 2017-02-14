@@ -1,5 +1,25 @@
 <template>
-  <ul class="lui-list groups"
+  <style>
+    html, body, router-view, .page {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+    }
+    router-view {
+      display: block;
+    }
+    .container {
+      position: relative;
+      overflow: hidden;
+      height: calc(100% - 50px);
+    }
+    .container-scroll {
+      position: relative;
+      height: 100%;
+      overflow: auto;
+    }
+  </style>
+  <ul class="lui-list groups container-scroll"
     oa-sortable="items.bind: items; allowed-drag-selector.bind: '.lui-icon--handle'; axis-flag.bind: 'y'">
     <li class="lui-list__item"
       repeat.for="item of items"
