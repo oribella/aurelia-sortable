@@ -77,7 +77,7 @@ export class Sortable {
   private scrollRect: Rect;
   private rootSortable: Sortable;
   private rootSortableRect: Rect;
-  private childSortables: Sortable[];
+  private childSortables: Sortable[] = [];
   private lastElementFromPointRect: Rect;
 
   constructor(public element: Element, public parentSortable: Sortable, private autoScroll: AutoScroll) {
