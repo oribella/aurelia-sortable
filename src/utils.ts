@@ -4,7 +4,9 @@ import { Sortable, SortableItem, SORTABLE, SORTABLE_ITEM, SORTABLE_ATTR } from '
 export type SortableItemElement = HTMLElement & { au: { [index: string]: { viewModel: SortableItem } } };
 export type SortableElement = HTMLElement & { au: { [index: string]: { viewModel: Sortable } } };
 
-export interface AxisFlag { }
+// tslint:disable-next-line:no-empty-interface
+export interface AxisFlag {
+}
 export const AxisFlag = {
   X: 'x' as 'x',
   Y: 'y' as 'y',
@@ -119,7 +121,13 @@ export const utils = {
       return MoveFlag.Invalid;
     }
     const fromSortable = fromVM.parentSortable;
+    if (!fromSortable) {
+      return MoveFlag.Invalid;
+    }
     let toSortable = toVM.parentSortable;
+    if (!toSortable) {
+      return MoveFlag.Invalid;
+    }
     const fromItem = fromVM.item;
     const toItem = toVM.item;
     if (toVM.childSortable && fromSortable.sortableDepth !== toSortable.sortableDepth) {
