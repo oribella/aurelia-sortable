@@ -1,6 +1,6 @@
 # oribella-aurelia-sortable
 
-[![npm](https://img.shields.io/npm/v/oribella-aurelia-sortable.svg)]()
+[![npm version](https://badge.fury.io/js/oribella-aurelia-sortable.svg)](https://badge.fury.io/js/oribella-aurelia-sortable)
 
 [Demo](http://oribella.github.io/aurelia-sortable)
 

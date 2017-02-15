@@ -1,16 +1,16 @@
 ## Installation
 
-Install via JSPM
+JSPM
 
 ```javascript
 jspm install npm:oribella-aurelia-sortable
 ```
-or NPM
+NPM
 ```javascript
 npm install oribella-aurelia-sortable
 ```
 
-Load the plugin
+## Load the plugin
 
 ```javascript
 export function configure(aurelia) {
@@ -132,19 +132,6 @@ where `$event` has `event` and `item` properties.
 `event` - the native DOM event
 
 `item` - the `sortable-item` view-model
-
-## moved
-If you need it you can also bind `moved` which will be called after an item has been sorted
-```markup
-<!-- Other bindings omitted -->
-<div oa-sortable="moved.call: moved($event);">
-</div>
-```
-where `$event` has `fromIx` and `toIx` properties.
-
-`fromIx` - the from index in the `sortable`
-
-`toIx` - the to index in the `sortable`
 
 ## typeFlag
 ```markup
