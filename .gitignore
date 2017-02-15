@@ -1,5 +1,5 @@
 node_modules
-jspm_packages
-bower_components
-.DS_STORE
+dist
+typings
 coverage
+.nyc_output
