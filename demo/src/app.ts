@@ -6,9 +6,9 @@ export class App {
 
   public configureRouter(config: RouterConfiguration, router: Router) {
     config.map([
-      { route: ['', 'nested'], name: 'nested', moduleId: PLATFORM.moduleName('page-nested', 'nested'), nav: true, title: 'Advanced' },
-      { route: 'page-scroll', name: 'page-scroll', moduleId: PLATFORM.moduleName('page-scroll'), nav: true, title: 'Simple' },
-      { route: 'container-scroll', name: 'container-scroll', moduleId: PLATFORM.moduleName('container-scroll'), nav: false, title: 'Simple - element scroll' }
+      { route: ['', 'advanced'], name: 'advanced', moduleId: PLATFORM.moduleName('advanced', 'advanced'), nav: true, title: 'Advanced' },
+      { route: 'simple-y', name: 'simple-y', moduleId: PLATFORM.moduleName('simple-y'), nav: true, title: 'Simple - Y' },
+      { route: 'simple-xy', name: 'simple-xy', moduleId: PLATFORM.moduleName('simple-xy'), nav: true, title: 'Simple - XY' }
     ]);
     this.router = router;
   }

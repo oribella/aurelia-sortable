@@ -1,12 +1,12 @@
 <template>
   <table>
-    <tbody oa-sortable="items.bind: items; axis.bind: 'y'">
+    <tbody oa-sortable="items.bind: items; axis.bind: 'y'; allowed-drag-selector.bind: '.lui-icon--handle'">
     <tr
       oa-sortable-item="item.bind: item;"
       repeat.for="item of items"
       draggable="false">
       <td>
-        <span><img src="${item.img}"/></span>
+        <span class="lui-icon lui-icon--large lui-icon--handle"></span>
       </td>
       <td>
         <div>${item.name}</div>

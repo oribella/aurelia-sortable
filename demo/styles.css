@@ -87,6 +87,12 @@ img {
   font-size: 16px;
 }
 
+@media (max-width: 380px) {
+  .header-logo {
+    display:none;
+  }
+}
+
 .container {
   max-width: 940px;
   margin: 0 auto;
@@ -252,5 +258,29 @@ td {
 
   & img {
     vertical-align: middle;
+  }
+}
+
+.simple-xy {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  flex-flow: wrap;
+}
+
+.simple-xy-item {
+  position: relative;
+  flex: 1 0 auto;
+  box-sizing: border-box;
+  max-width: 200px;
+  & img {
+    width: 184px;
+    height: 144px;
+  }
+  & .lui-icon--handle {
+    position: absolute;
+    top: 0;
+    right: 16px;
+    font-size: 30px;
   }
 }
