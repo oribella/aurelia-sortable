@@ -2,7 +2,7 @@ import { DOM } from 'aurelia-pal';
 import { customAttribute, bindable } from 'aurelia-templating';
 import { Repeat } from 'aurelia-templating-resources';
 import { inject } from 'aurelia-dependency-injection';
-import { oribella, Swipe, Data, matchesSelector, RETURN_FLAG, Point } from 'oribella';
+import { oribella, Swipe, Data, matchesSelector, RETURN_FLAG, Point, DefaultListenerArgs } from 'oribella';
 import { OptionalParent } from './optional-parent';
 import { utils, SortableItemElement, SortableElement, DragClone, Rect, PageScrollOffset, AxisFlag, LockedFlag, MoveFlag } from './utils';
 import { AutoScroll } from './auto-scroll';
@@ -35,8 +35,8 @@ export class Sortable {
   @bindable public disallowedDragSelectors: string[] = ['INPUT', 'SELECT', 'TEXTAREA'];
   @bindable public allowedDragSelector: string = '';
   @bindable public allowedDragSelectors: string[] = [];
-  @bindable public allowDrag = ({ event }: { event: Event, item: SortableItem }) => {
-    const target = (event.target as HTMLElement);
+  @bindable public allowDrag = ({ evt }: { evt: Event, item: SortableItem }) => {
+    const target = (evt.target as HTMLElement);
     if (this.allowedDragSelector &&
       !matchesSelector(target, this.allowedDragSelector)) {
       return false;
@@ -155,24 +155,24 @@ export class Sortable {
     this.boundaryRect = utils.getBoundaryRect(this.rootSortableRect, window);
     this.lastElementFromPointRect = element.getBoundingClientRect();
   }
-  public down(event: Event, { pointers: [{ client }] }: Data, element: Element) {
-    if (!this.isClosestSortable(event.target as Node)) {
+  public down({ evt, data: { pointers: [{ client }] }, target }: DefaultListenerArgs) {
+    if (!this.isClosestSortable(evt.target as Node)) {
       return RETURN_FLAG.REMOVE;
     }
-    const fromVM = utils.getViewModel(element as SortableItemElement);
+    const fromVM = utils.getViewModel(target as SortableItemElement);
     const item = fromVM.item;
-    if (!this.isLockedFrom(fromVM) && this.allowDrag({ event, item })) {
-      event.preventDefault();
-      this.initDragState(client, element, fromVM);
+    if (!this.isLockedFrom(fromVM) && this.allowDrag({ evt, item })) {
+      evt.preventDefault();
+      this.initDragState(client, target, fromVM);
       return RETURN_FLAG.IDLE;
     }
     return RETURN_FLAG.REMOVE;
   }
-  public start(_: Event, { pointers: [{ client }] }: Data, target: HTMLElement) {
-    utils.addDragClone(this.dragClone, this.element as HTMLElement, this.scroll as Element, target, this.downClientPoint, this.dragZIndex, window);
+  public start({ data: { pointers: [{ client }] }, target }: DefaultListenerArgs) {
+    utils.addDragClone(this.dragClone, this.element as HTMLElement, this.scroll as Element, target as HTMLElement, this.downClientPoint, this.dragZIndex, window);
     this.tryScroll(client);
   }
-  public update(_: Event, { pointers: [{ client }] }: Data, __: Element) {
+  public update({ data: { pointers: [{ client }] } }: DefaultListenerArgs) {
     this.currentClientPoint = client;
     utils.updateDragClone(this.dragClone, client, window, this.axis);
     this.trySort(client, window);

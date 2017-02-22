@@ -40,12 +40,12 @@
       "dist": "dist/amd"
     },
     "peerDependencies": {
-      "oribella": "^0.6.0",
-      "oribella-framework": "^0.8.2"
+      "oribella": "^0.7.0",
+      "oribella-framework": "^0.9.0"
     },
     "dependencies": {
-      "oribella": "^0.6.0",
-      "oribella-framework": "^0.8.2"
+      "oribella": "^0.7.0",
+      "oribella-framework": "^0.9.0"
     }
   },
   "devDependencies": {
@@ -74,8 +74,8 @@
     "aurelia-framework": "^1.0.8",
     "aurelia-pal": "^1.2.0",
     "aurelia-templating": "^1.2.0",
-    "oribella": "^0.6.0",
-    "oribella-framework": "^0.8.2"
+    "oribella": "^0.7.0",
+    "oribella-framework": "^0.9.0"
   },
   "nyc": {
     "include": [
