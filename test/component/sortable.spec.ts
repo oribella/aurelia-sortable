@@ -65,7 +65,7 @@ describe('Sortable', () => {
   });
 
   it('should handle allow selector', () => {
-    expect(component.viewModel.allowDrag({ event: { target } })).to.be.true;
+    expect(component.viewModel.allowDrag({ evt: { target } })).to.be.true;
   });
 
   afterEach(() => {

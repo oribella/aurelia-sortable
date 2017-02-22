@@ -2,7 +2,7 @@ import { DOM } from 'aurelia-pal';
 import { customAttribute, bindable } from 'aurelia-templating';
 import { Repeat } from 'aurelia-templating-resources';
 import { inject } from 'aurelia-dependency-injection';
-import { oribella, Swipe, Data, matchesSelector, RETURN_FLAG, Point, DefaultListenerArgs } from 'oribella';
+import { oribella, Swipe, matchesSelector, RETURN_FLAG, Point, DefaultListenerArgs } from 'oribella';
 import { OptionalParent } from './optional-parent';
 import { utils, SortableItemElement, SortableElement, DragClone, Rect, PageScrollOffset, AxisFlag, LockedFlag, MoveFlag } from './utils';
 import { AutoScroll } from './auto-scroll';
