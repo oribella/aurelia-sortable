@@ -28,7 +28,7 @@ export function configure(aurelia) {
 *sortable*, *sortable-item* will be available as global *custom attributes*.
 
 To get started you need to bind the *sortable*, *sortable-item* attributes in conjunction with the *repeat* attribute.
-```markup
+```html
 <ul oa-sortable="items.bind: items">
   <li repeat.for="item of items" oa-sortable-item="item.bind: item"></li>
 </ul>
@@ -37,7 +37,7 @@ This will enable the plugin to keep track of and move around the items.
 
 ## scroll
 If the `sortable` *custom attribute* is in an area that is scrollable you have to bind either a `selector` or an `Element` or `document`:
-```markup
+```html
 <!-- Other bindings omitted -->
 <div oa-sortable="scroll.bind: '.page-host'">
 </div>
@@ -46,7 +46,7 @@ Default `scroll='document'`
 
 ## scrollSpeed scrollSensitivity
 so it can auto scroll when needed. If you want you may even do a manual scroll when it's auto scrolling or combine them by first auto scrolling then manual scrolling and it should still behave as intended. If you are not happy with the sensitivity or scroll speed for the auto scroll you can set it with below bindings:
-```
+```html
 <!-- Other bindings omitted -->
 <div oa-sortable="scroll-sensitivity.bind: 20; scroll-speed.bind: 20">
 </div>
@@ -57,7 +57,7 @@ Default `scrollSensitivity=10` - how many pixels from the `scroll` bounding thre
 
 ## axis
 If you have a vertical or horizontal list you can lock the sortable axis movement with:
-```
+```html
 <!-- Other bindings omitted -->
 <!-- Lock to horizontal movement -->
 <div oa-sortable="axis: 1">
@@ -70,7 +70,7 @@ Default `axis=3` - sets the allowed axis movement. Which is both horizontal and 
 
 ## dragZIndex
 To make sure that the dragging of a *sortable item* always is on top of other elements make sure to bind:
-```markup
+```html
 <!-- Other bindings omitted -->
 <div oa-sortable="drag-z-index.bind: 120">
 </div>
@@ -79,7 +79,7 @@ Default `dragZIndex=1` - z-index of the dragging *sortable item*.
 
 ## disallowedDragTagNames
 To be able to have a *sortable* where you might be editing the *sortable items* you can control this by:
-```
+```html
 <!-- Other bindings omitted -->
 <div oa-sortable="disallowed-drag-tag-names.bind: 'DIV'">
 </div>
@@ -87,13 +87,13 @@ To be able to have a *sortable* where you might be editing the *sortable items* 
 Default `disallowedDragTagNames=['INPUT', 'SELECT', 'TEXTAREA']` - element tags that disallows start dragging.
 
 ## allowedDragSelector allowedDragSelectors
-```
+```html
 <!-- Other bindings omitted -->
 <div oa-sortable="allow-drag-selector.bind: '.handle'">
 </div>
 ```
 or
-```
+```html
 <!-- Other bindings omitted -->
 <div oa-sortable="allow-drag-selectors.bind: ['.handle1', '.handle2]">
 </div>
@@ -101,7 +101,7 @@ or
 
 ## allowDrag
 If that is insufficient:
-```markup
+```html
 <!-- Other bindings omitted -->
 <div oa-sortable="allow-drag.call: allowDrag($event);">
 </div>
@@ -134,7 +134,7 @@ where `$event` has `event` and `item` properties.
 `item` - the `sortable-item` view-model
 
 ## typeFlag
-```markup
+```html
 <!-- Other bindings omitted -->
 <div oa-sortable-item="type-flag.bind: 1">
 </div>
