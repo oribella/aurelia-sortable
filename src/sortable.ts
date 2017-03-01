@@ -30,6 +30,7 @@ export class Sortable {
   @bindable public scrollSensitivity: number = 10;
   @bindable public axis: string = AxisFlag.XY;
   @bindable public moved: () => void = () => { };
+  @bindable public sortingClass: string = 'oa-sorting';
   @bindable public dragClass: string = 'oa-drag';
   @bindable public dragZIndex: number = 1;
   @bindable public disallowedDragSelectors: string[] = ['INPUT', 'SELECT', 'TEXTAREA'];
@@ -79,6 +80,7 @@ export class Sortable {
   private rootSortableRect: Rect;
   private childSortables: Sortable[] = [];
   private lastElementFromPointRect: Rect;
+  private target: Element;
 
   constructor(public element: Element, public parentSortable: Sortable, private autoScroll: AutoScroll) {
     this.sortableDepth = utils.getSortableDepth(this);
@@ -163,6 +165,7 @@ export class Sortable {
     const item = fromVM.item;
     if (!this.isLockedFrom(fromVM) && this.allowDrag({ evt, item })) {
       evt.preventDefault();
+      this.target = target;
       this.initDragState(client, target, fromVM);
       return RETURN_FLAG.IDLE;
     }
@@ -170,6 +173,7 @@ export class Sortable {
   }
   public start({ data: { pointers: [{ client }] }, target }: DefaultListenerArgs) {
     utils.addDragClone(this.dragClone, this.element as HTMLElement, this.scroll as Element, target as HTMLElement, this.downClientPoint, this.dragZIndex, this.dragClass, window);
+    this.target.classList.add(this.sortingClass);
     this.tryScroll(client);
   }
   public update({ data: { pointers: [{ client }] } }: DefaultListenerArgs) {
@@ -179,6 +183,7 @@ export class Sortable {
     this.tryScroll(client);
   }
   public stop() {
+    this.target.classList.remove(this.sortingClass);
     utils.removeDragClone(this.dragClone);
     this.autoScroll.deactivate();
     this.childSortables.forEach((s) => s.isDisabled = false);
