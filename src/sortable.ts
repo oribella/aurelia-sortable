@@ -169,7 +169,7 @@ export class Sortable {
     return RETURN_FLAG.REMOVE;
   }
   public start({ data: { pointers: [{ client }] }, target }: DefaultListenerArgs) {
-    utils.addDragClone(this.dragClone, this.element as HTMLElement, this.scroll as Element, target as HTMLElement, this.downClientPoint, this.dragZIndex, window);
+    utils.addDragClone(this.dragClone, this.element as HTMLElement, this.scroll as Element, target as HTMLElement, this.downClientPoint, this.dragZIndex, this.dragClass, window);
     this.tryScroll(client);
   }
   public update({ data: { pointers: [{ client }] } }: DefaultListenerArgs) {

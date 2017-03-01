@@ -185,7 +185,7 @@ export const utils = {
     return lastElementFromPointRect &&
       utils.pointInside(lastElementFromPointRect, { x: x + pageXOffset, y: y + pageYOffset } as Point);
   },
-  addDragClone(dragClone: DragClone, sortableElement: HTMLElement, scrollElement: Element, target: HTMLElement, client: Point, dragZIndex: number, { pageXOffset, pageYOffset }: PageScrollOffset) {
+  addDragClone(dragClone: DragClone, sortableElement: HTMLElement, scrollElement: Element, target: HTMLElement, client: Point, dragZIndex: number, dragClass: string, { pageXOffset, pageYOffset }: PageScrollOffset) {
     const targetRect = target.getBoundingClientRect();
     const offset = { left: 0, top: 0 };
     if (sortableElement.contains(scrollElement)) {
@@ -206,6 +206,7 @@ export const utils = {
     dragClone.element.style.pointerEvents = 'none';
     dragClone.element.style.margin = 0 + '';
     dragClone.element.style.zIndex = dragZIndex + '';
+    dragClone.element.classList.add(dragClass);
     dragClone.position.x = targetRect.left + pageXOffset - offset.left;
     dragClone.position.y = targetRect.top + pageYOffset - offset.top;
     dragClone.offset.x = dragClone.position.x - client.x - pageXOffset;
