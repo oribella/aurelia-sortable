@@ -5,6 +5,7 @@ import { Aurelia } from 'aurelia-framework';
 export async function configure(aurelia: Aurelia) {
   aurelia.use
          .standardConfiguration()
-         .developmentLogging();
+         .developmentLogging()
+         .globalResources('sortable');
   aurelia.start().then(() => aurelia.setRoot('demo/app'));
 }

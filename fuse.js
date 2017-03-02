@@ -1,18 +1,18 @@
-const { FuseBox, EnvPlugin, RawPlugin, HTMLPlugin, TypeScriptHelpers, SourceMapPlainJsPlugin } = require('fsbx');
+const { FuseBox, EnvPlugin, PostCSS, CSSPlugin, HTMLPlugin, TypeScriptHelpers, SourceMapPlainJsPlugin } = require('fsbx');
 
 let fuse = FuseBox.init({
   homeDir: "./src",
-  outFile: "./demo/bundle.js",
+  outFile: "./demo/dist/bundle.js",
   cache: true,
   log: true,
   debug: false,
   sourceMap: {
-    bundleReference: 'bundle.js.map',
-    outFile: './demo/bundle.js.map',
+    bundleReference: './bundle.js.map',
+    outFile: './demo/dist/bundle.js.map',
   },
   plugins: [
     EnvPlugin({ FUSEBOX_AURELIA_LOADER_LOGGING: true, FUSEBOX_AURELIA_LOADER_HMR: true }),
-    [/\.css$/, RawPlugin({ extensions: ['.css'] })],
+    [PostCSS([require('postcss-cssnext')({})]), CSSPlugin()],
     HTMLPlugin({ useDefault: true }),
     TypeScriptHelpers(),
     SourceMapPlainJsPlugin()
@@ -33,4 +33,11 @@ let vendorModules = [
   'aurelia-templating-router',
 ];
 
-fuse.devServer(`> demo/main.ts + ${appModules} + ${vendorModules.join(' + ')}`, { port: 8080 });
+fuse.devServer(`
+  > demo/main.ts
+  + ${appModules}
+  + ${vendorModules.join(' + ')}`,
+  {
+    root: './demo',
+    port: 8080
+  });
