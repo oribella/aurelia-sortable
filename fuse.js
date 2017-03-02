@@ -33,4 +33,4 @@ let vendorModules = [
   'aurelia-templating-router',
 ];
 
-fuse.devServer(`> demo-main.ts ${appModules} + ${vendorModules.join(' + ')}`, { port: 8080 });
+fuse.devServer(`> demo/main.ts + ${appModules} + ${vendorModules.join(' + ')}`, { port: 8080 });
