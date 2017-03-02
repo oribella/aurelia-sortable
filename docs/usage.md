@@ -133,6 +133,13 @@ where `$event` has `event` and `item` properties.
 
 `item` - the `sortable-item` view-model
 
+## onStop
+```html
+<!-- Other bindings omitted -->
+<div oa-sortable="on-stop.call: onStop()">
+</div>
+```
+
 ## typeFlag
 ```html
 <!-- Other bindings omitted -->
