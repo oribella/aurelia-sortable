@@ -29,7 +29,7 @@ export class Sortable {
   @bindable public scrollSpeed: number = 10;
   @bindable public scrollSensitivity: number = 10;
   @bindable public axis: string = AxisFlag.XY;
-  @bindable public moved: () => void = () => { };
+  @bindable public onStop: () => void = () => { };
   @bindable public dragClass: string = 'oa-drag';
   @bindable public dragZIndex: number = 1;
   @bindable public disallowedDragSelectors: string[] = ['INPUT', 'SELECT', 'TEXTAREA'];
@@ -182,6 +182,7 @@ export class Sortable {
     utils.removeDragClone(this.dragClone);
     this.autoScroll.deactivate();
     this.childSortables.forEach((s) => s.isDisabled = false);
+    this.onStop();
   }
 }
 

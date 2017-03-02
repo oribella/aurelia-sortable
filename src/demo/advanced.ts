@@ -1,4 +1,4 @@
-export class Nested {
+export class Advanced {
   public groups = [
     { name: 'Odd', typeFlag: 1, items: [] },
     { name: 'Even', typeFlag: 2, items: [] },

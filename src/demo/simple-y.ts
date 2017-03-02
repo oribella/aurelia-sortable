@@ -1,4 +1,4 @@
-export class PageScroll {
+export class SimpleY {
   public items = [{
     name: `Lorem ipsum dolor sit amet, mutat ocurreret voluptaria vis et, alii quodsi incorrupte vis in. Eos debet persius pericula ei, in has posse suscipiantur, ius.`,
     img: `http://lorempixel.com/48/48/sports/1`
