@@ -23,7 +23,7 @@
     "build": "npm-run-all -n clean --parallel commonjs amd system es2015",
     "build:demo": "npm run clean:demo && cd demo && npm run build",
     "deploy:demo": "git subtree split --prefix demo/dist -b gh-pages && git push origin gh-pages:gh-pages",
-    "dev": "cd demo && npm run dev"
+    "dev": "ts-node fuse.ts"
   },
   "author": "Christoffer Åström",
   "license": "MIT",
@@ -57,7 +57,7 @@
     "aurelia-testing": "^1.0.0-beta.2.0.1",
     "chai": "^3.5.0",
     "coveralls": "^2.11.15",
-    "fsbx": "^1.3.123-preview.10",
+    "fsbx": "^1.3.123-preview.15",
     "fuse-box-aurelia-loader": "github:fuse-box/fuse-box-aurelia-loader",
     "jsdom": "^9.9.1",
     "mocha": "^3.2.0",

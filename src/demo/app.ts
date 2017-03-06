@@ -1,5 +1,4 @@
 import { Router, RouterConfiguration } from 'aurelia-router';
-import './styles.css';
 
 export class App {
   public router: Router;
