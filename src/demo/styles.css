@@ -284,3 +284,7 @@ td {
     font-size: 30px;
   }
 }
+
+.oa-sorting {
+  opacity: 0.3;
+}
