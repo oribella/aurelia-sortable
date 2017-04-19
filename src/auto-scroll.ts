@@ -30,10 +30,10 @@ export class AutoScroll {
       if (!this.active) {
         return;
       }
-      if (scrollFrames.x > 0) {
+      if (Math.abs(scrollFrames.x) > 0) {
         scrollElement.scrollLeft += scrollDeltaX;
       }
-      if (scrollFrames.y > 0) {
+      if (Math.abs(scrollFrames.y) > 0) {
         scrollElement.scrollTop += scrollDeltaY;
       }
 

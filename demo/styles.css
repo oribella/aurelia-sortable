@@ -288,3 +288,8 @@ td {
 .oa-sorting {
   opacity: 0.3;
 }
+
+.table-container {
+  max-height: 300px;
+  overflow: auto;
+}
