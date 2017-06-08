@@ -60,10 +60,10 @@ If you have a vertical or horizontal list you can lock the sortable axis movemen
 ```html
 <!-- Other bindings omitted -->
 <!-- Lock to horizontal movement -->
-<div oa-sortable="axis: 1">
+<div oa-sortable="axis: 'x'">
 </div>
 <!-- Lock to vertical movement -->
-<div oa-sortable="axis: 2">
+<div oa-sortable="axis: 'y'">
 </div>
 ```
 Default `axis=3` - sets the allowed axis movement. Which is both horizontal and vertical movement.
@@ -81,7 +81,7 @@ Default `dragZIndex=1` - z-index of the dragging *sortable item*.
 To be able to have a *sortable* where you might be editing the *sortable items* you can control this by:
 ```html
 <!-- Other bindings omitted -->
-<div oa-sortable="disallowed-drag-tag-names.bind: 'DIV'">
+<div oa-sortable="disallowed-drag-selectors.bind: 'DIV'">
 </div>
 ```
 Default `disallowedDragTagNames=['INPUT', 'SELECT', 'TEXTAREA']` - element tags that disallows start dragging.
@@ -89,13 +89,13 @@ Default `disallowedDragTagNames=['INPUT', 'SELECT', 'TEXTAREA']` - element tags 
 ## allowedDragSelector allowedDragSelectors
 ```html
 <!-- Other bindings omitted -->
-<div oa-sortable="allow-drag-selector.bind: '.handle'">
+<div oa-sortable="allowed-drag-selector.bind: '.handle'">
 </div>
 ```
 or
 ```html
 <!-- Other bindings omitted -->
-<div oa-sortable="allow-drag-selectors.bind: ['.handle1', '.handle2]">
+<div oa-sortable="allowed-drag-selectors.bind: ['.handle1', '.handle2]">
 </div>
 ```
 
