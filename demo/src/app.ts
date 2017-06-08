@@ -8,7 +8,8 @@ export class App {
     config.map([
       { route: ['', 'advanced'], name: 'advanced', moduleId: PLATFORM.moduleName('advanced', 'advanced'), nav: true, title: 'Advanced' },
       { route: 'simple-y', name: 'simple-y', moduleId: PLATFORM.moduleName('simple-y'), nav: true, title: 'Simple - Y' },
-      { route: 'simple-xy', name: 'simple-xy', moduleId: PLATFORM.moduleName('simple-xy'), nav: true, title: 'Simple - XY' }
+      { route: 'simple-xy', name: 'simple-xy', moduleId: PLATFORM.moduleName('simple-xy'), nav: true, title: 'Simple - XY' },
+      { route: 'scroll', name: 'scroll', moduleId: PLATFORM.moduleName('scroll'), nav: true, title: 'Scroll' }
     ]);
     this.router = router;
   }
