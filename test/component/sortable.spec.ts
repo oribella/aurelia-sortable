@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { StageComponent } from 'aurelia-testing';
 import { bootstrap } from 'aurelia-bootstrapper';
 import * as path from 'path';
-import { jsdom } from 'jsdom';
+import { JSDOM } from 'jsdom';
 
 describe('Sortable', () => {
   let component: any;
@@ -48,7 +48,7 @@ describe('Sortable', () => {
   let target: Element;
 
   beforeEach(async () => {
-    document = jsdom(html);
+    document = ( new JSDOM(html)).window.document;
     target = document.querySelector('.target') as Element;
     if (!target) {
       throw new Error(`target not found ${html}`);
@@ -60,7 +60,7 @@ describe('Sortable', () => {
     await component.create(bootstrap);
   });
 
-  it('should have bindable items', async () => {
+  it('should have bindable items', () => {
     expect(component.viewModel.items).to.equal(bindings.groups);
   });
 

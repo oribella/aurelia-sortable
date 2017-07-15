@@ -183,7 +183,9 @@ export class Sortable {
     this.tryScroll(client);
   }
   public stop() {
-    if(this.target) this.target.classList.remove(this.sortingClass);
+    if (this.target) {
+      this.target.classList.remove(this.sortingClass);
+    }
     utils.removeDragClone(this.dragClone);
     this.autoScroll.deactivate();
     this.childSortables.forEach((s) => s.isDisabled = false);

@@ -59,6 +59,12 @@
     }
   },
   "devDependencies": {
+    "@types/chai": "^4.0.1",
+    "@types/jsdom": "^11.0.1",
+    "@types/mocha": "^2.2.41",
+    "@types/node": "^8.0.10",
+    "@types/sinon": "^2.3.2",
+    "@types/sinon-chai": "^2.7.28",
     "aurelia-bootstrapper": "^2.0.1",
     "aurelia-framework": "^1.0.8",
     "aurelia-loader-nodejs": "^1.0.0",
