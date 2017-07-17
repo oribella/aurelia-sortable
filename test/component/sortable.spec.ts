@@ -48,7 +48,7 @@ describe('Sortable', () => {
   let target: Element;
 
   beforeEach(async () => {
-    document = ( new JSDOM(html)).window.document;
+    document = (new JSDOM(html)).window.document;
     target = document.querySelector('.target') as Element;
     if (!target) {
       throw new Error(`target not found ${html}`);

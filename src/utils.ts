@@ -25,6 +25,16 @@ export enum MoveFlag {
   ValidNewList = 2
 }
 
+export interface Move {
+  flag: MoveFlag;
+  fromItems: any[];
+  fromIndex: number;
+  toItems: any[];
+  toIndex: number;
+}
+
+export const DefaultInvalidMove = { flag: MoveFlag.Invalid, fromItems: [], fromIndex: -1, toItems: [], toIndex: -1 };
+
 export interface WindowDimension {
   innerWidth: number;
   innerHeight: number;
@@ -111,52 +121,52 @@ export const utils = {
   getViewModel(element: SortableItemElement): SortableItem {
     return element.au[SORTABLE_ITEM].viewModel;
   },
-  move(dragClone: DragClone, toVM: SortableItem): number {
+  move(dragClone: DragClone, toVM: SortableItem): Move {
     let changedToSortable = false;
     const fromVM = dragClone.viewModel;
     if (!fromVM) {
-      return MoveFlag.Invalid;
+      return DefaultInvalidMove;
     }
     if (typeof toVM.lockedFlag === 'number' && (toVM.lockedFlag & LockedFlag.To) !== 0) {
-      return MoveFlag.Invalid;
+      return DefaultInvalidMove;
     }
     const fromSortable = fromVM.parentSortable;
     if (!fromSortable) {
-      return MoveFlag.Invalid;
+      return DefaultInvalidMove;
     }
     let toSortable = toVM.parentSortable;
     if (!toSortable) {
-      return MoveFlag.Invalid;
+      return DefaultInvalidMove;
     }
     const fromItem = fromVM.item;
     const toItem = toVM.item;
     if (toVM.childSortable && fromSortable.sortableDepth !== toSortable.sortableDepth) {
       if (fromSortable.sortableDepth !== toVM.childSortable.sortableDepth) {
-        return MoveFlag.Invalid;
+        return DefaultInvalidMove;
       }
       toSortable = toVM.childSortable;
       changedToSortable = true;
     }
     if (fromVM.parentSortable !== toSortable && (fromVM.typeFlag & toSortable.typeFlag) === 0) {
-      return MoveFlag.Invalid;
+      return DefaultInvalidMove;
     }
     if (fromSortable.sortableDepth !== toSortable.sortableDepth) {
-      return MoveFlag.Invalid;
+      return DefaultInvalidMove;
     }
     const fromItems = fromSortable.items;
-    const fromIx = fromItems.indexOf(fromItem);
+    const fromIndex = fromItems.indexOf(fromItem);
     const toItems = toSortable.items;
-    let toIx = toItems.indexOf(toItem);
-    if (toIx === -1) {
-      toIx = 0;
+    let toIndex = toItems.indexOf(toItem);
+    if (toIndex === -1) {
+      toIndex = 0;
     }
-    const removedFromItem = fromItems.splice(fromIx, 1)[0];
-    toItems.splice(toIx, 0, removedFromItem);
+    const removedFromItem = fromItems.splice(fromIndex, 1)[0];
+    toItems.splice(toIndex, 0, removedFromItem);
     if (changedToSortable) {
       fromVM.parentSortable = toSortable;
-      return MoveFlag.ValidNewList;
+      return { flag: MoveFlag.ValidNewList, fromItems, fromIndex, toItems, toIndex };
     }
-    return MoveFlag.Valid;
+    return { flag: MoveFlag.Valid, fromItems, fromIndex, toItems, toIndex };
   },
   pointInside({ top, right, bottom, left }: Rect, { x, y }: Point) {
     return x >= left &&

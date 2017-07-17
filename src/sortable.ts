@@ -4,7 +4,7 @@ import { Repeat } from 'aurelia-templating-resources';
 import { inject } from 'aurelia-dependency-injection';
 import { oribella, Swipe, matchesSelector, RETURN_FLAG, Point, DefaultListenerArgs } from 'oribella';
 import { OptionalParent } from './optional-parent';
-import { utils, SortableItemElement, SortableElement, DragClone, Rect, PageScrollOffset, AxisFlag, LockedFlag, MoveFlag } from './utils';
+import { utils, SortableItemElement, SortableElement, DragClone, Rect, PageScrollOffset, AxisFlag, LockedFlag, MoveFlag, Move, DefaultInvalidMove } from './utils';
 import { AutoScroll } from './auto-scroll';
 
 export const SORTABLE = 'oa-sortable';
@@ -29,7 +29,7 @@ export class Sortable {
   @bindable public scrollSpeed: number = 10;
   @bindable public scrollSensitivity: number = 10;
   @bindable public axis: string = AxisFlag.XY;
-  @bindable public onStop: () => void = () => { };
+  @bindable public onStop: (move: Move) => void = () => { };
   @bindable public sortingClass: string = 'oa-sorting';
   @bindable public dragClass: string = 'oa-drag';
   @bindable public dragZIndex: number = 1;
@@ -81,6 +81,7 @@ export class Sortable {
   private childSortables: Sortable[] = [];
   private lastElementFromPointRect: Rect;
   private target: Element;
+  private move: Move = DefaultInvalidMove;
 
   constructor(public element: Element, public parentSortable: Sortable, private autoScroll: AutoScroll) {
     this.sortableDepth = utils.getSortableDepth(this);
@@ -127,11 +128,11 @@ export class Sortable {
       return;
     }
     const vm = utils.getViewModel(element as SortableItemElement);
-    const moveFlag = utils.move(this.dragClone, vm);
-    if (moveFlag === MoveFlag.Valid) {
+    this.move = utils.move(this.dragClone, vm);
+    if (this.move.flag === MoveFlag.Valid) {
       this.lastElementFromPointRect = element.getBoundingClientRect();
     }
-    if (moveFlag === MoveFlag.ValidNewList) {
+    if (this.move.flag === MoveFlag.ValidNewList) {
       this.lastElementFromPointRect = { left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0 };
     }
   }
@@ -158,6 +159,7 @@ export class Sortable {
     this.lastElementFromPointRect = element.getBoundingClientRect();
   }
   public down({ evt, data: { pointers: [{ client }] }, target }: DefaultListenerArgs) {
+    this.move = DefaultInvalidMove;
     if (!this.isClosestSortable(evt.target as Node)) {
       return RETURN_FLAG.REMOVE;
     }
@@ -189,7 +191,7 @@ export class Sortable {
     utils.removeDragClone(this.dragClone);
     this.autoScroll.deactivate();
     this.childSortables.forEach((s) => s.isDisabled = false);
-    this.onStop();
+    this.onStop(this.move);
   }
 }
 
