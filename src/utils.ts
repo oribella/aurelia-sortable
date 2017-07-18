@@ -28,12 +28,13 @@ export enum MoveFlag {
 export interface Move {
   flag: MoveFlag;
   fromItems: any[];
+  fromItem: SortableItem | null;
   fromIndex: number;
   toItems: any[];
   toIndex: number;
 }
 
-export const DefaultInvalidMove = { flag: MoveFlag.Invalid, fromItems: [], fromIndex: -1, toItems: [], toIndex: -1 };
+export const DefaultInvalidMove = { flag: MoveFlag.Invalid, fromItems: [], fromItem: null, fromIndex: -1, toItems: [], toIndex: -1 };
 
 export interface WindowDimension {
   innerWidth: number;
@@ -164,9 +165,9 @@ export const utils = {
     toItems.splice(toIndex, 0, removedFromItem);
     if (changedToSortable) {
       fromVM.parentSortable = toSortable;
-      return { flag: MoveFlag.ValidNewList, fromItems, fromIndex, toItems, toIndex };
+      return { flag: MoveFlag.ValidNewList, fromItems, fromItem, fromIndex, toItems, toIndex };
     }
-    return { flag: MoveFlag.Valid, fromItems, fromIndex, toItems, toIndex };
+    return { flag: MoveFlag.Valid, fromItems, fromItem, fromIndex, toItems, toIndex };
   },
   pointInside({ top, right, bottom, left }: Rect, { x, y }: Point) {
     return x >= left &&
