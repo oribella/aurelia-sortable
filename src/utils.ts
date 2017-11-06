@@ -280,12 +280,12 @@ export const utils = {
     const direction: ScrollDirection = { x: 0, y: 0 };
     if (x >= right - scrollSensitivity) {
       direction.x = 1;
-    } else if (x <= left - scrollSensitivity) {
+    } else if (x <= left + scrollSensitivity) {
       direction.x = -1;
     }
     if (y >= bottom - scrollSensitivity) {
       direction.y = 1;
-    } else if (y <= top - scrollSensitivity) {
+    } else if (y <= top + scrollSensitivity) {
       direction.y = -1;
     }
     if (axisFlag === AxisFlag.X) {
