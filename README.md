@@ -1,3 +1,5 @@
+# Moved to [oribella](https://github.com/oribella/oribella)
+
 # oribella-aurelia-sortable
 
 [![npm version](https://badge.fury.io/js/oribella-aurelia-sortable.svg)](https://badge.fury.io/js/oribella-aurelia-sortable)
